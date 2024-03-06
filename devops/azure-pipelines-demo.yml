@@ -1,0 +1,384 @@
+# Pipeline Steps
+# Start with a minimal pipeline that you can customize to build steps.
+name: $(Date:yyyy-MM-dd)$(Rev:.r)_$(Build.BuildId)_$(Build.DefinitionName)_$(SourceBranchName)
+
+
+
+pool:
+  name: devops-ccs-dev-azure-vm
+  demands:
+   - agent.name -equals devops-vm-ccs-dev-eastus
+
+variables:
+- name: git-repo-name
+  value: industry_cloud_datapipeline
+- name: blackduck_project_name
+  value: 'US-Industry-Cloud'
+- name: tag
+  value: '$(Build.BuildNumber)'
+- name: system.debug
+  value: true
+- name: veracode-app-profile
+  value: 'USA-ADV-Sector Cloud - CCS (Common Cloud Services)'
+- name: sandbox-name
+  value: cna_datapipeline
+# - name: image_name
+#   value: dp-airflow
+- group: ccs-sonar-access
+- group: ccs-veracode-access
+- group: azure_cicd_dev_databricks 
+# - group: aws_cicd_dev_databricks
+
+
+stages:
+ - stage: SonarQubeScan
+   jobs:
+   - job: SonarQubeScan
+     timeoutInMinutes: 5
+     steps:
+     - task: Bash@3
+       continueOnError: false
+       inputs:
+         filePath: '$(Build.SourcesDirectory)/devops/sonar/sonar_ip_allow.sh'
+         failOnStderr: true
+       displayName: 'Whitelist Build Server IP'
+
+     - task: SonarQubePrepare@5
+       displayName: 'SonarQubePrepare'
+       continueOnError: false
+       inputs:
+         SonarQube: 'ccs_sonar_access'
+         scannerMode: 'Other'
+         extraProperties: |
+           # Additional properties that will be passed to the scanner,
+           # Put one key=value per line, example:
+           # sonar.exclusions=**/*.bin
+           sonar.python.version=3.6.8
+           sonar.projectKey=$(git-repo-name)
+     - task: SonarQubePrepare@5
+       inputs:
+         SonarQube: 'ccs_sonar_access'
+         scannerMode: 'CLI'
+         configMode: 'manual'
+         cliProjectKey: $(git-repo-name)
+
+      # Run Code Analysis task
+     - task: SonarQubeAnalyze@5
+
+     # Publish Quality Gate Result task
+     - task: SonarQubePublish@5
+       inputs:
+         pollingTimeoutSec: '300'
+
+ - stage: Pytest
+   dependsOn: SonarQubeScan
+   condition: succeeded()
+   jobs:
+   - job: Pytest
+    #  pool:
+    #    name: devops-ccs-dev-azure-vm
+     steps:
+     - task: Bash@3
+       continueOnError: false
+       inputs:
+         targetType: 'inline'
+         script: |
+           pip --version
+           pip install pytest pytest-azurepipelines
+           python3 -m pytest unit_test/
+           python -m pip install --upgrade pip
+           python -m pip install --upgrade setuptools wheel
+         workingDirectory: '$(Build.Repository.LocalPath)/'
+         failOnStderr: true
+       displayName: 'Pytest'
+      
+ - stage: VeracodePipelineScan
+   dependsOn: Pytest
+   condition: succeeded()
+   jobs:
+   - job: VeracodePipelineScan
+     steps:
+     - task: CopyFiles@2
+       inputs:
+         SourceFolder: '$(Build.Repository.LocalPath)/'
+         Contents: |
+           **/*
+           !documentation.txt
+           !.gitignore
+           !.git/**
+           !devops/**
+           !README.md
+         TargetFolder: '$(Build.ArtifactStagingDirectory)'
+         CleanTargetFolder: true
+         OverWrite: true
+         preserveTimestamp: true
+       displayName: 'Copy Artifacts'
+     - task: ArchiveFiles@2
+       inputs:
+         rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+         includeRootFolder: false
+         archiveType: 'zip'
+         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+         replaceExistingArchive: true
+     - task: Bash@3
+       continueOnError: true
+       displayName: Veracode Pipeline Scan
+       inputs:
+        targetType: "inline"
+        script: |
+         curl -sSO https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+         unzip -o pipeline-scan-LATEST.zip
+         java -jar pipeline-scan.jar -vid $(VERACODE_API_ID) -vkey $(VERACODE_API_KEY) -f $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip || true
+          # VERACODE_API_ID and VERACODE_API_KEY environment variables must reference your API credentials.
+          # "|| true" specifies to continue build if Pipeline Scan discovers flaws.
+          # To fail the build for new flaws not listed in a baseline file, add an existing baseline file with "-bf <baseline filename>" and remove "|| true".
+  
+ - stage: BlackDuckScan
+   dependsOn: VeracodePipelineScan
+   condition: succeeded()
+   jobs:
+   - job: BlackDuckScan
+     timeoutInMinutes: 15
+
+     steps:
+     - task: SynopsysDetectTask@7
+       continueOnError: true
+       inputs:
+         BlackDuckService: 'ccs_blackduck_access'
+         DetectArguments: |
+           --detect.project.name=$(blackduck_project_name)
+           --detect.project.version.name=$(git-repo-name)
+           --detect.python.path=/usr/bin/python3
+           --detect.python.python3=true
+           --detect.excluded.directories=devops
+
+         DetectVersion: 'latest'
+         DetectFolder: '$(Build.Repository.LocalPath)/'
+       displayName: 'Black Duck Scan'
+       
+
+ - stage: WheelBuild
+   dependsOn: BlackDuckScan
+   condition: succeeded()
+   jobs:
+   - job: WheelBuild
+     pool:
+      name: EIS_Data_Platform_Agent
+      demands:
+      - agent.name -equals dev-aws-ec2
+     timeoutInMinutes: 15
+     steps:
+     - script: |
+        sudo python3 -m pip install --upgrade pip setuptools wheel >/dev/null 2>&1
+       displayName: 'Installing dependincies'
+     - script: |
+        sudo python3 setup.py install bdist_wheel >/dev/null 2>&1
+        ls dist/
+       displayName: 'Building.. Wheel'
+     - task: CopyFiles@2
+       inputs:
+         SourceFolder: '$(System.DefaultWorkingDirectory)/dist'
+         Contents: 'industryclouddatapipeline-0.0.1-py3-none-any.whl'
+         TargetFolder: '$(Build.ArtifactStagingDirectory)'
+         CleanTargetFolder: true
+         OverWrite: true
+         preserveTimestamp: true
+       displayName: 'Copy Wheel Artifacts'
+     - task: PublishBuildArtifacts@1
+       inputs:
+           pathToPublish: '$(Build.ArtifactStagingDirectory)/industryclouddatapipeline-0.0.1-py3-none-any.whl'
+           artifactName: drop
+       displayName: 'Publish WheelArtifacts'
+ 
+
+ - stage: WheelInstallationOnAzureDevDatabricks
+   dependsOn: WheelBuild
+   condition: succeeded()
+   jobs:
+   - job: WheelInstallationOnAzureDevDatabricks
+     pool:
+      name: EIS_Data_Platform_Agent
+      demands:
+      - agent.name -equals dev-aws-ec2
+     timeoutInMinutes: 15
+     steps:
+     - checkout: none
+     - task: DownloadBuildArtifacts@1
+       inputs:
+         buildType: 'current'
+         downloadType: 'single'
+         artifactName: 'drop'
+         itemPattern: 'drop/**'
+         downloadPath: '$(System.ArtifactsDirectory)'    
+
+     - script: |
+        databricks libraries uninstall --cluster-id $CLUSTER_ID --whl dbfs:/FileStore/jars/industryclouddatapipeline-0.0.1-py3-none-any.whl
+       env:
+         DATABRICKS_HOST: $(AZURE_DEV_DATABRICKS_HOST)
+         DATABRICKS_TOKEN: $(AZURE_DEV_DATABRICKS_TOKEN)
+         CLUSTER_ID: $(AZURE_DEV_DATABRICKS_CLUSTER_ID)
+       displayName: 'Uninstalling Previous Wheel'
+
+     - script: |
+        databricks clusters restart --cluster-id $CLUSTER_ID
+       env:
+         DATABRICKS_HOST: $(AZURE_DEV_DATABRICKS_HOST)
+         DATABRICKS_TOKEN: $(AZURE_DEV_DATABRICKS_TOKEN)
+         CLUSTER_ID: $(AZURE_DEV_DATABRICKS_CLUSTER_ID)
+       displayName: 'Restarting Cluster'
+    
+     - script: |
+
+        databricks fs cp  --overwrite '$(Build.ArtifactStagingDirectory)/industryclouddatapipeline-0.0.1-py3-none-any.whl' 'dbfs:/FileStore/jars/industryclouddatapipeline-0.0.1-py3-none-any.whl'
+        databricks libraries install --cluster-id $CLUSTER_ID --whl dbfs:/FileStore/jars/industryclouddatapipeline-0.0.1-py3-none-any.whl
+        
+       env:
+         DATABRICKS_HOST: $(AZURE_DEV_DATABRICKS_HOST)
+         DATABRICKS_TOKEN: $(AZURE_DEV_DATABRICKS_TOKEN)
+         CLUSTER_ID: $(AZURE_DEV_DATABRICKS_CLUSTER_ID)
+       displayName: 'Deploying Wheel on Azure Dev databricks'
+ 
+#  - stage: WheelInstallationOnAWSDevDatabricks
+#    dependsOn: WheelBuild
+#    condition: succeeded()
+#    jobs:
+#    - job: WheelInstallationOnAWSDevDatabricks
+#      pool:
+#       name: EIS_Data_Platform_Agent
+#       demands:
+#       - agent.name -equals dev-aws-ec2
+#      timeoutInMinutes: 15
+#      steps:
+#      - checkout: none
+#      - task: DownloadBuildArtifacts@1
+#        inputs:
+#          buildType: 'current'
+#          downloadType: 'single'
+#          artifactName: 'drop'
+#          itemPattern: 'drop/**'
+#          downloadPath: '$(System.ArtifactsDirectory)'    
+
+#      - script: |
+#         databricks libraries uninstall --cluster-id $CLUSTER_ID --whl dbfs:/FileStore/jars/industryclouddatapipeline-0.0.1-py3-none-any.whl
+#        env:
+#          DATABRICKS_HOST: $(AWS_DEV_DATABRICKS_HOST)
+#          DATABRICKS_TOKEN: $(AWS_DEV_DATABRICKS_TOKEN)
+#          CLUSTER_ID: $(AWS_DEV_DATABRICKS_CLUSTER_ID)
+#        displayName: 'Uninstalling Previous Wheel'
+
+#      - script: |
+#         databricks clusters restart --cluster-id $CLUSTER_ID
+#        env:
+#          DATABRICKS_HOST: $(AWS_DEV_DATABRICKS_HOST)
+#          DATABRICKS_TOKEN: $(AWS_DEV_DATABRICKS_TOKEN)
+#          CLUSTER_ID: $(AWS_DEV_DATABRICKS_CLUSTER_ID)
+#        displayName: 'Restarting Cluster'
+    
+#      - script: |
+
+#         databricks fs cp  --overwrite '$(Build.ArtifactStagingDirectory)/industryclouddatapipeline-0.0.1-py3-none-any.whl' 'dbfs:/FileStore/jars/industryclouddatapipeline-0.0.1-py3-none-any.whl'
+#         databricks libraries install --cluster-id $CLUSTER_ID --whl dbfs:/FileStore/jars/industryclouddatapipeline-0.0.1-py3-none-any.whl
+        
+#        env:
+#          DATABRICKS_HOST: $(AWS_DEV_DATABRICKS_HOST)
+#          DATABRICKS_TOKEN: $(AWS_DEV_DATABRICKS_TOKEN)
+#          CLUSTER_ID: $(AWS_DEV_DATABRICKS_CLUSTER_ID)
+#        displayName: 'Deploying Wheel on AWS Dev databricks'
+
+#  - stage: EMRCopyWheelToAWSS3
+#    dependsOn: WheelBuild
+#    condition: succeeded()
+#    jobs:
+#    - job: EMRCopyWheelToAWSS3
+#      pool:
+#       name: EIS_Data_Platform_Agent
+#       demands:
+#       - agent.name -equals dev-aws-ec2
+#      timeoutInMinutes: 15
+#      steps:
+#      - checkout: none
+#      - task: DownloadBuildArtifacts@1
+#        inputs:
+#          buildType: 'current'
+#          downloadType: 'specific'
+#          artifactName: 'drop'
+#          itemPattern: '**/industryclouddatapipeline-0.0.1-py3-none-any.*'
+#          downloadPath: '$(Build.ArtifactStagingDirectory)'    
+#      - task: S3Upload@1
+#        inputs:
+#          awsCredentials: 'aws_act_copy_wheel'
+#          regionName: 'us-east-1'
+#          bucketName: 'act-dev-code-files-bkt'
+#          sourceFolder: '$(Build.ArtifactStagingDirectory)/drop'
+#          globExpressions: '**'
+#          targetFolder: 'lib_test'
+
+#  - stage: DPAzureDockerBuildACRPush
+#    dependsOn: BlackDuckScan
+#    condition: succeeded()
+#    jobs:
+#      - job: DPAzureDockerBuildACRPush
+#        timeoutInMinutes: 10
+#        steps:
+#          - task: Docker@2
+#            inputs:
+#              containerRegistry: 'ccs_dev_acr'
+#              repository: '$(image_name)'
+#              command: 'build'
+#              Dockerfile: '**/DP_Dockerfile'
+#              tags: latest
+#            displayName: 'Azure Docker Build'
+#          - task: Docker@2
+#            inputs:
+#              containerRegistry: 'ccs_dev_acr'
+#              repository: '$(image_name)'
+#              command: 'push'
+#              tags: latest
+#            displayName: 'ACR Push'
+
+#  - stage: DPAzureAirflowKubernetesDevDeployment
+#    dependsOn: DPAzureDockerBuildACRPush
+#    #condition: and(succeeded(), in(variables['Build.SourceBranchName'],'develop'))
+#    jobs:
+#      - job: DPAzureAirflowKubernetesDevDeployment
+#        timeoutInMinutes: 5
+#        steps:
+#          - checkout: none
+#         #  - task: HelmDeploy@0
+#         #    inputs:
+#         #      connectionType: 'Kubernetes Service Connection'
+#         #      kubernetesServiceConnection: 'ccs_dev_aks'
+#         #      namespace: 'dev-datapipeline'
+#         #      command: 'upgrade'
+#         #      chartType: 'Name'
+#         #      chartName: 'devops/helm'
+#         #      releaseName: 'dp-airflow'
+#         #      #overrideValues: 'images.airflow.repository=dp-airflow,image.airflow.tag=$(tag)'
+#         #      valueFile: 'devops/helm/dev-airflow-values.yml'
+#         #      waitForExecution: false
+#         #    displayName: 'Deployment on DEV dev-datapipeline ns - AKS'
+#          - script: |
+#              helm repo add apache-airflow https://airflow.apache.org/
+#              helm repo update
+#              helm upgrade --install dp-airflow apache-airflow/airflow --version 1.7.0 -n dev-datapipeline -f devops/helm/dev-airflow-values.yml
+   
+#  - stage: CopyDagstoAWSAirflowS3Bucket
+#    dependsOn: BlackDuckScan
+#    condition: succeeded()
+#    jobs:
+#    - job: CopyDagstoAWSAirflowS3Bucket
+#      pool:
+#       name: EIS_Data_Platform_Agent
+#       demands:
+#       - agent.name -equals dev-aws-ec2
+#      timeoutInMinutes: 5
+#      steps:
+#      #- checkout: none   
+#      - task: S3Upload@1
+#        inputs:
+#          awsCredentials: 'aws_act_copy_wheel'
+#          regionName: 'us-east-1'
+#          bucketName: 'airflow-shared-dev-bucket'
+#          sourceFolder: '$(Build.Repository.LocalPath)/airflow_dag_utils/aws'
+#          globExpressions: '**'
+#          targetFolder: 'dags'

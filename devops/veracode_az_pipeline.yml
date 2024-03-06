@@ -1,0 +1,95 @@
+# Pipeline Steps
+name: $(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyy-MM-dd)$(Rev:.r)_$(Build.BuildId)
+
+pr: none
+
+trigger: none
+
+schedules:
+  - cron: "40 11 * * 0"
+    displayName: schedule
+    branches:
+      include:
+        - common_dp_codebase_cicd
+    always: true
+
+# pool:
+#   vmImage: "ubuntu-latest"
+pool:
+  name: EIS_Data_Platform_Agent
+  demands:
+   - agent.name -equals dev-aws-ec2
+
+
+variables:
+- name: git-repo-name
+  value: $(Build.DefinitionName)
+- name: sandbox-name
+  value: ucg_datapipeline
+- name: scan-version
+  value: '$(Build.BuildNumber)'
+- name: veracode-app-profile
+  value: 'USA-ADV-Sector Cloud - CCS (Common Cloud Services)'
+- name: System.Debug
+  value: true
+
+stages:
+  - stage: PublishArtifacts
+    jobs:
+      - job: publishArtifacts
+        timeoutInMinutes: 15
+        steps:
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: '$(Build.Repository.LocalPath)/'
+              Contents: |
+                **/*
+                !documentation.txt
+                !.gitignore
+                !.git/**
+                !devops/**
+                !README.md
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+              CleanTargetFolder: true
+              OverWrite: true
+              preserveTimestamp: true
+            displayName: 'Copy Artifacts'
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              replaceExistingArchive: true
+          - task: PublishBuildArtifacts@1
+            inputs:
+               pathToPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+               artifactName: drop
+            displayName: 'Publish Artifacts'
+ 
+  - stage: VeraCodeScan
+    dependsOn: publishArtifacts
+    jobs:
+    - job: VeracodePipelineScan
+      steps:
+      - checkout: none
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'drop'
+          itemPattern: 'drop/**'
+          downloadPath: '$(System.ArtifactsDirectory)'
+      - task: Veracode@3
+        inputs:
+           ConnectionDetailsSelection: 'Endpoint'
+           AnalysisService: 'ccs_veracode_access'
+           veracodeAppProfile: '$(veracode-app-profile)'
+           version: '$(scan-version)'
+           filepath: '$(Build.ArtifactStagingDirectory)'
+           sandboxName: '$(sandbox-name)'
+           createSandBox: false
+           importResults: true
+           maximumWaitTime: '360'
+           failBuildIfUploadAndScanBuildStepFails: true
+        displayName: 'Vera Code Scan'

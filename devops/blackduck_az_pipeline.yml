@@ -1,0 +1,56 @@
+# Pipeline Steps
+name: $(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyy-MM-dd)$(Rev:.r)_$(Build.BuildId)
+
+pr: none
+
+trigger: none
+
+schedules:
+  - cron: "30 1 * * *"
+    displayName: schedule
+    branches:
+      include:
+        - master
+    always: true
+
+pool:
+  name: EIS_Data_Platform_Agent
+  demands:
+   - agent.name -equals dev-aws-ec2
+
+variables:
+  - name: git-repo-name
+    value: $(Build.DefinitionName)
+  - name: scan-version
+    value: '$(Build.BuildNumber)'
+  - name: blackduck_project_name
+    value: 'US-Industry-Cloud'
+  - name: System.Debug
+    value: true
+
+stages:
+
+  - stage: BlackDuckScan
+    condition: succeeded()
+    jobs:
+      - job: BlackDuckScan
+        #timeoutInMinutes: 15
+
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.x'
+              disableDownloadFromRegistry: true
+              addToPath: true
+              architecture: 'x64'
+          - task: SynopsysDetectTask@7
+            continueOnError: true
+            inputs:
+              BlackDuckService: 'ccs_blackduck_access'
+              DetectArguments: |
+                --detect.project.name=$(blackduck_project_name)
+                --detect.project.version.name=$(git-repo-name)
+                --detect.maven.path=/opt/maven/bin/mvn
+              DetectVersion: latest
+              DetectFolder: '$(Build.Repository.LocalPath)/'
+            displayName: 'Black Duck Scan'

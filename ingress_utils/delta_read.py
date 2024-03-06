@@ -1,0 +1,58 @@
+from pyspark.sql import SparkSession
+import traceback
+from common_utils import read_write_utils
+
+
+spark= SparkSession.builder.getOrCreate()
+spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled","true")
+
+def delta_data_read(ingress_config):
+    
+    """
+    Reads stream data from delta of any type - csv/parquet etc.
+    into a streaming dataframe
+    
+    Parameters
+    ----------
+    ingress_config: Required arguments in the form of key-value pairs/options
+                for reading from a streaming source
+    
+    Return
+    ------
+    Returns the streaming dataframe
+    
+    """
+    try:
+        
+        # Batch Processing / Stream Processing check 
+        raw_df = read_write_utils.read_process_check(ingress_config)
+        
+        # Format
+        raw_df = (raw_df.format(ingress_config["data"]["inputFile"]["inputFileFormat"]))
+
+        # Schema
+        raw_df = read_write_utils.apply_schema(ingress_config, raw_df)
+
+        # Options 
+        raw_df = read_write_utils.apply_options(ingress_config, raw_df)
+
+        #checking and performing reject handling            
+        raw_df = read_write_utils.rej_handling(ingress_config,raw_df)
+
+        # Handling delta format 
+        if 'delta' in ingress_config["data"]["inputFile"]["inputFileFormat"] :
+            raw_df = read_write_utils.delta_format_input(ingress_config, raw_df)
+        else:
+            # All Non delta table formats can be accessed through load()
+            raw_df = raw_df.load(ingress_config["source"]["driver"]["path"])
+
+        #checking and performing column mapping            
+        raw_df = read_write_utils.col_mapping(ingress_config,raw_df)
+
+        return raw_df
+    
+    except Exception as e:
+        err_msg = f"Encountered exception while reading from BLOB - {e}"
+        print(err_msg)
+        traceback.print_exc()
+        raise Exception(e)

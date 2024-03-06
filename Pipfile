@@ -1,0 +1,14 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+py4j = "==0.10.9"
+six = "==1.16.0"
+wincertstore = "==0.2"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
