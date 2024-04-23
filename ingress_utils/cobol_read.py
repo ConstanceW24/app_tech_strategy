@@ -27,7 +27,11 @@ def cobol_read(ingress_config):
         raw_df = read_write_utils.apply_options(ingress_config, raw_df)
         
         # Handling delta format 
-        raw_df = raw_df.load(ingress_config["source"]["driver"]["path"])
+        if str(ingress_config["data"]["inputFile"].get("options",{}).get("path","")).lower() not in ( "", "none"):
+            raw_df = raw_df.load()
+        else:
+            # All Non delta table formats can be accessed through load()
+            raw_df = raw_df.load(ingress_config["source"]["driver"]["path"])
 
         return raw_df
     

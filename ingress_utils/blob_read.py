@@ -22,30 +22,25 @@ def blob_data_read(ingress_config):
     Returns the streaming dataframe
     
     """
-    
     try:
-        
         # Batch Processing / Stream Processing check 
         raw_df = read_write_utils.read_process_check(ingress_config)
         
-        # Format
-        raw_df = (raw_df.format(ingress_config["data"]["inputFile"]["inputFileFormat"]))
-
-        # Schema
-        raw_df = read_write_utils.apply_schema(ingress_config, raw_df)
-
         # Options 
         raw_df = read_write_utils.apply_options(ingress_config, raw_df)
 
-        #checking and performing reject handling            
-        raw_df = read_write_utils.rej_handling(ingress_config,raw_df)
+        #Integrated in options  "badRecordsPath" : "/mnt/path/badrecord/{current_timestamp}"
 
         # Handling delta format 
         if 'delta' in ingress_config["data"]["inputFile"]["inputFileFormat"] :
             raw_df = read_write_utils.delta_format_input(ingress_config, raw_df)
         else:
             # All Non delta table formats can be accessed through load()
-            raw_df = raw_df.load(ingress_config["source"]["driver"]["path"])
+            if str(ingress_config["data"]["inputFile"].get("options",{}).get("path","")).lower() not in ( "", "none"):
+                raw_df = raw_df.load()
+            else:
+                # All Non delta table formats can be accessed through load()
+                raw_df = raw_df.load(ingress_config["source"]["driver"]["path"])
 
         #checking and performing column mapping            
         raw_df = read_write_utils.col_mapping(ingress_config,raw_df)

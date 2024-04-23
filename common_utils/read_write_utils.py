@@ -62,9 +62,10 @@ def delta_format_input(ingress_config, raw_df):
     elif '/' not in ingress_config["source"]["driver"]["path"]:
                 # Supports only in databricks 
         raw_df = raw_df.table(ingress_config["source"]["driver"]["path"])
-            
+    elif str(ingress_config["data"]["inputFile"].get("options",{}).get("path","")).lower() not in ( "", "none"):
+        raw_df = raw_df.load()
     else:
-                # All Non delta table formats can be accessed through load()
+        # All Non delta table formats can be accessed through load()
         raw_df = raw_df.load(ingress_config["source"]["driver"]["path"])
     return raw_df
 
@@ -77,6 +78,18 @@ def write_process_check(egress_config, stream_df):
         stream_df = stream_df.writeStream
     return stream_df
 
+def select_columns(egress_config, stream_df):
+    if "selectCols" in egress_config["target"].get('options', {}).keys():
+        stream_df = stream_df.select(*egress_config["target"]['options']['selectCols'])
+    
+    if "selectQuery" in egress_config["target"].get('options', {}).keys() \
+            and egress_config["target"]["configuration"]["data"]["inputFile"].get('batchFlag', 'false').lower() == 'true': 
+        temp_tablename = egress_config["configuration"]["table_name"] + (egress_config["configuration"]["run_id"])[:30]
+        stream_df.createOrReplaceTempView(temp_tablename)
+        qry = egress_config["target"]['options']['selectQuery'].replace("<<table_name>>",temp_tablename)
+        stream_df = spark.sql(qry)
+
+    return stream_df 
 
 def get_partition_df(egress_config, stream_df):
     if "noofpartition" in egress_config["target"].keys():
@@ -94,16 +107,27 @@ def apply_write_options(egress_config, stream_df):
 
 
 def apply_to_dataframe(df, kwargs):
+    from datetime import datetime
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    date_YYYYMMDD  = datetime.now().strftime('%Y%m%d')
+    date_YYYY_MON_DD  = datetime.now().strftime('%Y-%b-%d')
+
     if len(kwargs) > 0:
         for k,v in kwargs.items():
+            if v == '':
+                continue
             if k == "format":
                 df = df.format(v)
             elif k == "partitionBy":
                 df = df.partitionBy(*(v.strip().split(',')))
-            elif (k == 'table') or ('secret' in k):
+            elif k == "schema":
+                df = df.schema(eval(v))
+            elif k == "mode":
+                df = df.mode(v)
+            elif (k == 'table') or ('secret' in k) or ('select' in k.lower()) or ('mapcols' in k.lower()) :
                  continue
             else:
-                df = df.option(k,v)
+                df = df.option(k,v.format(curr_timestamp = timestamp, date_YYYYMMDD = date_YYYYMMDD, date_YYYY_MON_DD = date_YYYY_MON_DD))
     return df
 
 
@@ -116,10 +140,13 @@ def apply_trigger_option(egress_config, stream_df):
     return stream_df
 
 def check_for_delta(egress_config, stream_df):
+    if egress_config["target"].get("options","").get("mode","") == "":
+        stream_df = stream_df.mode("overwrite")
+
     if 'delta' in egress_config["target"].get("options","").get("format","") and str(egress_config["target"]["options"].get("table", "")).lower() not in ( "", "none"):
-       stream_df = stream_df.mode(egress_config["target"]["options"].get('mode','overwrite')).saveAsTable(egress_config["target"]["options"]["table"])
+       stream_df = stream_df.saveAsTable(egress_config["target"]["options"]["table"])
     else:
-       stream_df = stream_df.mode(egress_config["target"]["options"].get('mode','overwrite')).save()
+       stream_df = stream_df.save()
 
 def check_target_trigger(egress_config, stream_df):
     from common_utils import utils as utils

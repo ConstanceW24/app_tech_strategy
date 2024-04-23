@@ -30,7 +30,8 @@ def data_quality_check(df,ingress_config):
     source_file_name    = ingress_config["data"]["inputFile"]["fileName"].replace("/","")
     process_name        = f"DataQuality-{source_file_name}"
 
-    if ingress_config['target'].get('rejectOptions','') != '':
+    if ingress_config['target'].get('rejectOptions', None) == None and \
+        ingress_config['target'].get('validationLogOptions',None) == None:
         for i in ingress_config['rules']:
             i['reject_handling'] = 'false'
 
@@ -44,15 +45,23 @@ def data_quality_check(df,ingress_config):
 
     write_summary = False
 
-    if ingress_config['target'].get('rejectOptions',None) != None:
-        df, rejected_df = batch.get_rejected_records(df,ingress_config)
-        reject_data_config, reject_summary_config = batch.generate_reject_configs(ingress_config)
+    if ingress_config['target'].get('rejectOptions',None) != None or ingress_config['target'].get('validationLogOptions',None) != None:
+        df, rejected_df, logged_df = batch.get_rejected_records(df, ingress_config)
+        reject_data_config, log_config, reject_summary_config = batch.generate_reject_configs(ingress_config)
         if rejected_df is not None:
-            batch.file_storage_write(f'{process_name}_rejected', rejected_df, reject_data_config)
-        write_summary = True
-    
+            write_summary = True
+            if reject_data_config != {}:
+                batch.batch_writer(rejected_df, reject_data_config, spark)
 
-    if write_summary:
+            print("Generating Rejection Summary for validation failed records")
+            if log_config != {}:
+                batch.log_dq_fail(rejected_df, log_config, 'Reject')
+    
+        if logged_df is not None and log_config != {}:
+            print("Generating logging for validation failed records")
+            batch.log_dq_fail(logged_df, log_config)
+
+    if write_summary and reject_summary_config != {}:
         print("Generating Summary from rejected records")
         batch.write_summary(rejected_df, reject_summary_config)
 

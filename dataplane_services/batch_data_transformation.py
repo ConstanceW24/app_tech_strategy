@@ -34,13 +34,17 @@ def rule_transformation(rulesno,source_file_name,src):
     dataframe(src) after applies the transformation rules
 
     """
-    if(rulesno['Transformation_name'].lower() in ("select_transformation","join_transformation")) & (rulesno['rule_parser'].lower()=='sparksql'):
+    if(rulesno['Transformation_name'].lower() in ("select_transformation","join_transformation")) & (rulesno['rule_parser'].lower()=='sqlfile'):
         print(rulesno['Transformation_name'])
-        src.createOrReplaceTempView('src')
+        src.createOrReplaceTempView(source_file_name)
         dbfs=rulesno['rule_override']
         file_content=dbutils.fs.head(dbfs)
         src = spark.sql(f'{file_content}'.format(*list(map(eval,rulesno['Transformation_input']))))
-        spark.catalog.dropTempView('src')
+
+    if(rulesno['Transformation_name'].lower() in ("select_transformation","join_transformation")) & (rulesno['rule_parser'].lower()=='sparksql'):
+        print(rulesno['Transformation_name'])
+        src.createOrReplaceTempView(source_file_name)
+        src = spark.sql(rulesno['rule_override'].format(*list(map(eval,rulesno['Transformation_input']))))
 
     if(rulesno['Transformation_name'].lower() in ("select_transformation")) & (rulesno['rule_parser'].lower()=='pyspark'):
         print(rulesno['Transformation_name'])
@@ -50,6 +54,12 @@ def rule_transformation(rulesno,source_file_name,src):
     if(rulesno['Transformation_name'].lower()=="dropcolumns_transformation") & (rulesno['rule_parser'].lower()=='pyspark'):
         print(rulesno['Transformation_name'])
         src=src.drop(*rulesno['Transformation_input'])
+
+    # Transformation_input should be an array of strings (column names)
+    if(rulesno['Transformation_name'].lower()=="patterndropcolumns_transformation") & (rulesno['rule_parser'].lower()=='pyspark'):
+        print(rulesno['Transformation_name'])
+        import re
+        src=src.drop(*[cl for cl in src.columns if re.match(rulesno['Transformation_input'][0],cl)])
 
     # Transformation_input should be a string containing the filter condition
     if(rulesno['Transformation_name'].lower()=="filter_transformation") & (rulesno['rule_parser'].lower()=='pyspark'):
@@ -93,6 +103,7 @@ def rule_transformation(rulesno,source_file_name,src):
     if(rulesno['Transformation_name'].lower()=="scd2_transformation"):
         print(rulesno['Transformation_name'])
         src = scd2_transformation(src, rulesno['Transformation_input'])
+        
 
     if rulesno['rule_parser'].lower() == 'custom_handler':
         print(rulesno['rule_parser']+'-'+rulesno['rule_override'])

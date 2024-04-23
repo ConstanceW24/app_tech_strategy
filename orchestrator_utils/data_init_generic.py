@@ -34,15 +34,10 @@ def get_arguments():
                         help='parent path for the configuration files')
     parser.add_argument('-bm', '--bookmark_flag', dest='bookmark_flag', required = False, action='store_false', 
                         help='pass flag for bookmark and recover run')
-    parser.add_argument('-fsm', '--fsm_flag', dest='fsm_flag', required = False, action='store_true', 
-                        help='pass flag for fsm dp run')
-    parser.add_argument('-ers', '--ers_flag', dest='ers_flag', required = False, action='store_true', 
-                        help='pass flag for ers dp run')
     parser.add_argument('-clr', '--clear_flag', dest='clear_flag', required = False, action='store_true', 
                         help='Clear Metadata')
     parser.add_argument('-rid', '--run_id', dest='run_id', required = False, default=None, 
                         help='unique run id')
-    parser.add_argument('-cip-header', '--cip-header', dest = 'cip_header', type=str, required= False, default="", help='The dictionary to read')
 
 
     subparser = parser.add_subparsers(dest='proc_name', required = True)
@@ -110,26 +105,17 @@ def get_arguments():
 
 
 def init_process():
-    from configs.app_config import get_proj_configs, get_function_call, change_status, exception_marker, assign_run_metadata, get_init_list, get_node_list, get_partition_path, set_client_functions, get_config_filename, fix_dqrules, component_marker
+    from configs.app_config import get_proj_configs, get_function_call, change_status, assign_run_metadata, get_init_list, get_node_list, get_partition_path, set_client_functions, get_config_filename, fix_dqrules
     from configs import validateconfig as config
     from common_utils.batch_process_utils import check_truncate_load, get_old_target_counts, write_reconcile_count, archive_target, clear_spark_metadata, count_validation_check
     import ast
     try:
         args = get_arguments()
 
-        cip_dict = {} if args.cip_header == "" else ast.literal_eval(args.cip_header)
-
-        if cip_dict.get("journeyinstanceid","") != "":
-            run_id = cip_dict.get("journeyinstanceid","")
-        elif args.run_id == None :
+        if args.run_id == None :
             run_id = str(uuid4())
         else:
             run_id = args.run_id
-
-        if cip_dict.get("eventmapinstanceid","") != "":
-            event_id = cip_dict.get("eventmapinstanceid","")
-        else:
-            event_id = ""
 
         project_config = get_proj_configs(args.app_config, args.env)
         client, processing_engine, get_content, get_list, clear_files, move_files, write_file, copy_files = set_client_functions(project_config)
@@ -138,8 +124,6 @@ def init_process():
         reconcile_path = project_config.get("reconcile_path","")
         validate_path = project_config.get("validate_path","")
         log_path = project_config.get("log_path","")
-        fsm_flag = args.fsm_flag
-        ers_flag = args.ers_flag
         clear_metadata = args.clear_flag
         old_target_count = 0
 
@@ -171,8 +155,6 @@ def init_process():
 
             print(last_bookmarked_step)
 
-            component_marker(fsm_flag, run_id, init_event_id, info_msg , "fsm", project_config, cip_dict)
-
             for node in nodes_list:
 
                 if last_bookmarked_step != [] and node[0] < last_bookmarked_step[0] :
@@ -196,7 +178,6 @@ def init_process():
                 spark.conf.set("spark.sql.streaming.schemaInference","true")
                 proc_config = fix_dqrules(proc_config)
                 
-                component_marker(fsm_flag, run_id, conf_table, info_msg , "fsm", project_config, cip_dict)
 
                 check_truncate_load(proc_config, project_config)
                 
@@ -206,7 +187,7 @@ def init_process():
 
                 function_call = get_function_call(proc_config, node, node_processes)
 
-                proc_config = assign_run_metadata(proc_config, process_nm, args.app_config, args.env, fsm_flag, ers_flag, run_id, event_id, cip_dict)
+                proc_config = assign_run_metadata(proc_config, process_nm, args.app_config, args.env, run_id)
                 
                 ## Count validation
                 old_target_count = get_old_target_counts(proc_config, reconcile_path)
@@ -217,13 +198,16 @@ def init_process():
                 ############# Calling Layer function ##################
                 function_call(proc_config['configuration'])
                 
-                write_reconcile_count(proc_config, reconcile_path, old_target_count)
-                write_validate_count(proc_config, validate_path)
+                
 
                 ## Count validation
                 if proc_config['configuration']['target'].get('validation',"false").lower() != 'false':
+                    write_reconcile_count(proc_config, reconcile_path, old_target_count)
+                    write_validate_count(proc_config, validate_path)
                     proc_config['configuration']['target']['reconcilePath'] = proc_config['configuration']['target'].get('reconcilePath',"") if proc_config['configuration']['target'].get('reconcilePath',"") != "" else reconcile_path
                     count_validation_check(proc_config['configuration'])
+                    # print validation counts against all target tables  
+                    get_validate_summary(validate_path, run_id)
                 
                 archive_target(proc_config, project_config)
 
@@ -231,13 +215,12 @@ def init_process():
                     clear_spark_metadata(proc_config, project_config)
 
                 info_msg = change_status(info_msg, 'COMPLETED')
-                component_marker(fsm_flag, run_id, conf_table, info_msg, "fsm", project_config, cip_dict)
 
-            ## print validation counts against all target tables  
-            get_validate_summary(validate_path, run_id)
+                print(info_msg)
+           
             
             info_msg = [f'{init_process_nm.upper()} {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} - COMPLETED']
-            component_marker(fsm_flag, run_id, init_event_id, info_msg , "fsm", project_config, cip_dict)
+            print(info_msg)
 
         if last_bookmarked_step != []:
             clear_files(client, retrace_flag_file, recursive = False)
@@ -247,7 +230,7 @@ def init_process():
         print(err_msg)
         info_msg = change_status(info_msg,'FAILED')
         write_file(client, retrace_flag_file, node, True)
-        exception_marker(fsm_flag, ers_flag, run_id, event_id,  info_msg, err_msg, project_config, cip_dict)
+        print(info_msg)
         traceback.print_exc()
         sys.exit(1)
 

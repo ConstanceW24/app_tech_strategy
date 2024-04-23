@@ -105,13 +105,15 @@ def sort_and_rank(src_df, arg_input=[],scd_type = "scd2"):
     try:
         tgt_df = spark.sql(f"SELECT {','.join(key_field)}, DATA_HASH as TGT_DATA_HASH FROM {target_tbl} WHERE cast({end_date_field_nm} as date) = cast('{default_tmsp}' as date)")
         src_df = src_df.join(tgt_df, key_field, "left").where("data_hash <> coalesce(tgt_data_hash,'') and least_rnum = 1").select(src_df['*'])
+        print(src_df.columns)
+        
     except Exception as e:
         print(str(e))
         pass
     
     src_df = src_df.withColumn(end_date_field_nm, lead(col(eff_date_field_nm),1,default_tmsp).over(windowspec).cast('timestamp'))\
                 .withColumn('ACTIVE_IND', when(col(end_date_field_nm)==lit(default_tmsp).cast('timestamp'),lit('Y')).otherwise(lit('N')))
-                
+
     
     return src_df
 
@@ -121,14 +123,16 @@ def get_target_update(src_name, arg_input, scd_type):
     key_field      = arg_input[0]['key_columns']
     order_field      = arg_input[0].get('order_columns',["created_timestamp","updated_timestamp"])
     compare_field      = arg_input[0].get('compare_columns',[])
+    exclude_field      = arg_input[0].get('exclude_columns',[])
     eff_date_field_map = arg_input[0].get('start_tmsp_column_map','created_timestamp')
     eff_date_field_nm = arg_input[0].get('start_tmsp_column_nm','start_eff_timestamp')
     end_date_field_nm = arg_input[0].get('end_tmsp_column_nm','end_eff_timestamp')
+
     default_tmsp = arg_input[0].get('default_end_tmsp','9999-12-31')
     target_tbl = arg_input[0]['target_name']
 
     src_df = spark.table(src_name)
-    data_columns = compare_field if compare_field else [cl for cl in src_df.columns if cl not in key_field + order_field + [eff_date_field_map]]
+    data_columns = compare_field if compare_field else [cl for cl in src_df.columns if cl not in key_field + order_field + exclude_field + [eff_date_field_map]]
     print(f"comparing - {data_columns}")
 
     if scd_type.lower() == 'scd2':
@@ -288,18 +292,19 @@ def scd2_transformation(src_df, arg_input=[]):
     """
     target_tbl = arg_input[0]['target_name']
     src_df = sort_and_rank(src_df, arg_input)
-    stage_name = f'{target_tbl}_stage'
+    stage_name = f'{target_tbl}_stage'.split('.')[-1]
     src_df.createOrReplaceTempView(stage_name)
     merge_sql = get_target_update(stage_name, arg_input, scd_type='scd2')
+    print(merge_sql)
     try:
         tgt_df = spark.sql(f"select * from {target_tbl}")
-        print(merge_sql)
         spark.sql(merge_sql)
         src_df = src_df.select(*tgt_df.columns)
     except:
         pass
 
     src_df = src_df.drop('least_rnum')
+
     return src_df
 
 
@@ -324,7 +329,7 @@ def scd1_transformation(src_df, arg_input=[]):
     src_df = sort_and_rank(src_df, arg_input, "scd1")
 
     src_df = src_df.where("active_ind = 'Y'").drop("active_ind")
-    stage_name = f'{target_tbl}_stage'
+    stage_name = f'{target_tbl}_stage'.split('.')[-1]
     src_df.createOrReplaceTempView(stage_name)
     merge_sql = get_target_update(stage_name, arg_input, scd_type='scd1')
 
@@ -338,3 +343,33 @@ def scd1_transformation(src_df, arg_input=[]):
 
     src_df = src_df.drop('least_rnum')
     return src_df
+
+
+def allow_new_inserts(src_df, arg_input=[]):
+    from pyspark.sql.functions import col, when
+    table_name = arg_input[0]['table_name']
+    tbl_nm = table_name.split(".")[-1]
+    print("target_table:", tbl_nm)
+    col_maps = arg_input[0]['column_maps']
+    combined_cond = None
+    first_tgt = ""
+    for src_col, tgt_col in col_maps.items():
+        cond = ( col(f"src.{src_col}") == col(f"tgt.{tgt_col}") )
+        if combined_cond != None:
+            combined_cond = combined_cond & cond
+        else:
+            first_tgt = tgt_col
+            combined_cond = combined_cond
+
+    try:
+        target_df = spark.table(table_name)
+        joined_df = src_df.alias("src").join(target_df.alias("tgt"), combined_cond, "left_anti")
+        result_df = joined_df.select("src.*")
+    except Exception as e:
+        result_df = src_df 
+
+
+    
+
+    return result_df
+

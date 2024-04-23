@@ -1,4 +1,4 @@
-from common_utils import utils as utils
+from common_utils import utils as utils, read_write_utils
 from ingress_utils import blob_read, confluent_kafka_read, jdbc_read, s3_read, msk_read, eventhub_read, cobol_read
 from egress_utils import blob_write, jdbc_write, s3_write, api_write, delta_write, kafka_write, eventhub_write, msk_write
 from egress_utils import snowflake_write as sf_write, redshift_write
@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types  import *
 from pyspark.sql.functions import (array, coalesce, col, count, current_date,
                                    datediff, explode, expr, length, lit, lower,
-                                   regexp_replace, split, substring, sum,
+                                   regexp_replace, split, substring, sum, expr,
                                    to_date, to_timestamp, trim, udf, when,
                                    from_json,input_file_name)
 from common_utils.batch_writer import batch_writer
@@ -80,7 +80,7 @@ def source_df_read(ingress_config, process_name):
     ## Add additional fields
     if ingress_config.get("addColumns",None) != None:
         for cols in ingress_config["addColumns"].keys():
-            raw_df = raw_df.withColumn(cols.upper(), eval(ingress_config["addColumns"][cols]))
+            raw_df = raw_df.withColumn(cols.upper(), expr(ingress_config["addColumns"][cols]))
 
     reconcile_write(process_name, raw_df, ingress_config)
 
@@ -173,30 +173,93 @@ def write_summary(batchdf, ingress_config):
 
 def generate_summary(batchdf, ingress_config):
     print("Generating summary df")
-    reject_columns = get_reject_columns(ingress_config)
+    reject_columns, _ = get_reject_columns(ingress_config)
     select_list = get_summary_select_list(ingress_config)
-    batchdf.createOrReplaceTempView('rejected_data')
+    table_name = 'rejected_data_' + (ingress_config['run_id']).replace('-','_')[:50]
+    batchdf.createOrReplaceTempView(table_name)
     df = spark.sql(f"""
         select 
         Table,
         RunId, 
         AppId,
         Runtime, 
-        stack({len(reject_columns)}, {','.join(["'"+r+"'," + r for r in reject_columns])}) as (ValidationName, RejectedCount) 
+        stack({len(reject_columns)}, {','.join(["'"+name+"'," + r for name, r in reject_columns])}) as (ValidationName, RejectedCount) 
         from (
             select 
-            '{ingress_config["tableName"]}' as `Table`, 
-            '{ingress_config['payload_id'][0]}' as `RunId`, 
-            '{ingress_config["appId"]}' as `AppId`, 
-            '{ingress_config["runTime"]}' as `Runtime`, 
+            '{ingress_config["table_name"]}' as `Table`, 
+            '{ingress_config['run_id']}' as `RunId`, 
+            '{ingress_config["batch_id"]}' as `AppId`, 
+            '{ingress_config["start_time"]}' as `Runtime`, 
             {select_list} 
-            from rejected_data )a
+            from {table_name} )a
     """)
     return df
 
+def log_dq_fail(batchdf, ingress_config, exception_method = "Log"):
+    summary_df = generate_logsummary(batchdf, ingress_config, exception_method)
+    if summary_df != None:
+        batch_writer(summary_df,ingress_config, spark)
+
+
+def generate_logsummary(batchdf, ingress_config, exception_method = "Log"):
+    print("Generating log df")
+    reject_colums, log_columns = get_reject_columns(ingress_config)
+    select_dict = ingress_config['target']['options']
+
+    if exception_method.lower() == 'log' :
+        cols_list = log_columns
+    else:
+        cols_list = reject_colums
+
+
+    if not cols_list :
+        return None
+
+    tgt_cols = ['Table','RunId', 'BatchId', 'Runtime', 'ExceptionHandling' ]
+    src_cols = [ f"""'{ingress_config["table_name"]}' as `Table`""", 
+                f"""'{ingress_config['run_id']}' as `RunId`""", 
+                f"""'{ingress_config["batch_id"]}' as `BatchId`""", 
+                f"""'{ingress_config["start_time"]}' as `Runtime`""",
+                f"'{exception_method}' as `ExceptionHandling`"
+                ]
+    
+
+    for key in select_dict.keys():
+        if 'mapcols' in key.lower():
+            for target_col, source_col in ingress_config['target']['options']['mapCols'].items():
+                tgt_cols = tgt_cols + [target_col]
+                src_cols = src_cols + [f"{source_col} as {target_col}"]
+
+    src_cols = src_cols + [r for name, r in cols_list]
+
+    final_tgt_cols = ",".join(tgt_cols)
+    final_src_cols = ",".join(src_cols)
+
+    table_name = f'{exception_method}_data_' + ingress_config['run_id'].replace('-','_')[:50]
+    batchdf.createOrReplaceTempView(table_name)
+    qry = f"""
+    SELECT * FROM (
+        SELECT
+        {final_tgt_cols},
+        stack({len(cols_list)}, {','.join(["'"+name.upper()+"'," + r for name, r in cols_list])}) as (ValidationName, Status) 
+        FROM (
+            select 
+            {final_src_cols} 
+            from {table_name}
+            --group by {",".join([str(i) for i in range(1,len(src_cols))])}
+            ) a
+            ) WHERE STATUS = 'Fail'
+    """
+
+    print(qry)
+    df = spark.sql(qry)
+    return df
+
+
+
 def get_summary_select_list(ingress_config):
     reject_columns = get_reject_columns(ingress_config)
-    select_list = ','.join([f"SUM(CASE WHEN {x} = 'Fail' THEN 1 ELSE 0 END) as {x}" for x in reject_columns])
+    select_list = ','.join([f"SUM(CASE WHEN {x} = 'Fail' THEN 1 ELSE 0 END) as {x}" for name, x in reject_columns])
     return select_list
 
 def format_path(path):
@@ -206,60 +269,99 @@ def format_path(path):
         return path
 
 
-def generate_reject_configs(ingress_config):
-    curr_timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    reject_config = deepcopy(ingress_config)
-    reject_config['target']['options'] = reject_config['target']['rejectOptions']
-    if reject_config['target']['rejectOptions'].get('format','') == '':
-        reject_options = {"header" : "true", "format" : "csv"}
-    else:
-        reject_options = {}
-    reject_config['target']['options'] = {**reject_config['target']['options'], **reject_options}
-    reject_config['target']['noofpartition'] = 1
 
-    reject_data_config = deepcopy(reject_config)
-    reject_data_config['target']['options']['path'] = f"{format_path(reject_data_config['target']['options']['path'])}data/appid={ingress_config['appId']}/{curr_timestamp}"
-    reject_data_config['target']['options']['checkpointLocation'] = f"{reject_data_config['target']['options']['checkpointLocation']}/data/{curr_timestamp}"
-    print("reject_data_path: ",  reject_data_config['target']['options'])
-
-    reject_summary_config = deepcopy(reject_config)
+def get_log_config(ingress_config, key):
+    reject_options = {}
+    reject_summary_config = {}
     reject_options = {"header" : "true", "format" : "csv"}
-    reject_summary_config['target']['options'] = {**reject_config['target']['options'], **reject_options}
-    reject_summary_config['target']['options']['path'] = f"{dirname(dirname(reject_summary_config['target']['options']['path']))}/summary/appid={ingress_config['appId']}/{curr_timestamp}"
-    print("reject_summary_path: ",  reject_summary_config['target']['options'])
-    reject_summary_config['target']['options']['checkpointLocation'] = f"{reject_summary_config['target']['options']['checkpointLocation']}/summary/{curr_timestamp}"
 
-    return reject_data_config, reject_summary_config
+    if ingress_config['target'].get(key,None) != None :
+        reject_summary_config = deepcopy(ingress_config)
+        reject_summary_config['target']['options'] = reject_summary_config['target'][key]
+        
+        if reject_summary_config['target'][key].get('format','') == '':
+            reject_options = {"header" : "true", "format" : "csv"}
+        else:
+            reject_options = {}
+
+        reject_summary_config['target']['options'] = {**reject_summary_config['target']['options'], **reject_options}
+        reject_summary_config['target']['noofpartition'] = 1
+    
+    return reject_summary_config
+
+
+def generate_reject_configs(ingress_config):
+
+    try:
+        reject_data_config = get_log_config(ingress_config, 'rejectOptions')
+
+        log_config = get_log_config(ingress_config, 'validationLogOptions')
+
+        reject_summary_config = get_log_config(ingress_config, 'rejectSummaryOptions')
+    except Exception as e:
+        print(e)
+        raise Exception(e)
+
+    return reject_data_config, log_config, reject_summary_config
 
 
 def get_reject_columns(ingress_config):
     reject_columns = []
+    log_columns = []
     for i in ingress_config['rules']:
         if i['exception_handling'].lower() == 'reject':
-            reject_columns.append(i['validation_output_field'])
+            reject_columns.append((f"{i['validation_name']}-{i['field_name']}", i['validation_output_field']))
+        if i['exception_handling'].lower() == 'log':
+            log_columns.append((f"{i['validation_name']}-{i['field_name']}", i['validation_output_field']))
 
-    return reject_columns
+    return reject_columns, log_columns
 
 def get_rejected_records(df,ingress_config):
-    reject_columns = get_reject_columns(ingress_config)
+    reject_columns, log_columns = get_reject_columns(ingress_config)
     print(f"Creating rejected records for columns: {reject_columns}")
 
+    logged_df = None
+    rejected_df = None
+    passed_df = df
+
+    if len(log_columns) > 0:
+        log_exp =' | '.join([f'(col("{x}")!="Pass")' for name, x in log_columns])
+        logged_df = df.filter(eval(log_exp))
+
     if len(reject_columns) > 0:
-        reject_exp =' | '.join([f'(col("{x}")!="Pass")' for x in reject_columns])
+        reject_exp =' | '.join([f'(col("{x}")!="Pass")' for name, x in reject_columns])
         rejected_df = df.filter(eval(reject_exp))
         # rejected_df.createOrReplaceTempView('rejected_data')
         passed_df = df.filter(~(eval(reject_exp)))
+        
+    return passed_df, rejected_df, logged_df
 
-        return passed_df, rejected_df
-    else:
-        return df, None
 
 def get_target_counts(ingress_config):
+    from copy import deepcopy
+    tgt_config = deepcopy(ingress_config)
     try:
-        count = spark.read.format(ingress_config["target"]["options"]["format"]).load(ingress_config["target"]["options"]["path"]).count()
-        return count
+        df = spark.read
+        read_option = tgt_config["target"]["options"]
+        if read_option.get('mode','') != '' :
+            del read_option['mode']
+        if read_option.get('partitionBy','') != '' :
+            del read_option['partitionBy']
+
+        tgt_config["data"]["inputFile"]["options"] =  tgt_config["target"]["options"]
+
+        if tgt_config["target"]["options"].get("path", "") != "":
+            tgt_config["source"]["driver"]["path"]     =  tgt_config["target"]["options"].get("path")
+        
+        if tgt_config["target"]["options"].get("table", "") != "":
+            tgt_config["source"]["driver"]["table"]     =  tgt_config["target"]["options"].get("table")
+
+        df = read_write_utils.apply_to_dataframe(df, read_option)
+        df = read_write_utils.delta_format_input(tgt_config, df)
+        return df.count()
+    
     except Exception as e:
-        if 'Path does not exist' in str(e) or 'FileNotFoundException' in str(e):
+        if 'Path does not exist' in str(e) or 'FileNotFoundException' in str(e) or 'TABLE_OR_VIEW_NOT_FOUND' in str(e):
             return 0
         else:
             print("Exception in get_target_counts: ", str(e))
@@ -296,11 +398,11 @@ def get_old_target_counts(proc_config, reconcile_path):
     
 def write_reconcile_count(proc_config, reconcile_path, old_target_count):
     if reconcile_path is not None and reconcile_path != "" :
-        table = proc_config['configuration']['tableName']
-        runtime = proc_config['configuration']['runTime']
-        run_id = proc_config['configuration']['payload_id'][0]
-        app_id = proc_config['configuration']['appId']
-        stage = proc_config['configuration']['nodeProcess']
+        table = proc_config['configuration']['table_name']
+        runtime = datetime.now()
+        run_id = proc_config['configuration']['task_id']
+        app_id = proc_config['configuration']['batch_id']
+        stage = proc_config['configuration']['data_layer']
         new_target_count = get_target_counts(proc_config['configuration'])
         print("new_target_count: ", str(new_target_count))
         reconcile = [(run_id, app_id, runtime, table, stage, 0, new_target_count - old_target_count, 0)]
@@ -367,10 +469,11 @@ def generate_validate_counts(proc_config):
 
 def write_validate_count(proc_config, validate_path):
     if validate_path is not None and validate_path != "" :
-        table = proc_config['configuration']['tableName']
-        runtime = proc_config['configuration']['runTime']
-        run_id = proc_config['configuration']['payload_id'][0]
-        app_id = proc_config['configuration']['appId']
+        table = proc_config['configuration']['table_name']
+        runtime = datetime.now()
+        run_id = proc_config['configuration']['task_id']
+        app_id = proc_config['configuration']['batch_id']
+        stage = proc_config['configuration']['data_layer']
         validate_type = "TargetTableValidateCount"
         raw_count, trans_count, cleansed_count, final_count = generate_validate_counts(proc_config) 
         reconcile = [(run_id, app_id, runtime, table, validate_type, raw_count, trans_count, cleansed_count, final_count)]
@@ -391,7 +494,6 @@ def get_validate_summary(validate_path, run_id):
              sum(col("FinalCount").cast("int")).alias("final_count")
              )
         
-        df.show()
 
 
 

@@ -28,9 +28,12 @@ def blob_data_write(stream_df, egress_config, process_name = "Ingestion"):
         # Apply no of partition
         stream_df =  read_write_utils.get_partition_df(egress_config, stream_df)
 
+        # pick columns
+        stream_df =  read_write_utils.select_columns(egress_config, stream_df)
+
         # Write 
         stream_df =  read_write_utils.write_process_check(egress_config, stream_df)
-        
+
         # Apply Options
         stream_df = read_write_utils.apply_write_options(egress_config, stream_df)
 

@@ -4,74 +4,15 @@ spark= SparkSession.builder.getOrCreate()
 from uuid import uuid4
 
 project_config = {
-"default" : {
-"environment" :"<<env>>",
+"default" :{
+"dev" : {
+"environment" :"dev",
 "platform" : "azure",                              # aws , gcp
 "processing_engine" : "databricks",                # emr, databricks
-"reconcile_path":"/mnt/ucg-usecase/validation/",   # Path required to enable data validation
-"validate_path":"/mnt/ucg-usecase/validation_tgtcnt/",
-"log_path" : "/mnt/ucg-usecase/logs/",
-"cip_component": {
-                "fsm": {
-                    "protocol": "SASL_SSL",
-                    "mechanism": "PLAIN",
-                    "data": {
-                        "payload": {
-                            "businessObjectName": "CIP DATA PIPELINE",
-                            "state": "",
-                            "businessObjectJson": "",
-                            "sourcePayloadSchemaName": "",
-                            "sourcePayloadSchemaVersion": "",
-                            "sourcePayload": ""
-                        },
-                        "securityContext": {
-                            "dataEncryption": "",
-                            "dataPolicy": "",
-                            "dataMasking": ""
-                        }
-                    },         
-                    "secret-scope" : "kv-cip-<<env>>-eastus",
-                    "secret-param-topic" : "cip-dp-fsm-topic",  # cip-fsm-ingress
-                    "secret-param-subject" : "cip-dp-fsm-schema-subject",
-                    "secret-param-bootstrap-server" : "cip-dp-fsm-eventhub-bootstrap-server",
-                    "secret-param-username" : "cip-dp-fsm-eventhub-sasl-usrname",
-                    "secret-param-password" : "cip-dp-fsm-eventhub-sasl-password",
-                    "secret-param-schema-registry-url" : "cip-dp-schema-registry-url", # http://20.102.127.9:8081
-                    "secret-param-schema-registry-username": "cip-dp-schema-registry-username", # cip-confluent-schema-un
-                    "secret-param-schema-registry-password": "cip-dp-schema-registry-password", # cip-confluent-schema-pwd
-
-                },
-                "ers": {
-                    "service_id": "CIP-DATAPIPELINE-SERVICE",
-                    "protocol": "SASL_SSL",
-                    "mechanism": "PLAIN",
-                    "data": {
-                        "payload": {
-                            "ersExceptionId": "",
-                            "sourcePayload": "",
-                            "actions": [],
-                            "errorCode": "",
-                            "ersException":  "",
-                            "compensateEventMapId": ""
-                        },
-                        "securityContext": {
-                            "dataEncryption": "",
-                            "dataPolicy": "",
-                            "dataMasking": ""
-                        }
-                    },
-                    "secret-scope" : "kv-cip-<<env>>-eastus",
-                    "secret-param-topic" : "cip-dp-ers-topic",
-                    "secret-param-subject" : "cip-dp-ers-schema-subject",
-                    "secret-param-bootstrap-server" : "cip-dp-ers-eventhub-bootstrap-server",
-                    "secret-param-username" : "cip-dp-ers-eventhub-sasl-usrname",
-                    "secret-param-password" : "cip-dp-ers-eventhub-sasl-password",
-                    "secret-param-schema-registry-url" : "cip-dp-ers-schema-registry-url",
-                    "secret-param-service-registry-url" : "cip-dp-ers-service-registry-url",
-
-                }
-            }
-    }
+"reconcile_path":"/mnt/mkl-dds-fsys-edl-dev-001/validation/",   # Path required to enable data validation
+"log_path" : "/mnt/mkl-dds-fsys-edl-dev-001/logs/",
+}
+}
 }
 
 
@@ -102,26 +43,6 @@ def get_function_call(proc_config, node, node_processes):
         function_call =  node_processes[node[1]][2]
     return function_call
 
-
-def component_marker(flag,  fsm_serviceInstanceId, event_id,  info_msg, component, project_config, header_dict):
-    if flag:
-        try:
-            from ccs_publisher import ccs_publisher as ccs_dp
-            ccs_dp.dp_ccs_publisher( fsm_serviceInstanceId, event_id, info_msg, component, project_config, header_dict)
-        except Exception as e:
-            import traceback
-            err_msg = f"Encountered exception during Dp Tracker invocation Process - {e}"
-            print(err_msg)
-            ccs_dp.dp_ccs_publisher(fsm_serviceInstanceId, event_id,('DP TRACKER FAILED'),'fsm', project_config, header_dict)
-            ccs_dp.dp_ccs_publisher(fsm_serviceInstanceId, event_id,('DP TRACKER EXECUTION FAILED',err_msg),'ers', project_config, header_dict)
-            traceback.print_exc()
-    else:
-        print(info_msg)
-
-
-def exception_marker(fsm_flag, ers_flag, fsm_serviceInstanceId, event_id,  info_msg, err_msg, project_config, header_dict):
-    component_marker(fsm_flag, fsm_serviceInstanceId, event_id, info_msg, "fsm", project_config, header_dict)
-    component_marker(ers_flag, fsm_serviceInstanceId, event_id, info_msg.append(err_msg), "ers", project_config, header_dict)
 
 
 def change_status(info_msg, status):
@@ -168,7 +89,7 @@ def fix_dqrules(proc_config):
     return proc_config
 
 
-def assign_run_metadata(proc_config, node_processes, app_conf, env, fsm_flag, ers_flag, runinstanceid, eventid, cip_dict):
+def assign_run_metadata(proc_config, node_processes, app_conf, env,  runinstanceid):
     from uuid import uuid4
     table = '_'.join(proc_config['configId'].split('_')[:-1])
     app_id = uuid4().hex
@@ -179,10 +100,6 @@ def assign_run_metadata(proc_config, node_processes, app_conf, env, fsm_flag, er
     proc_config['configuration']['app_conf'] = app_conf
     proc_config['configuration']['env'] = env
     proc_config['configuration']['nodeProcess'] = node_processes
-    proc_config['configuration']['fsm_flag'] = fsm_flag
-    proc_config['configuration']['ers_flag'] = ers_flag
-    proc_config['configuration']['payload_id'] = [runinstanceid, eventid]
-    proc_config['configuration']['cip_header'] = cip_dict
 
     return proc_config
 

@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 setup(
   name="industryclouddatapipeline",
-  version="0.0.2",
+  version="0.2.2",
   author="Data Pipeline Team",
   author_email="datapipeline@pwc.com",
   description="Spark streaming data pipeline",
@@ -25,8 +25,10 @@ setup(
     file_monitor=misc.file_monitor:file_watcher_process
     file_movement=misc.file_movement:util_process
     direct_ingestion=orchestrator_utils.dynamic_ingestion:init_process
-    data_init=orchestrator_utils.data_initialization:initilization_process
-    data_init_cda=orchestrator_utils.data_init_cda:initilization_process
     data_init_tsk=orchestrator_utils.task_init:initilization_process
+    start_batch=batch_audit.appl_audit_utils:insert_batch
+    update_batch=batch_audit.appl_audit_utils:update_batch
+    deploy_batch=batch_audit.deploy_audit_tables:deploy_tables
+    data_init_load=orchestrator_utils.dataflow_submit:init_process
 """
 )
