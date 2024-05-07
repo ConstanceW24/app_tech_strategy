@@ -30,11 +30,11 @@ def data_quality_check(df,ingress_config):
     source_file_name    = ingress_config["data"]["inputFile"]["fileName"].replace("/","")
     process_name        = f"DataQuality-{source_file_name}"
 
-    if ingress_config['target'].get('rejectOptions', None) == None and \
-        ingress_config['target'].get('validationLogOptions',None) == None:
+    if ingress_config['target'].get('rejectOptions', None) != None :
         for i in ingress_config['rules']:
-            i['reject_handling'] = 'false'
+            i['reject_handling'] = 'true'
 
+    print(ingress_config['rules'])
     for idx,i in enumerate(ingress_config['rules']):
         print(idx)
         print(i)   #Iterating the rules from Data Quality Config
@@ -53,8 +53,9 @@ def data_quality_check(df,ingress_config):
             if reject_data_config != {}:
                 batch.batch_writer(rejected_df, reject_data_config, spark)
 
-            print("Generating Rejection Summary for validation failed records")
+            
             if log_config != {}:
+                print("Generating Rejection Summary for validation failed records")
                 batch.log_dq_fail(rejected_df, log_config, 'Reject')
     
         if logged_df is not None and log_config != {}:

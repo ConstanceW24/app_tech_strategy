@@ -34,6 +34,7 @@ def get_arguments():
     parser.add_argument('-db','--schema', dest='schema', required = False, default='edw_shared', help='pass schema for dp run')
     parser.add_argument('-tbl','--table', dest='table', required = False, default = None , help='pass schema for dp run')
     parser.add_argument('-sq','--sequence', dest='sequence', required = False, default = None , help='pass sequence for dp run')
+    parser.add_argument('-ly','--layer', dest='layer', required = False, default = None , help='pass sequence for dp run')
     parser.add_argument('-e', '--environment', dest='env', required = True, default="dev", help='application environment')
     args = parser.parse_args()
 
@@ -55,9 +56,11 @@ def init_process():
         validate_path = project_config.get("validate_path","")
         log_path = project_config.get("log_path","")
         
-        task_df = appl_audit_utils.get_task_details(appl_short_name = args.appl_short_name , source = args.source, schema = args.schema, table_name = args.table, load_sequence_nbr = args.sequence)
+        task_df = appl_audit_utils.get_task_details(appl_short_name = args.appl_short_name , source = args.source, schema = args.schema, table_name = args.table, load_sequence_nbr = args.sequence, layer = args.layer)
 
         for rec in task_df.collect():
+
+            task_id = ''
 
             proc_config = appl_audit_utils.get_task_config(rec)
             

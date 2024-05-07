@@ -217,7 +217,6 @@ def target_duplicate_validation(src_df,rule_dict):
     import json
     print("Validating Duplicate Check with Target")
     input_conf = json.loads(rule_dict['validation_input'])
-
     table_name = input_conf['table_name']
     tbl_nm = table_name.split(".")[-1]
     print("target_table:", tbl_nm)
@@ -228,21 +227,26 @@ def target_duplicate_validation(src_df,rule_dict):
 
     combined_cond = None
     first_tgt = ""
+    
     for src_col, tgt_col in col_maps.items():
-        cond = ( col(f"src.{src_col}") == col(f"tgt.{tgt_col}") )
-        if combined_cond != None:
-            combined_cond = combined_cond & cond
-        else:
-            first_tgt = tgt_col
-            combined_cond = combined_cond
+        cond = f'( col("src.{src_col}") == col("tgt.{tgt_col}") )'
 
+        if combined_cond == None:
+            combined_cond = cond
+            first_tgt = tgt_col
+        else:
+            combined_cond = combined_cond + ' & ' + cond
 
     try:
         target_df = spark.table(table_name)
-        joined_df = src_df.alias("src").join(target_df.alias("tgt"), combined_cond, "left")
-        case_condition = when(col(f"tgt.{first_tgt}").isNull(), "Pass").otherwise("Fail").alias(rule_dict['validation_output_field'])
-        result_df = joined_df.select("src.*", case_condition)
+        print(combined_cond)
+        case_condition = when(col(f"tgt.{first_tgt}").isNull(), lit("Pass")).otherwise(lit("Fail"))
+        joined_df = src_df.alias("src").join(target_df.alias("tgt"), eval(combined_cond), "left").withColumn(rule_dict['validation_output_field'],case_condition)
+
+        result_df = joined_df.select("src.*", rule_dict['validation_output_field']) 
+        
     except Exception as e:
+        print(e)
         result_df = src_df.withColumn(rule_dict['validation_output_field'],lit('Pass')) 
     
     res_df=exceptionhandling(result_df, rule_dict)  

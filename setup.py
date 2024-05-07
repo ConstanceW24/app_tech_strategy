@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 setup(
   name="industryclouddatapipeline",
-  version="0.2.2",
+  version="0.1.1",
   author="Data Pipeline Team",
   author_email="datapipeline@pwc.com",
   description="Spark streaming data pipeline",

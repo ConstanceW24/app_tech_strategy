@@ -43,17 +43,20 @@ def update_task_status(task_id, status, schema = 'default', message = 'error'):
  
 def insert_task_history(appl_short_name , source, schema = 'default'):
 
-    qry = f"""INSERT INTO {schema}.task_history (task_id, batch_id, table_load_name, load_sequence_nbr, data_layer, task_start_timestamp_utc, extract_start_timestamp_utc, extract_end_timestamp_utc, task_status)
+    qry = f"""INSERT INTO {schema}.task_history (task_id, batch_id, table_load_name, etl_layer, load_sequence_nbr, data_layer, task_start_timestamp_utc, extract_start_timestamp_utc, 
+                    extract_end_timestamp_utc, task_status)
                   WITH task_max_start_batch as
                     (SELECT 
                     table_load_name,
                     load_sequence_nbr,
                     data_layer,
-                    max(task_end_timestamp_utc) +  interval '1 microsecond'  extract_start_timestamp
+                    max(extract_end_timestamp_utc) +  interval '1 millisecond'  extract_start_timestamp
                     FROM
                     {schema}.task_history
                     GROUP BY 1,2,3)
-                  SELECT uuid(), batch.batch_id, task_ref.table_load_name, task_ref.load_sequence_nbr, task_ref.data_layer, current_timestamp(), coalesce(task_max.extract_start_timestamp, cast('1900-01-01' as timestamp)), date_trunc('minute', current_timestamp - interval '3 minute')- interval '1 microsecond' extract_end_timestamp,'SCHEDULED'
+                  SELECT uuid(), batch.batch_id, task_ref.table_load_name, task_ref.etl_layer, task_ref.load_sequence_nbr, task_ref.data_layer, current_timestamp(), 
+                  coalesce(task_max.extract_start_timestamp, cast('1900-01-01' as timestamp)), 
+                  date_trunc('minute', current_timestamp - interval '10 minute')- interval '1 millisecond' extract_end_timestamp,'SCHEDULED'
                   FROM {schema}.batch_history as batch 
                   JOIN {schema}.application_reference app_ref
                   ON (upper(batch.application_short_name) = upper(app_ref.application_short_name)  AND upper(batch.source_category) = upper(app_ref.source_category))
@@ -63,7 +66,8 @@ def insert_task_history(appl_short_name , source, schema = 'default'):
                   ON (task_ref.table_load_name = task_max.table_load_name and task_max.load_sequence_nbr = task_ref.load_sequence_nbr and task_max.data_layer = task_ref.data_layer  )
                   WHERE upper(batch.batch_status) in ( 'IN-PROGRESS' , 'RESTARTED' ) AND upper(batch.application_short_name) = upper('{appl_short_name}') 
                   AND upper(batch.source_category) = upper('{source}')
-                  AND batch.batch_id not in (SELECT batch_id FROM {schema}.task_history )"""
+                  AND batch.batch_id not in (SELECT batch_id FROM {schema}.task_history )
+                  AND coalesce(task_max.extract_start_timestamp, cast('1900-01-01' as timestamp)) < date_trunc('minute', current_timestamp - interval '10 minute')- interval '1 millisecond'"""
     
     #print(qry)
     spark.sql(qry)
@@ -89,7 +93,7 @@ def get_batch_status(batch_id, schema = 'default'):
     return df.take(1)[0].batch_status
  
 def get_max_batch_id(appl_short_name , source, status = None, schema = 'default'):
-    qry = f"SELECT COALESCE(MAX(batch_id), -1) as batch_id FROM {schema}.batch_history WHERE upper(application_short_name) = upper('{appl_short_name}') AND upper(source_category) =upper('{source}')"
+    qry = f"SELECT COALESCE(MAX(batch_id), -1) as batch_id FROM {schema}.batch_history WHERE upper(application_short_name) = upper('{appl_short_name}') AND upper(source_category) = upper('{source}')"
     if status :
         qry = qry + f" AND upper(batch_status) = upper('{status}') "
     df = spark.sql(qry)
@@ -158,16 +162,16 @@ def insert_batch_history(appl_short_name , source, schema = 'default'):
     return batch_id
  
 
-def get_task_details(appl_short_name , source, schema = 'default', table_name = None, load_sequence_nbr = None):
+def get_task_details(appl_short_name , source, schema = 'default', table_name = None, load_sequence_nbr = None, layer = None):
 
     qry = f"""
-    with trans_rules as (select app_id,  table_load_name, load_sequence_nbr, collect_list(to_json(struct(rule_sequence_nbr as rule_id, rule_parser, rule_override, 
+    with trans_rules as (select app_id,  table_load_name, etl_layer, load_sequence_nbr, collect_list(to_json(struct(rule_sequence_nbr as rule_id, rule_parser, rule_override, 
         coalesce(transformation_name,'') as Transformation_name , coalesce(transformation_input,'[]') as Transformation_input, 
         coalesce(transformation_output,'[]') as Transformation_output))) as trans_rule  
         from {schema}.application_transformation_reference trans
         where  trans.active_status = 'Y'
-        group by app_id,  table_load_name, load_sequence_nbr ),
-    dq_rules as (select app_id,  table_load_name, load_sequence_nbr, collect_list(to_json(struct(coalesce(rule_sequence_nbr,'') as rule_id, 
+        group by app_id,  table_load_name, etl_layer,  load_sequence_nbr ),
+    dq_rules as (select app_id,  table_load_name, etl_layer, load_sequence_nbr, collect_list(to_json(struct(coalesce(rule_sequence_nbr,'') as rule_id, 
         coalesce(data_field,'') as field_name, coalesce(rule_parser,'') rule_parser, 
         coalesce(attribute_value,'') default_value, coalesce(rule_override,'') rule_override, 
         coalesce(validation_name,'') validation_name, coalesce(validation_input,'') validation_input, 
@@ -175,8 +179,8 @@ def get_task_details(appl_short_name , source, schema = 'default', table_name = 
         coalesce(exception_handling,'Ignore') exception_handling)))   as dq_rules
         from {schema}.application_quality_reference quality
         where quality.active_status = 'Y'
-        group by app_id,  table_load_name, load_sequence_nbr )  
-    select  hist.batch_id, hist.task_id, hist.Table_load_name, hist.load_sequence_nbr, ref.data_layer, 
+        group by app_id,  table_load_name, etl_layer,  load_sequence_nbr )  
+    select  hist.batch_id, hist.task_id, hist.Table_load_name, hist.load_sequence_nbr, ref.etl_layer, ref.data_layer, 
     ref.source_type, ref.source_format, ref.source_table, ref.source_option,
     ref.target_type, ref.target_format, ref.target_table, ref.target_option,
     coalesce(ref.reject_table, '') reject_table, 
@@ -190,11 +194,11 @@ def get_task_details(appl_short_name , source, schema = 'default', table_name = 
     hist.extract_start_timestamp_utc extract_start_timestamp, hist.extract_end_timestamp_utc extract_end_timestamp
     from 
     {schema}.task_history hist 
-    join {schema}.application_task_reference ref on ( upper(hist.table_load_name) = upper(ref.table_load_name) and hist.load_sequence_nbr = ref.load_sequence_nbr  )
+    join {schema}.application_task_reference ref on ( upper(hist.table_load_name) = upper(ref.table_load_name) and hist.load_sequence_nbr = ref.load_sequence_nbr  and hist.etl_layer = ref.etl_layer )
     join {schema}.application_reference app on (ref.app_id = app.app_id)
     join {schema}.batch_history batch on ( hist.batch_id = batch.batch_id)
-    left join trans_rules trans on (ref.app_id = trans.app_id and upper(ref.table_load_name) = upper(trans.table_load_name)  and ref.load_sequence_nbr = trans.load_sequence_nbr)
-    left join dq_rules on (ref.app_id = dq_rules.app_id and  upper(ref.table_load_name) = upper(dq_rules.table_load_name)  and ref.load_sequence_nbr = dq_rules.load_sequence_nbr)
+    left join trans_rules trans on (ref.app_id = trans.app_id and upper(ref.table_load_name) = upper(trans.table_load_name)  and ref.load_sequence_nbr = trans.load_sequence_nbr and ref.etl_layer = trans.etl_layer)
+    left join dq_rules on (ref.app_id = dq_rules.app_id and  upper(ref.table_load_name) = upper(dq_rules.table_load_name)  and ref.load_sequence_nbr = dq_rules.load_sequence_nbr and ref.etl_layer = dq_rules.etl_layer)
     where upper(batch_status) != 'COMPLETED' and upper(task_status) != 'COMPLETED' 
     and upper(app.application_short_name) = upper('{appl_short_name}') 
     and upper(app.source_category) =  upper('{source}') and ref.active_status = 'Y'
@@ -206,8 +210,10 @@ def get_task_details(appl_short_name , source, schema = 'default', table_name = 
     if load_sequence_nbr :
         qry = qry + f" and ref.load_sequence_nbr = '{load_sequence_nbr}'"
 
+    if layer :
+        qry = qry + f" and upper(ref.etl_layer) = upper('{layer}')"
 
-    qry = qry + " ORDER BY 1,3,4"
+    qry = qry + " ORDER BY 1,5,4"
     df = spark.sql(qry)
 
     return df
@@ -223,13 +229,14 @@ def rule_sort(rule_list):
     t_rules = []
     for rule_set in rule_list:
       new_rules = json.loads(rule_set)
+      print(new_rules)
       if 'Transformation_input' in new_rules.keys():
+        print(new_rules['Transformation_input'])
         new_rules['Transformation_input'] = json.loads(new_rules['Transformation_input'])
       if 'Transformation_output' in new_rules.keys():
+        print(new_rules['Transformation_output'])
         new_rules['Transformation_output'] = json.loads(new_rules['Transformation_output'])
-
       t_rules = t_rules + [new_rules]
-
     trans_rules = sorted(t_rules, key = lambda x: x['rule_id'])
     return trans_rules
 
@@ -294,8 +301,6 @@ def get_task_config(record):
                 "status" : "active",
                 "rules": trans_rules,
                 "dqrules":{"postdtchecks": "true", "rules" : dq_rules},
-                "addColumns" :{'batch_id' : f"{record['batch_id']}",
-                            'load_timestamp' : f"current_timestamp()" },
                 "source": {
                 "driver": {
                     "path": source_option.get('path', ''),
@@ -313,7 +318,6 @@ def get_task_config(record):
                 "rejectSummaryOptions" : target_summary_option,
                 "reconcilationOptions" : target_reconcilation_option,
                 "targetType": record['target_type'],
-                "noofpartition": "4",
                 "targetTrigger": "once"
                 }
             }

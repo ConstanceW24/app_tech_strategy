@@ -59,7 +59,20 @@ def rule_transformation(rulesno,source_file_name,src):
     if(rulesno['Transformation_name'].lower()=="patterndropcolumns_transformation") & (rulesno['rule_parser'].lower()=='pyspark'):
         print(rulesno['Transformation_name'])
         import re
-        src=src.drop(*[cl for cl in src.columns if re.match(rulesno['Transformation_input'][0],cl)])
+        for pattern in rulesno['Transformation_input']:
+            src=src.drop(*[cl for cl in src.columns if re.match(pattern,cl)])
+
+    # Transformation_input should be an array of strings (column names)
+    if(rulesno['Transformation_name'].lower()=="standardcolumnname_transformation") & (rulesno['rule_parser'].lower()=='pyspark'):
+        print(rulesno['Transformation_name'])
+        
+        if 'lower' in rulesno['Transformation_input'][0].lower():
+            src=src.toDF(*[cl.lower() for cl in src.columns])
+        elif 'upper' in rulesno['Transformation_input'][0].lower():
+            src=src.toDF(*[cl.upper() for cl in src.columns])
+        elif 'camel' in rulesno['Transformation_input'][0].lower():
+            src=src.toDF(*[cl.title() for cl in src.columns])       
+        
 
     # Transformation_input should be a string containing the filter condition
     if(rulesno['Transformation_name'].lower()=="filter_transformation") & (rulesno['rule_parser'].lower()=='pyspark'):
@@ -85,6 +98,13 @@ def rule_transformation(rulesno,source_file_name,src):
     if(rulesno['Transformation_name'].lower()=="addcolumn_transformation") & (rulesno['rule_parser'].lower()=='pyspark'):
         print(rulesno['Transformation_name'])
         src=src.withColumn(rulesno['Transformation_output'][0],rulesno['Transformation_input'][0])
+
+    # Transformation_input should be a string containing the constant value
+    if(rulesno['Transformation_name'].lower()=="unpivot_transformation") & (rulesno['rule_parser'].lower()=='pyspark'):
+        print(rulesno['Transformation_name'])
+        src=src.unpivot(rulesno['Transformation_input'][0]['fixed_columns'], 
+                        [ F.col(i).cast("string") for i in rulesno['Transformation_input'][0]['transform_columns']],
+                        *rulesno['Transformation_output'])
 
     # Transformation_input should be a string containing the constant value
     if(rulesno['Transformation_name'].lower()=="renamecolumn_transformation") & (rulesno['rule_parser'].lower()=='pyspark'):

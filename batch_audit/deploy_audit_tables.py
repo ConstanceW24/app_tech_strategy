@@ -26,7 +26,8 @@ def deploy_app_tables(schema = 'default'):
 
     spark.sql(f"""CREATE TABLE {schema}.application_task_reference (  
     app_id bigint,  
-    table_load_name STRING,  
+    table_load_name STRING, 
+    etl_layer STRING, 
     load_sequence_nbr INT,  
     data_layer STRING,  
     source_type STRING,
@@ -56,7 +57,8 @@ def deploy_app_tables(schema = 'default'):
 
     spark.sql(f"""CREATE TABLE {schema}.application_transformation_reference (  
     app_id bigint,    
-    table_load_name STRING,  
+    table_load_name STRING,
+    etl_layer STRING,  
     load_sequence_nbr INT,  
     rule_sequence_nbr int,    
     rule_parser STRING,
@@ -72,7 +74,8 @@ def deploy_app_tables(schema = 'default'):
 
     spark.sql(f"""CREATE TABLE {schema}.application_quality_reference (  
     app_id bigint,    
-    table_load_name STRING,  
+    table_load_name STRING, 
+    etl_layer STRING, 
     load_sequence_nbr INT,  
     rule_sequence_nbr int,    
     rule_parser STRING,
@@ -105,6 +108,7 @@ def deploy_app_tables(schema = 'default'):
     task_id  STRING NOT NULL,  
     batch_id  bigint NOT NULL,
     Table_load_name STRING,  
+    etl_layer STRING,
     load_sequence_nbr INT,  
     data_layer STRING,  
     extract_start_timestamp_utc TIMESTAMP,

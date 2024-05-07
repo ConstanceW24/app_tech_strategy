@@ -369,7 +369,5 @@ def allow_new_inserts(src_df, arg_input=[]):
         result_df = src_df 
 
 
-    
-
     return result_df
 
