@@ -1,0 +1,117 @@
+{
+	"name": "pl_ext_primary_status_csv",
+	"properties": {
+		"activities": [
+			{
+				"name": "dbx_Primary_Status_FileName",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/dbx_Reserve_File_name"
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dbx_copy_Primary_Status_CSV_to_mDo",
+				"description": "",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "sv_Primary_Status_FileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv"
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dbx_Primary_Status_Inc_Log_Updates",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dbx_copy_Primary_Status_CSV_to_mDo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Primary Status SPs/NB_usp_primary_status_Inc_Log_Updates"
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "sv_Primary_Status_FileName",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "dbx_Primary_Status_FileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "var_Reserve_FileName",
+					"value": {
+						"value": "@pipeline().DataFactory",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"var_Reserve_FileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Claims Extract"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-16T13:43:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

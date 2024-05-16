@@ -1,0 +1,23 @@
+{
+	"name": "mna-use2-dev-dds-adf-01",
+	"properties": {
+		"encryption": {
+			"identity": {
+				"userAssignedIdentity": "/subscriptions/bc5d5464-b9cd-48a2-a999-e83e40766e6d/resourceGroups/mna-use2-dev-rg-dds-01/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mna-use2-dev-dds-managedidentity-01"
+			},
+			"keyName": "customer-managed-key",
+			"keyVersion": "82b368417e55441a9040f327a2fda327",
+			"vaultBaseUrl": "https://mna-use2-dev-dds-kv-01.vault.azure.net/"
+		}
+	},
+	"location": "eastus2",
+	"identity": {
+		"type": "UserAssigned",
+		"userAssignedIdentities": {
+			"/subscriptions/bc5d5464-b9cd-48a2-a999-e83e40766e6d/resourcegroups/mna-use2-dev-rg-dds-01/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mna-use2-dev-dds-managedidentity-01": {
+				"clientId": "e9adc021-c716-4965-bb2e-cdb4b3a263e0",
+				"principalId": "8a6b164b-d4d0-4532-8137-96adfc4506a7"
+			}
+		}
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"name": "Tgr_Cyber_Policy_Stage_load",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Month",
+			"interval": 1,
+			"startTime": "2024-04-12T16:11:00Z",
+			"delay": "00:00:00",
+			"maxConcurrency": 10,
+			"retryPolicy": {
+				"intervalInSeconds": 30
+			},
+			"dependsOn": [
+				{
+					"type": "TumblingWindowTriggerDependencyReference",
+					"offset": "0.00:11:00",
+					"referenceTrigger": {
+						"referenceName": "tgr_pl_cyber_policy_master",
+						"type": "TriggerReference"
+					}
+				}
+			]
+		}
+	}
+}
