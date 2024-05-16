@@ -12,32 +12,40 @@ def get_task_complete_status(batch_id, schema = 'default'):
     df = spark.sql(f"SELECT count(1) inprogress_cnt FROM {schema}.task_history WHERE task_status != 'COMPLETED' and  batch_id = {batch_id}")
     return df.take(1)[0].inprogress_cnt
  
-def update_task_status(task_id, status, schema = 'default', message = 'error'):
+def update_task_status(task_id, status, schema = 'default', message = 'error', retry = 3):
     import datetime
  
     if status.upper() in ( 'IN-PROGRESS', 'COMPLETED', 'FAILED', 'RESTARTED') :
-        current_batch_timestamp = datetime.datetime.now()
-        prev_task_status = get_task_status(task_id, schema)
- 
-        if prev_task_status == 'FAILED' :
-            status = 'RESTARTED'
-            end_tmsp = 'NULL'
-            start_tmsp =  f"'{current_batch_timestamp}', "
-        elif status.upper() == 'IN-PROGRESS':
-            start_tmsp =  f"'{current_batch_timestamp}', "
-            end_tmsp = 'NULL'
-        else :
-            end_tmsp = f"'{current_batch_timestamp}'"
-            start_tmsp = 'task_start_timestamp_utc, '
+        try:
+            current_batch_timestamp = datetime.datetime.now()
+            prev_task_status = get_task_status(task_id, schema)
+    
+            if prev_task_status == 'FAILED' :
+                status = 'RESTARTED'
+                end_tmsp = 'NULL'
+                start_tmsp =  f"'{current_batch_timestamp}', "
+            elif status.upper() == 'IN-PROGRESS':
+                start_tmsp =  f"'{current_batch_timestamp}', "
+                end_tmsp = 'NULL'
+            else :
+                end_tmsp = f"'{current_batch_timestamp}'"
+                start_tmsp = 'task_start_timestamp_utc, '
 
+            
+            if status.upper() == 'FAILED':
+                start_tmsp =   start_tmsp + " task_message = '" + message[:200].replace('\'','') + "', "
+    
+            qry = f"UPDATE {schema}.task_history SET task_status = '{status.upper()}', task_start_timestamp_utc = {start_tmsp} task_end_timestamp_utc = {end_tmsp}  WHERE task_id = '{task_id}'"
+            spark.sql(qry)
+    
+            return task_id
+        except Exception as e:
+            if ("ConcurrentAppendException" in str(e) or "concurrent" in str(e).lower()) and retry > 0 :
+                print("Errored - reattempted {0}".format(str(e)))
+                update_task_status(task_id, status, schema = 'default', message = 'error', retry = retry - 1)
+            else:
+                raise Exception(e)
         
-        if status.upper() == 'FAILED':
-            start_tmsp =   start_tmsp + " task_message = '" + message[:100].replace('\'','') + "', "
- 
-        qry = f"UPDATE {schema}.task_history SET task_status = '{status.upper()}', task_start_timestamp_utc = {start_tmsp} task_end_timestamp_utc = {end_tmsp}  WHERE task_id = '{task_id}'"
-        spark.sql(qry)
- 
-        return task_id
     else:
         raise Exception(f"Unknown Status - {status}")
  
