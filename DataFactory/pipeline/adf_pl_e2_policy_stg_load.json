@@ -34,7 +34,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
 						}
 					]
 				},
@@ -76,7 +76,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
 						}
 					]
 				},
@@ -117,7 +117,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
 						}
 					]
 				},
@@ -158,7 +158,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
 						}
 					]
 				},
@@ -192,14 +192,14 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
+						"dev_dds_edl_refined.audit",
 						"POLICY_SEGMENT",
 						"raw to stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
 						}
 					]
 				},
@@ -234,14 +234,14 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
+						"dev_dds_edl_refined.audit",
 						"POLICY_SEGMENT_ATTRIBUTE",
 						"raw to stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
 						}
 					]
 				},
@@ -314,7 +314,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
 						}
 					]
 				},
@@ -356,7 +356,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
 						}
 					]
 				},
@@ -398,7 +398,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
 						}
 					]
 				},
