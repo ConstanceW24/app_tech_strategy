@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "mna-use2-dev-dds-adf-01"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureDatabricks_accessToken": {
+			"value": ""
+		},
+		"claims_data_extraction_accessToken": {
+			"value": ""
+		},
+		"AzureBlobStorage_sasUri": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://mnause2devddsadls01.dfs.core.windows.net/"
+		},
+		"AzureDatabricks_properties_typeProperties_existingClusterId": {
+			"value": "0227-095127-mm0bihzy"
+		},
+		"claims_data_extraction_properties_typeProperties_existingClusterId": {
+			"value": "0430-191614-k5iu0hhh"
+		}
+	}
+}
