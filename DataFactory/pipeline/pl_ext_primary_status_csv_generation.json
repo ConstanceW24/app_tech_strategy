@@ -127,7 +127,33 @@
 									"referenceName": "pl_ext_primary_status_csv",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true
+								"waitOnCompletion": true,
+								"parameters": {
+									"param_Refined_Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"param_Refined_Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									},
+									"param_MDO_FolderName": {
+										"value": "@pipeline().parameters.param_MDO_FolderName",
+										"type": "Expression"
+									},
+									"param_dbx_File_TimeStamp": {
+										"value": "@activity('dbx_File_TimeStamp').output.runoutput",
+										"type": "Expression"
+									},
+									"param_CDA_Schema_Name": {
+										"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+										"type": "Expression"
+									},
+									"param_CDA_Catalog_Name": {
+										"value": "@pipeline().parameters.param_CDA_Schema_Name",
+										"type": "Expression"
+									}
+								}
 							}
 						},
 						{
