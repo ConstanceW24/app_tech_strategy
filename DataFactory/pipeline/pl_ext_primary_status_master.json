@@ -96,6 +96,7 @@
 										"value": "@variables('var_Activity_Name')",
 										"type": "Expression"
 									},
+									"pl_comments": " ",
 									"pl_log_state": {
 										"value": "@variables('var_PL_Log_State_Upd')",
 										"type": "Expression"
@@ -259,7 +260,7 @@
 							"value": "@pipeline().parameters.param_Batch_ID",
 							"type": "Expression"
 						},
-						"in_pl_audit_id": " ",
+						"in_pl_audit_id": "  ",
 						"pl_activity_name": {
 							"value": "@variables('var_Activity_Name')",
 							"type": "Expression"
