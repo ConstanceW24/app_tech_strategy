@@ -36,7 +36,24 @@
 							"value": "@variables('var_Activity_Name')",
 							"type": "Expression"
 						},
-						"in_pl_audit_id": " "
+						"in_pl_audit_id": " ",
+						"pl_comments": " ",
+						"pl_log_state": {
+							"value": "@variables('var_PL_Log_State_Ins')",
+							"type": "Expression"
+						},
+						"pl_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"pl_status": {
+							"value": "@variables('var_PL_Log_Status_InProgress')",
+							"type": "Expression"
+						},
+						"batch_id": {
+							"value": "@pipeline().parameters.param_Batch_ID",
+							"type": "Expression"
+						}
 					}
 				},
 				"linkedServiceName": {
