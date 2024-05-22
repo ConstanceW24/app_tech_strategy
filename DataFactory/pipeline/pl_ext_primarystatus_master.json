@@ -18,7 +18,147 @@
 					"expression": {
 						"value": "@equals(activity('dbx_Start_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
 						"type": "Expression"
-					}
+					},
+					"ifFalseActivities": [
+						{
+							"name": "epl_ext_primarystatus",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "dbx_End_PL_Audit_Log_S",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "epl_ext_primarystatus",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+								"baseParameters": {
+									"batch_id": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									},
+									"in_pl_audit_id": {
+										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
+										"type": "Expression"
+									},
+									"pl_activity_name": {
+										"value": "@variables('var_Activity_Name')",
+										"type": "Expression"
+									},
+									"pl_log_state": {
+										"value": "@variables('var_PL_Log_State_Upd')",
+										"type": "Expression"
+									},
+									"pl_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"pl_status": {
+										"value": "@variables('var_PL_Status_Success')",
+										"type": "Expression"
+									},
+									"Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "claims_data_extraction",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "dbx_End_PL_Audit_Log_F",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "epl_ext_primarystatus",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+								"baseParameters": {
+									"batch_id": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									},
+									"in_pl_audit_id": {
+										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
+										"type": "Expression"
+									},
+									"pl_activity_name": {
+										"value": "@variables('var_Activity_Name')",
+										"type": "Expression"
+									},
+									"pl_comments": {
+										"value": "@activity('epl_ext_primarystatus').Error.Message",
+										"type": "Expression"
+									},
+									"pl_log_state": {
+										"value": "@variables('var_PL_Log_State_Upd')",
+										"type": "Expression"
+									},
+									"pl_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"pl_status": {
+										"value": "@variables('var_PL_Status_Failure')",
+										"type": "Expression"
+									},
+									"Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "claims_data_extraction",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
 				}
 			},
 			{
