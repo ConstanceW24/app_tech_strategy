@@ -5,6 +5,8 @@
 			{
 				"name": "epl_Extract_SecondaryExaminer_Master",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
