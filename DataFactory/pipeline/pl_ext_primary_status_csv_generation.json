@@ -146,11 +146,11 @@
 										"type": "Expression"
 									},
 									"param_CDA_Schema_Name": {
-										"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+										"value": "@pipeline().parameters.param_CDA_Schema_Name",
 										"type": "Expression"
 									},
 									"param_CDA_Catalog_Name": {
-										"value": "@pipeline().parameters.param_CDA_Schema_Name",
+										"value": "@pipeline().parameters.param_CDA_Catalog_Name",
 										"type": "Expression"
 									}
 								}
