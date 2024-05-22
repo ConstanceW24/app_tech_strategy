@@ -106,6 +106,10 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_ext_primary_status_csv",
+									"type": "PipelineReference"
+								},
 								"waitOnCompletion": true
 							}
 						},
