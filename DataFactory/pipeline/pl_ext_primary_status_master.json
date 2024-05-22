@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "if_Prev_Reserve_PL_Complete",
+				"name": "if_Prev_PrimaryStatus_PL_Complete",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -197,7 +197,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if_Prev_Reserve_PL_Complete",
+						"activity": "if_Prev_PrimaryStatus_PL_Complete",
 						"dependencyConditions": [
 							"Succeeded"
 						]
