@@ -15,7 +15,19 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/dbx_Reserve_File_name"
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
+					"baseParameters": {
+						"Query": "SELECT Config_Value FROM Master_Config WHERE Config_Key ={} AND Config_IsActive = {}",
+						"Parameters_List": " 'PrimaryStatus_File_Name',1",
+						"Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "claims_data_extraction",
@@ -43,7 +55,27 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv"
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv",
+					"baseParameters": {
+						"query": "SELECT  \n    CAST(ClaimMessage_MessageID AS VARCHAR(255)) AS ClaimMessage_MessageID,\n    ClaimMessage_MessageType,\n    ClaimMessage_CCMVersion,\n    ClaimMessage_CCMSchemaName,\n    ClaimMessage_OriginatingSystemCode,\n    Claim_ClaimFolderNumber,\n    Claim_PolicyNumber,\n    DATE_FORMAT(Claim_StatusDate,'yyyy-MM-dd\\'T\\'HH:mm:ss\\'Z\\'') AS Claim_StatusDate,\n    Claim_SubStatusCode,\n    Claim_OutcomeCode,\n    CAST(RecCrtTs AS VARCHAR(30)) AS RecordCreateTime\nFROM dev_dds_edl_refined.claims.STG_EXT_PrimaryStatus\nWHERE \n    Sent_To_CSV = 0 AND Is_current = 'Y'",
+						"target": "STG_EXT_PrimaryStatus",
+						"Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"param_MDO_FolderName": {
+							"value": "@pipeline().parameters.param_MDO_FolderName",
+							"type": "Expression"
+						},
+						"file_name": {
+							"value": "@concat(variables('var_PrimaryStatus_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+							"type": "Expression"
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "claims_data_extraction",
@@ -70,7 +102,25 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Primary Status SPs/NB_usp_primary_status_Inc_Log_Updates"
+					"notebookPath": "/Shared/Claims Remediation/Primary Status SPs/NB_usp_primary_status_Inc_Log_Updates",
+					"baseParameters": {
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"CDA_Catalog_Name": {
+							"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+							"type": "Expression"
+						},
+						"CDA_Schema_Name": {
+							"value": "@pipeline().parameters.param_CDA_Schema_Name",
+							"type": "Expression"
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "claims_data_extraction",
@@ -94,7 +144,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "var_Reserve_FileName",
+					"variableName": "var_PrimaryStatus_FileName",
 					"value": {
 						"value": "@pipeline().DataFactory",
 						"type": "Expression"
@@ -102,8 +152,28 @@
 				}
 			}
 		],
+		"parameters": {
+			"param_Refined_Catalog_Name": {
+				"type": "string"
+			},
+			"param_Refined_Schema_Name": {
+				"type": "string"
+			},
+			"param_MDO_FolderName": {
+				"type": "string"
+			},
+			"param_dbx_File_TimeStamp": {
+				"type": "string"
+			},
+			"param_CDA_Schema_Name": {
+				"type": "string"
+			},
+			"param_CDA_Catalog_Name": {
+				"type": "string"
+			}
+		},
 		"variables": {
-			"var_Reserve_FileName": {
+			"var_PrimaryStatus_FileName": {
 				"type": "String"
 			}
 		},
