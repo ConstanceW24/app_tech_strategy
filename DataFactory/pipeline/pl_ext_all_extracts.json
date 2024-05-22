@@ -142,36 +142,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_ext_primarystatus_master",
+						"referenceName": "pl_ext_primary_status_master",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"param_Batch_ID": {
-							"value": "@pipeline().parameters.param_Batch_ID",
-							"type": "Expression"
-						},
-						"param_MDO_FolderName": {
-							"value": "@pipeline().parameters.param_MDO_FolderName",
-							"type": "Expression"
-						},
-						"param_CDA_Catalog_Name": {
-							"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-							"type": "Expression"
-						},
-						"param_CDA_Schema_Name": {
-							"value": "@pipeline().parameters.param_CDA_Schema_Name",
-							"type": "Expression"
-						},
-						"param_Refined_Catalog_Name": {
-							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-							"type": "Expression"
-						},
-						"param_Refined_Schema_Name": {
-							"value": "@pipeline().parameters.param_Refined_Schema_Name",
-							"type": "Expression"
-						}
-					}
+					"waitOnCompletion": true
 				}
 			}
 		],
