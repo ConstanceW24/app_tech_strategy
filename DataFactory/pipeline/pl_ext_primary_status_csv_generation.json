@@ -1,5 +1,5 @@
 {
-	"name": "pl_ext_primarystatus_csv_generation",
+	"name": "pl_ext_primary_status_csv_generation",
 	"properties": {
 		"activities": [
 			{
