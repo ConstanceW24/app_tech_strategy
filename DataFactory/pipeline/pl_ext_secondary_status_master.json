@@ -245,7 +245,7 @@
 				}
 			},
 			{
-				"name": "epl_ext_primaryexaminer_csv_master",
+				"name": "epl_ext_secondarystatus_csv_master",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -261,7 +261,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_ext_primaryexaminer_csv_generation",
+						"referenceName": "pl_ext_secondarystatus_csv_generation",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
