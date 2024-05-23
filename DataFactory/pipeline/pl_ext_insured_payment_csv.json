@@ -1,0 +1,184 @@
+{
+	"name": "pl_ext_insured_payment_csv",
+	"properties": {
+		"activities": [
+			{
+				"name": "dbx_InsuredPayment_FileName",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
+					"baseParameters": {
+						"Query": "SELECT Config_Value FROM Master_Config WHERE Config_Key ={} AND Config_IsActive = {}",
+						"Parameters_List": "'Insured_Payment_File_Name',1",
+						"Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dbx_copy_InsuredPayment_CSV_to_mDo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "sv_InsuredPayment_FileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv",
+					"baseParameters": {
+						"query": " ",
+						"target": "STG_EXT_InsuredPayment",
+						"Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"param_MDO_FolderName": {
+							"value": "@pipeline().parameters.param_MDO_FolderName",
+							"type": "Expression"
+						},
+						"file_name": {
+							"value": "@concat(variables('var_InsuredPayment_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dbx_InsuredPayment_Inc_Log_Updates",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dbx_copy_InsuredPayment_CSV_to_mDo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Insured Payment SPs/NB_usp_Insured_Payment_Inc_Log_Updates",
+					"baseParameters": {
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"CDA_Catalog_Name": {
+							"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+							"type": "Expression"
+						},
+						"CDA_Schema_Name ": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "sv_InsuredPayment_FileName",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "dbx_InsuredPayment_FileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "var_InsuredPayment_FileName",
+					"value": {
+						"value": "@if(equals(activity('dbx_InsuredPayment_FileName').output.runOutput, 'None'),'CCM_Folder_Insured_Payment_Change_Daily',\r\n    activity('dbx_InsuredPayment_FileName').output.runOutput)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"param_Refined_Catalog_Name": {
+				"type": "string"
+			},
+			"param_Refined_Schema_Name": {
+				"type": "string"
+			},
+			"param_MDO_FolderName": {
+				"type": "string"
+			},
+			"param_dbx_File_TimeStamp": {
+				"type": "string"
+			},
+			"param_CDA_Schema_Name": {
+				"type": "string"
+			},
+			"param_CDA_Catalog_Name": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"var_InsuredPayment_FileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Claims Extract"
+		},
+		"annotations": []
+	}
+}
