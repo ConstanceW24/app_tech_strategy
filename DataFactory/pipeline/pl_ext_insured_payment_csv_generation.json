@@ -1,0 +1,241 @@
+{
+	"name": "pl_ext_insured_payment_csv_generation",
+	"properties": {
+		"activities": [
+			{
+				"name": "dbx_Start_PL_Audit_Log",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+					"baseParameters": {
+						"Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Schema_Name ": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"pl_activity_name": {
+							"value": "@variables('var_Activity_Name')",
+							"type": "Expression"
+						},
+						"in_pl_audit_id": " ",
+						"pl_comments": " ",
+						"pl_log_state": {
+							"value": "@variables('var_PL_Log_State_Ins')",
+							"type": "Expression"
+						},
+						"pl_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"pl_status": {
+							"value": "@variables('var_PL_Log_Status_InProgress')",
+							"type": "Expression"
+						},
+						"batch_id": {
+							"value": "@pipeline().parameters.param_Batch_ID",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "if_Prev_Insured_payment_PL_Complete",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "dbx_Start_PL_Audit_Log",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('dbx_Start_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "epl_ext_insuredpayment_csv",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_ext_insured_payment_csv",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"param_Refined_Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"param_Refined_Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									},
+									"param_MDO_FolderName": {
+										"value": "@pipeline().parameters.param_MDO_FolderName",
+										"type": "Expression"
+									},
+									"param_dbx_File_TimeStamp": {
+										"value": "@activity('dbx_File_TimeStamp').output.runoutput",
+										"type": "Expression"
+									},
+									"param_CDA_Schema_Name": {
+										"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+										"type": "Expression"
+									},
+									"param_CDA_Catalog_Name": {
+										"value": "@pipeline().parameters.param_CDA_Schema_Name",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "dbx_End_PL_Audit_Log_S",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "epl_ext_insuredpayment_csv",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+								"baseParameters": {
+									"pl_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"pl_status": {
+										"value": "@variables('var_PL_Log_Status_Success')",
+										"type": "Expression"
+									},
+									"pl_comments": " ",
+									"batch_id": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "claims_data_extraction",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "dbx_End_PL_Audit_Log_F",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "epl_ext_insuredpayment_csv",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log"
+							},
+							"linkedServiceName": {
+								"referenceName": "claims_data_extraction",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"param_Batch_ID": {
+				"type": "string"
+			},
+			"param_MDO_FolderName": {
+				"type": "string"
+			},
+			"param_Refined_Catalog_Name": {
+				"type": "string"
+			},
+			"param_Refined_Schema_Name": {
+				"type": "string"
+			},
+			"param_CDA_Catalog_Name": {
+				"type": "string"
+			},
+			"param_CDA_Schema_Name": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"var_Activity_Name": {
+				"type": "String",
+				"defaultValue": "InsuredPayment_CSV"
+			},
+			"var_PL_Log_State_Ins": {
+				"type": "String",
+				"defaultValue": "ins"
+			},
+			"var_PL_Log_Status_InProgress": {
+				"type": "String",
+				"defaultValue": "In-Progress"
+			},
+			"var_PL_Log_State_Upd": {
+				"type": "String",
+				"defaultValue": "upd"
+			},
+			"var_PL_Log_Status_Success": {
+				"type": "String",
+				"defaultValue": "Success"
+			},
+			"var_PL_Log_Status_Failure": {
+				"type": "String",
+				"defaultValue": "Failed"
+			}
+		},
+		"folder": {
+			"name": "Claims Extract"
+		},
+		"annotations": []
+	}
+}
