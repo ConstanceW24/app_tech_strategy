@@ -136,6 +136,26 @@
 							"typeProperties": {
 								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
 								"baseParameters": {
+									"Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									},
+									"in_pl_audit_id": {
+										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
+										"type": "Expression"
+									},
+									"pl_activity_name": {
+										"value": "@variables('var_Activity_Name')",
+										"type": "Expression"
+									},
+									"pl_log_state": {
+										"value": "@variables('var_PL_Log_State_Upd')",
+										"type": "Expression"
+									},
 									"pl_name": {
 										"value": "@pipeline().Pipeline",
 										"type": "Expression"
