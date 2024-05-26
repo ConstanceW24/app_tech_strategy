@@ -171,7 +171,7 @@
 				}
 			},
 			{
-				"name": "pl_ext_secondary_status_master",
+				"name": "epl_ext_secondary_status_master",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
