@@ -54,9 +54,8 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv",
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv_read_from_file",
 					"baseParameters": {
-						"query": " ",
 						"target": "STG_EXT_InsuredPayment",
 						"Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -72,6 +71,15 @@
 						},
 						"file_name": {
 							"value": "@concat(variables('var_InsuredPayment_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+							"type": "Expression"
+						},
+						"path": "insured_payment/csv_generation.sql",
+						"storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.param_container_name",
 							"type": "Expression"
 						}
 					}
@@ -168,6 +176,12 @@
 				"type": "string"
 			},
 			"param_CDA_Catalog_Name": {
+				"type": "string"
+			},
+			"param_storage_account_name": {
+				"type": "string"
+			},
+			"param_container_name": {
 				"type": "string"
 			}
 		},
