@@ -68,7 +68,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT_read_from_file",
 					"baseParameters": {
 						"Query": {
 							"value": "@activity('dbx_Get_Insured_Payment_SrcQry').output.runOutput",
