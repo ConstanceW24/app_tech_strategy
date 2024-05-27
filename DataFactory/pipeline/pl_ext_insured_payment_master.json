@@ -73,7 +73,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Execute Pipeline1",
+							"name": "epl_ext_insured_payment",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
@@ -119,7 +119,7 @@
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
-									"activity": "Execute Pipeline1",
+									"activity": "epl_ext_insured_payment",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -181,7 +181,7 @@
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
-									"activity": "Execute Pipeline1",
+									"activity": "epl_ext_insured_payment",
 									"dependencyConditions": [
 										"Failed"
 									]
