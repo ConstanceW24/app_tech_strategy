@@ -219,7 +219,7 @@
 										"type": "Expression"
 									},
 									"pl_comments": {
-										"value": "@activity('Execute Pipeline1').Error.Message",
+										"value": "@activity('epl_ext_insured_payment').Error.Message",
 										"type": "Expression"
 									},
 									"pl_log_state": {
