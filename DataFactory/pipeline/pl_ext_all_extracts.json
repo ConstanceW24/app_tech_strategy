@@ -5,6 +5,8 @@
 			{
 				"name": "epl_Extract_SecondaryExaminer_Master",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -47,6 +49,8 @@
 			{
 				"name": "epl_Extract_PrimaryExaminer_Master",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -89,6 +93,8 @@
 			{
 				"name": "epl_Extract_Reserve_Master",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -131,6 +137,8 @@
 			{
 				"name": "epl_Extract_PrimaryStatus_Master",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -173,6 +181,8 @@
 			{
 				"name": "epl_ext_secondary_status_master",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false

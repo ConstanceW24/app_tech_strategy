@@ -305,6 +305,18 @@
 			"var_CDA_Schema_Name": {
 				"type": "String",
 				"defaultValue": "claimscenter_dbo_dbo"
+			},
+			"var_param_query_container_name": {
+				"type": "String",
+				"defaultValue": "mkl-dds-fsys-edl-dev-001"
+			},
+			"var_param_storage_account_name": {
+				"type": "String",
+				"defaultValue": "mnause2devddsadls01"
+			},
+			"var_param_csv_container_name": {
+				"type": "String",
+				"defaultValue": "test"
 			}
 		},
 		"folder": {
