@@ -253,7 +253,7 @@
 										"type": "Expression"
 									},
 									"in_pl_audit_id": {
-										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput)",
+										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
 										"type": "Expression"
 									},
 									"pl_activity_name": {
