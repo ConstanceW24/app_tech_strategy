@@ -28,7 +28,7 @@
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
 						},
-						"Schema_Name ": {
+						"Schema_Name": {
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
 							"type": "Expression"
 						},
