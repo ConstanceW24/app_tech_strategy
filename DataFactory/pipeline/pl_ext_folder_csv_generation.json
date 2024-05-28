@@ -218,10 +218,6 @@
 									"param_storage_account_name": {
 										"value": "@pipeline().parameters.param_storage_account_name",
 										"type": "Expression"
-									},
-									"param_container_name": {
-										"value": "@pipeline().parameters.param_container_name",
-										"type": "Expression"
 									}
 								}
 							}
@@ -317,14 +313,17 @@
 			"param_storage_account_name": {
 				"type": "string"
 			},
-			"param_container_name": {
+			"param_query_container_name": {
+				"type": "string"
+			},
+			"param_csv_container_name": {
 				"type": "string"
 			}
 		},
 		"variables": {
 			"var_Activity_Name": {
 				"type": "String",
-				"defaultValue": "PrimaryExaminer_CSV"
+				"defaultValue": "Folder_CSV"
 			},
 			"var_PL_Log_State_Ins": {
 				"type": "String",
