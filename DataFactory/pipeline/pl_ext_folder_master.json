@@ -329,10 +329,13 @@
 			"param_CDA_Schema_Name": {
 				"type": "string"
 			},
-			"param_container_name": {
+			"param_csv_container_name": {
 				"type": "string"
 			},
 			"param_storage_account_name": {
+				"type": "string"
+			},
+			"param_query_container_name": {
 				"type": "string"
 			}
 		},
