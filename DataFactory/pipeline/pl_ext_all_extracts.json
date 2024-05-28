@@ -225,6 +225,8 @@
 			{
 				"name": "epl_ext_insured_payment_master",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
