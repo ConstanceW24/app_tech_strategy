@@ -1,0 +1,126 @@
+{
+	"name": "gw_adf_master_unity_data_init_trigger",
+	"properties": {
+		"activities": [
+			{
+				"name": "db_process_node",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "data_init",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "data_init",
+				"description": "",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [
+					{
+						"activity": "get_gw_adf_pl_config",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/adf_setup.py",
+					"parameters": [
+						"data_initialization",
+						"@activity('get_gw_adf_pl_config').output.value[2].param_value",
+						"@activity('get_gw_adf_pl_config').output.value[0].param_value",
+						"@activity('get_gw_adf_pl_config').output.value[3].param_value",
+						"@activity('get_gw_adf_pl_config').output.value[5].param_value",
+						"@activity('get_gw_adf_pl_config').output.value[6].param_value",
+						"@activity('get_gw_adf_pl_config').output.value[1].param_value"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/4a3a35ef_5be1_4627_96ed_9c7afd3fec00/cdaaccelerator-0.0.1-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "CDA_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "get_gw_adf_pl_config",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "dynamic_param_unity",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": {
+								"value": "@concat(pipeline().parameters.TriggerParam, variables('slash'), variables('gw_adf_pl_config'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"TriggerParam": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"slash": {
+				"type": "String",
+				"defaultValue": "/"
+			},
+			"gw_adf_pl_config": {
+				"type": "String",
+				"defaultValue": "gw_adf_pl_config.csv"
+			}
+		},
+		"folder": {
+			"name": "trigger"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-02-02T11:40:22Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
