@@ -73,7 +73,7 @@
 							"value": "@concat(variables('var_InsuredPayment_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
 							"type": "Expression"
 						},
-						"path": "insured_payment/csv_generation.sql",
+						"path": "insuredpayment/csv_generation.sql",
 						"storage_account_name": {
 							"value": "@pipeline().parameters.param_storage_account_name",
 							"type": "Expression"

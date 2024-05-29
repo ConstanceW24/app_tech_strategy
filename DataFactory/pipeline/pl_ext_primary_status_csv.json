@@ -75,7 +75,7 @@
 							"value": "@concat(variables('var_PrimaryStatus_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
 							"type": "Expression"
 						},
-						"path": "primary_status/csv_generation.sql",
+						"path": "primarystatus/csv_generation.sql",
 						"storage_account_name": {
 							"value": "@pipeline().parameters.param_storage_account_name",
 							"type": "Expression"
