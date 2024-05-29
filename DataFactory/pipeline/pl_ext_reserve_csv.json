@@ -85,7 +85,8 @@
 						"query_container_name": {
 							"value": "@pipeline().parameters.param_query_container_name",
 							"type": "Expression"
-						}
+						},
+						"path": "reserve/csv_generation.sql"
 					}
 				},
 				"linkedServiceName": {
