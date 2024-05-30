@@ -15,7 +15,33 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Litigation Seccounsel SPs/NB_Get_Litigation_SecCounsels_SRC_Query"
+					"notebookPath": "/Shared/Claims Remediation/Litigation Seccounsel SPs/NB_Get_Litigation_SecCounsels_SRC_Query",
+					"baseParameters": {
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"CDA_Catalog_Name": {
+							"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+							"type": "Expression"
+						},
+						"CDA_Schema_Name": {
+							"value": "@pipeline().parameters.param_CDA_Schema_Name",
+							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "claims_data_extraction",
@@ -42,7 +68,30 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT"
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
+					"baseParameters": {
+						"Query": {
+							"value": "@activity('dbx_Get_LitigationSecCounsel_SrcQry').output.runOutput",
+							"type": "Expression"
+						},
+						"Table_Name": "SRC_EXT_Litigation_SecCounsels",
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "claims_data_extraction",
@@ -69,7 +118,18 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey"
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
+					"baseParameters": {
+						"src_table": "SRC_EXT_Litigation_SecCounsels",
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "claims_data_extraction",
@@ -96,7 +156,25 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Litigation Seccounsel SPs/NB_STG_LitigationSecCounsel_Upsert"
+					"notebookPath": "/Shared/Claims Remediation/Litigation Seccounsel SPs/NB_STG_LitigationSecCounsel_Upsert",
+					"baseParameters": {
+						"batch_id": {
+							"value": "@pipeline().parameters.param_Batch_ID",
+							"type": "Expression"
+						},
+						"PL_Audit_ID": {
+							"value": "@pipeline().parameters.param_PL_Audit_ID",
+							"type": "Expression"
+						},
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						}
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "claims_data_extraction",
