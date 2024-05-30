@@ -2,7 +2,7 @@
 	"name": "dynamic_param_unity",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage",
+			"referenceName": "CDA_AzureBlobStorage",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
