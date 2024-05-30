@@ -1,0 +1,33 @@
+{
+	"name": "Dp_process_node_unity",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CDA_AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dp_processFileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().dp_processFileName",
+					"type": "Expression"
+				},
+				"folderPath": "gw_adf_job_parameters",
+				"container": "adf-cda-metadata"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": ""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
