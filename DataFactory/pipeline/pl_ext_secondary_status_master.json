@@ -215,7 +215,7 @@
 								"waitOnCompletion": true,
 								"parameters": {
 									"param_Batch_ID": {
-										"value": "pipeline().parameters.param_Batch_ID",
+										"value": "@pipeline().parameters.param_Batch_ID",
 										"type": "Expression"
 									},
 									"param_PL_Audit_ID": {
