@@ -54,7 +54,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv_read_from_file",
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 					"baseParameters": {
 						"Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",

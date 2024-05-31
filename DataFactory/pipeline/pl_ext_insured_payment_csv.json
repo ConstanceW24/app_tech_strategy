@@ -54,7 +54,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv_read_from_file",
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 					"baseParameters": {
 						"target": "STG_EXT_InsuredPayment",
 						"Catalog_Name": {

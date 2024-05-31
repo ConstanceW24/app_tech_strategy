@@ -68,7 +68,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT_read_from_file",
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
 					"baseParameters": {
 						"query_location": {
 							"value": "@activity('dbx_Get_Folder_SrcQry').output.runOutput",
