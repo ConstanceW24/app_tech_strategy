@@ -45,7 +45,7 @@
 								],
 								"libraries": [
 									{
-										"whl": "dbfs:/FileStore/jars/2eca81e7_7d02_4305_8409_37440922f67e/cdaaccelerator-0.0.1-py3-none-any.whl"
+										"whl": "dbfs:/FileStore/jars/afa3e95d_a487_430d_a9b7_5210f6892a39/cdaaccelerator-0.0.1-py3-none-any.whl"
 									}
 								]
 							},
@@ -82,10 +82,10 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "dynamic_param_unity",
+						"referenceName": "Dp_process_node_unity",
 						"type": "DatasetReference",
 						"parameters": {
-							"FileName": {
+							"dp_processFileName": {
 								"value": "@concat(pipeline().parameters.GwcenterName, variables('slash'), variables('dp_process_node_file_path'))",
 								"type": "Expression"
 							}
