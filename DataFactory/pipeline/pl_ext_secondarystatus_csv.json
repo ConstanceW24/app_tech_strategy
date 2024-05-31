@@ -54,7 +54,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv",
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 					"baseParameters": {
 						"query": "SELECT \n\tCAST(SS.ClaimMessage_Message_ID AS VARCHAR(36)) AS ClaimMessage_MessageID\n\t,SS.ClaimMessage_MessageType\n\t,SS.ClaimMessage_CCMVersion\n\t,SS.ClaimMessage_CCMSchemaName\n\t,SS.ClaimMessage_OriginatingSystemCode\t\n\t,SS.Claim_ClaimFeatureNumber\n\t,DATE_FORMAT(SS.Claim_StatusDate,\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\") AS Claim_StatusDate\n\t,SS.Claim_SubStatusCode\n\t,SS.Claim_OutcomeCode\n\t,SS.Claim_PolicyNumber\n  ,DATE_FORMAT(SS.RecCrtTs,\"yyyy-MM-dd HH:mm:ss\") AS RecordCreateTime\n\t,SS.Claim_ClaimFolderNumber\nFROM dev_dds_edl_refined.claims.STG_EXT_SecondaryStatus SS\nWHERE SS.Is_Current = 'Y' AND SS.Sent_To_CSV = 0;",
 						"target": "STG_EXT_SecondaryStatus",
