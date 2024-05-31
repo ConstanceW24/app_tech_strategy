@@ -115,7 +115,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
 					"baseParameters": {
-						"Query": {
+						"query_location": {
 							"value": "@activity('dbx_Get_Primary_Status_SrcQry').output.runOutput",
 							"type": "Expression"
 						},
