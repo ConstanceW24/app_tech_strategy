@@ -57,8 +57,6 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 					"baseParameters": {
-						"query": "SELECT  \n    CAST(ClaimMessage_MessageID AS VARCHAR(255)) AS ClaimMessage_MessageID,\n    ClaimMessage_MessageType,\n    ClaimMessage_CCMVersion,\n    ClaimMessage_CCMSchemaName,\n    ClaimMessage_OriginatingSystemCode,\n    Claim_ClaimFolderNumber,\n    Claim_PolicyNumber,\n    DATE_FORMAT(Claim_StatusDate,'yyyy-MM-dd\\'T\\'HH:mm:ss\\'Z\\'') AS Claim_StatusDate,\n    Claim_SubStatusCode,\n    Claim_OutcomeCode,\n    CAST(RecCrtTs AS VARCHAR(30)) AS RecordCreateTime\nFROM STG_EXT_PrimaryStatus\nWHERE \n    Sent_To_CSV = 0 AND Is_current = 'Y'",
-						"target": "STG_EXT_PrimaryStatus",
 						"Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"

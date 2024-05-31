@@ -70,7 +70,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
 					"baseParameters": {
-						"Query": {
+						"query_location": {
 							"value": "@activity('dbx_Get_PrimaryExaminer_SrcQry').output.runOutput",
 							"type": "Expression"
 						},
