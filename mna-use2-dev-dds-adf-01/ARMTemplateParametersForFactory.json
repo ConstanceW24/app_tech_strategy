@@ -14,6 +14,9 @@
 		"AzureDatabricks_accessToken": {
 			"value": ""
 		},
+		"CDA_AzureDatabricks_accessToken": {
+			"value": ""
+		},
 		"claims_data_extraction_accessToken": {
 			"value": ""
 		},
@@ -25,6 +28,12 @@
 		},
 		"AzureDatabricks_properties_typeProperties_existingClusterId": {
 			"value": "0227-095127-mm0bihzy"
+		},
+		"CDA_AzureBlobStorage_sasUri": {
+			"value": ""
+		},
+		"CDA_AzureDatabricks_properties_typeProperties_existingClusterId": {
+			"value": "0522-063449-xazmzggb"
 		},
 		"claims_data_extraction_properties_typeProperties_existingClusterId": {
 			"value": "0430-191614-k5iu0hhh"

@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks'"
 		},
+		"CDA_AzureDatabricks_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'CDA_AzureDatabricks'"
+		},
 		"claims_data_extraction_accessToken": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'claims_data_extraction'"
@@ -34,6 +38,14 @@
 		"AzureDatabricks_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "0227-095127-mm0bihzy"
+		},
+		"CDA_AzureBlobStorage_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'CDA_AzureBlobStorage'"
+		},
+		"CDA_AzureDatabricks_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0522-063449-xazmzggb"
 		},
 		"claims_data_extraction_properties_typeProperties_existingClusterId": {
 			"type": "string",
@@ -75,6 +87,9 @@
 					"AzureDatabricks_accessToken": {
 						"value": "[parameters('AzureDatabricks_accessToken')]"
 					},
+					"CDA_AzureDatabricks_accessToken": {
+						"value": "[parameters('CDA_AzureDatabricks_accessToken')]"
+					},
 					"claims_data_extraction_accessToken": {
 						"value": "[parameters('claims_data_extraction_accessToken')]"
 					},
@@ -86,6 +101,12 @@
 					},
 					"AzureDatabricks_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('AzureDatabricks_properties_typeProperties_existingClusterId')]"
+					},
+					"CDA_AzureBlobStorage_sasUri": {
+						"value": "[parameters('CDA_AzureBlobStorage_sasUri')]"
+					},
+					"CDA_AzureDatabricks_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('CDA_AzureDatabricks_properties_typeProperties_existingClusterId')]"
 					},
 					"claims_data_extraction_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('claims_data_extraction_properties_typeProperties_existingClusterId')]"
@@ -112,6 +133,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'mna-use2-dev-dds-adf-01_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "mna-use2-dev-dds-adf-01_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'mna-use2-dev-dds-adf-01_ArmTemplate_1')]"
 			]
 		}
 	]
