@@ -56,7 +56,6 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 					"baseParameters": {
-						"target": "STG_EXT_InsuredPayment",
 						"Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
