@@ -1,0 +1,31 @@
+{
+	"name": "pl_ext_litigation",
+	"properties": {
+		"activities": [
+			{
+				"name": "dbx_Get_Litigation_SrcQry",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Litigation SPs/NB_Get_Litigation_Src_Qry"
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Claims Extract"
+		},
+		"annotations": []
+	}
+}
