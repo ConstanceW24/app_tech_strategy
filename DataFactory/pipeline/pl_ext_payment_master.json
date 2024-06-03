@@ -1,9 +1,61 @@
 {
-	"name": "pl_ext_secondaryexaminer_master",
+	"name": "pl_ext_payment_master",
 	"properties": {
 		"activities": [
 			{
-				"name": "if_Prev_SecondaryExaminer_PL_Complete",
+				"name": "dbx_Start_PL_Audit_Log",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+					"baseParameters": {
+						"batch_id": {
+							"value": "@pipeline().parameters.param_Batch_ID",
+							"type": "Expression"
+						},
+						"in_pl_audit_id": " ",
+						"pl_activity_name": {
+							"value": "@variables('var_Activity_Name')",
+							"type": "Expression"
+						},
+						"pl_comments": " ",
+						"pl_log_state": {
+							"value": "@variables('var_PL_Log_State_Ins')",
+							"type": "Expression"
+						},
+						"pl_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"pl_status": {
+							"value": "@variables('var_PL_Log_Status_InProgress')",
+							"type": "Expression"
+						},
+						"Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "if_Prev_Payment_PL_Complete",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -21,7 +73,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "epl_ext_secondaryexaminer",
+							"name": "epl_ext_payment",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
@@ -30,7 +82,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pl_ext_secondaryexaminer",
+									"referenceName": "pl_ext_payment",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -59,12 +111,12 @@
 										"value": "@pipeline().parameters.param_CDA_Schema_Name",
 										"type": "Expression"
 									},
-									"param_query_container_name": {
-										"value": "@pipeline().parameters.param_query_container_name",
-										"type": "Expression"
-									},
 									"param_storage_account_name": {
 										"value": "@pipeline().parameters.param_storage_account_name",
+										"type": "Expression"
+									},
+									"param_container_name": {
+										"value": "@pipeline().parameters.param_query_container_name",
 										"type": "Expression"
 									}
 								}
@@ -75,7 +127,7 @@
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
-									"activity": "epl_ext_secondaryexaminer",
+									"activity": "epl_ext_payment",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -114,7 +166,7 @@
 										"type": "Expression"
 									},
 									"pl_status": {
-										"value": "@variables('var_PL_Log_Status_Success')",
+										"value": "@variables('var_PL_Status_Success')",
 										"type": "Expression"
 									},
 									"Catalog_Name": {
@@ -137,7 +189,7 @@
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
-									"activity": "epl_ext_secondaryexaminer",
+									"activity": "epl_ext_payment",
 									"dependencyConditions": [
 										"Failed"
 									]
@@ -167,7 +219,7 @@
 										"type": "Expression"
 									},
 									"pl_comments": {
-										"value": "@activity('epl_ext_secondaryexaminer').Error.Message",
+										"value": "@activity('epl_ext_payment').Error.Message",
 										"type": "Expression"
 									},
 									"pl_log_state": {
@@ -179,7 +231,7 @@
 										"type": "Expression"
 									},
 									"pl_status": {
-										"value": "@variables('var_PL_Log_Status_Failure')",
+										"value": "@variables('var_PL_Status_Failure')",
 										"type": "Expression"
 									},
 									"Catalog_Name": {
@@ -201,11 +253,17 @@
 				}
 			},
 			{
-				"name": "epl_ext_secondaryexaminer_csv",
+				"name": "epl_ext_payment_csv_master",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if_Prev_SecondaryExaminer_PL_Complete",
+						"activity": "if_Prev_Payment_PL_Complete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "if_Prev_Payment_CP_PL_Complete_copy1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -217,7 +275,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_ext_secondaryexaminer_csv_generation",
+						"referenceName": "pl_ext_folder_csv_generation",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -250,19 +308,19 @@
 							"value": "@pipeline().parameters.param_storage_account_name",
 							"type": "Expression"
 						},
-						"param_csv_container_name": {
-							"value": "@pipeline().parameters.param_csv_container_name",
-							"type": "Expression"
-						},
 						"param_query_container_name": {
 							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"param_csv_container_name": {
+							"value": "@pipeline().parameters.param_csv_container_name",
 							"type": "Expression"
 						}
 					}
 				}
 			},
 			{
-				"name": "dbx_Start_PL_Audit_Log",
+				"name": "dbx_Start_PL_CP_Audit_Log",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -280,10 +338,12 @@
 							"value": "@pipeline().parameters.param_Batch_ID",
 							"type": "Expression"
 						},
+						"in_pl_audit_id": " ",
 						"pl_activity_name": {
-							"value": "@variables('var_Activity_Name')",
+							"value": "@variables('var_CP_Activity_Name')",
 							"type": "Expression"
 						},
+						"pl_comments": " ",
 						"pl_log_state": {
 							"value": "@variables('var_PL_Log_State_Ins')",
 							"type": "Expression"
@@ -303,14 +363,210 @@
 						"Schema_Name": {
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
 							"type": "Expression"
-						},
-						"in_pl_audit_id": " ",
-						"pl_comments": " "
+						}
 					}
 				},
 				"linkedServiceName": {
 					"referenceName": "claims_data_extraction",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "if_Prev_Payment_CP_PL_Complete_copy1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "dbx_Start_PL_CP_Audit_Log",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('dbx_Start_PL_CP_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "epl_ext_payment_checkpayee",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_ext_payment_checkpayee",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"param_Batch_ID": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									},
+									"param_PL_Audit_ID": {
+										"value": "@activity('dbx_Start_PL_CP_Audit_Log').output.runOutput.pl_audit_id",
+										"type": "Expression"
+									},
+									"param_CDA_Catalog_Name": {
+										"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+										"type": "Expression"
+									},
+									"param_Refined_Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"param_Refined_Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									},
+									"param_CDA_Schema_Name": {
+										"value": "@pipeline().parameters.param_CDA_Schema_Name",
+										"type": "Expression"
+									},
+									"param_storage_account_name": {
+										"value": "@pipeline().parameters.param_storage_account_name",
+										"type": "Expression"
+									},
+									"param_container_name": {
+										"value": "@pipeline().parameters.param_query_container_name",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "dbx_End_PL_CP_Audit_Log_S",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "epl_ext_payment_checkpayee",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+								"baseParameters": {
+									"batch_id": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									},
+									"in_pl_audit_id": {
+										"value": "@string(activity('dbx_Start_PL_CP_Audit_Log').output.runOutput.pl_audit_id)",
+										"type": "Expression"
+									},
+									"pl_activity_name": {
+										"value": "@variables('var_CP_Activity_Name')",
+										"type": "Expression"
+									},
+									"pl_comments": " ",
+									"pl_log_state": {
+										"value": "@variables('var_PL_Log_State_Upd')",
+										"type": "Expression"
+									},
+									"pl_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"pl_status": {
+										"value": "@variables('var_PL_Status_Success')",
+										"type": "Expression"
+									},
+									"Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "claims_data_extraction",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "dbx_End_PL_CP_Audit_Log_F",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "epl_ext_payment_checkpayee",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+								"baseParameters": {
+									"batch_id": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									},
+									"in_pl_audit_id": {
+										"value": "@string(activity('dbx_Start_PL_CP_Audit_Log').output.runOutput.pl_audit_id)",
+										"type": "Expression"
+									},
+									"pl_activity_name": {
+										"value": "@variables('var_CP_Activity_Name')",
+										"type": "Expression"
+									},
+									"pl_comments": {
+										"value": "@activity('epl_ext_payment_checkpayee').Error.Message",
+										"type": "Expression"
+									},
+									"pl_log_state": {
+										"value": "@variables('var_PL_Log_State_Upd')",
+										"type": "Expression"
+									},
+									"pl_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"pl_status": {
+										"value": "@variables('var_PL_Status_Failure')",
+										"type": "Expression"
+									},
+									"Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "claims_data_extraction",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
 				}
 			}
 		],
@@ -333,20 +589,20 @@
 			"param_CDA_Schema_Name": {
 				"type": "string"
 			},
-			"param_query_container_name": {
+			"param_csv_container_name": {
 				"type": "string"
 			},
 			"param_storage_account_name": {
 				"type": "string"
 			},
-			"param_csv_container_name": {
+			"param_query_container_name": {
 				"type": "string"
 			}
 		},
 		"variables": {
 			"var_Activity_Name": {
 				"type": "String",
-				"defaultValue": "SecondaryExaminer_Extract"
+				"defaultValue": "Payment_Extract"
 			},
 			"var_PL_Log_State_Ins": {
 				"type": "String",
@@ -360,20 +616,24 @@
 				"type": "String",
 				"defaultValue": "upd"
 			},
-			"var_PL_Log_Status_Success": {
+			"var_PL_Status_Success": {
 				"type": "String",
 				"defaultValue": "Success"
 			},
-			"var_PL_Log_Status_Failure": {
+			"var_PL_Status_Failure": {
 				"type": "String",
 				"defaultValue": "Failed"
+			},
+			"var_CP_Activity_Name": {
+				"type": "String",
+				"defaultValue": "Payment_CheckPayee_Extract"
 			}
 		},
 		"folder": {
 			"name": "Claims Extract"
 		},
 		"annotations": [],
-		"lastPublishTime": "2024-05-15T09:16:42Z"
+		"lastPublishTime": "2024-05-10T04:32:46Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
