@@ -1,0 +1,114 @@
+{
+	"name": "pl_ext_litigation_csv",
+	"properties": {
+		"activities": [
+			{
+				"name": "dbx_litigation_FileName",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement"
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dbx_copy_litigation_CSV_to_mDo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "sv_litihgation_FileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv"
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dbx_litigation_Inc_Log_Updates",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dbx_copy_litigation_CSV_to_mDo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Litigation SPs/NB_usp_Litigation_Inc_Log_Updates"
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "sv_litihgation_FileName",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "dbx_litigation_FileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "var_Litigation_FileName",
+					"value": {
+						"value": "@if(equals(activity('dbx_litigation_FileName').output.runOutput,'None'), 'CCM_Folder_Litigation_Change_Daily',activity('dbx_litigation_FileName').output.runOutput)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"var_Litigation_FileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Claims Extract"
+		},
+		"annotations": []
+	}
+}
