@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Notebook1",
+				"name": "dbx_File_TimeStamp",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
