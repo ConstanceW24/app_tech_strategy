@@ -212,7 +212,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "epl_ext_litigation_seccounsel_copy1",
+							"name": "epl_ext_litigation",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
@@ -221,7 +221,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pl_ext_litigation_seccounsel",
+									"referenceName": "pl_ext_litigation",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true
@@ -232,7 +232,7 @@
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
-									"activity": "epl_ext_litigation_seccounsel_copy1",
+									"activity": "epl_ext_litigation",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -293,7 +293,7 @@
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
-									"activity": "epl_ext_litigation_seccounsel_copy1",
+									"activity": "epl_ext_litigation",
 									"dependencyConditions": [
 										"Failed"
 									]
