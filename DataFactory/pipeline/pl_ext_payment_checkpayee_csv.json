@@ -1,5 +1,5 @@
 {
-	"name": "pl_ext_payment__checkpayee_csv",
+	"name": "pl_ext_payment_checkpayee_csv",
 	"properties": {
 		"activities": [
 			{
