@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "dbx_Start_PL_Audit_Log",
+				"name": "dbx_Start_PL_LSC_Audit_Log",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -57,7 +57,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "dbx_Start_PL_Audit_Log",
+						"activity": "dbx_Start_PL_LSC_Audit_Log",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -119,6 +119,147 @@
 							"dependsOn": [
 								{
 									"activity": "epl_ext_litigation_seccounsel",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log"
+							},
+							"linkedServiceName": {
+								"referenceName": "claims_data_extraction",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "dbx_Start_PL_Audit_Log",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+					"baseParameters": {
+						"batch_id": {
+							"value": "@pipeline().parameters.param_Batch_ID",
+							"type": "Expression"
+						},
+						"pl_activity_name": {
+							"value": "@variables('var_LSC_Activity_Name')",
+							"type": "Expression"
+						},
+						"pl_log_state": {
+							"value": "@variables('var_PL_Log_State_Ins')",
+							"type": "Expression"
+						},
+						"pl_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"pl_status": {
+							"value": "@variables('var_PL_Log_Status_InProgress')",
+							"type": "Expression"
+						},
+						"Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "if_Prev_Litigation_PL_Complete_copy1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "dbx_Start_PL_Audit_Log",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('dbx_Start_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "epl_ext_litigation_seccounsel_copy1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_ext_litigation_seccounsel",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "dbx_End_PL_Audit_Log_S_copy1",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "epl_ext_litigation_seccounsel_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log"
+							},
+							"linkedServiceName": {
+								"referenceName": "claims_data_extraction",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "dbx_End_PL_Audit_Log_F_copy1",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "epl_ext_litigation_seccounsel_copy1",
 									"dependencyConditions": [
 										"Failed"
 									]
