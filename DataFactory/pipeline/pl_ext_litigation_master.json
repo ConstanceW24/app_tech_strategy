@@ -114,6 +114,65 @@
 				}
 			}
 		],
+		"parameters": {
+			"param_Batch_ID": {
+				"type": "string"
+			},
+			"param_MDO_FolderName": {
+				"type": "string"
+			},
+			"param_CDA_Catalog_Name": {
+				"type": "string"
+			},
+			"param_CDA_Schema_Name": {
+				"type": "string"
+			},
+			"param_Refined_Catalog_Name": {
+				"type": "string"
+			},
+			"param_Refined_Schema_Name": {
+				"type": "string"
+			},
+			"param_query_container_name": {
+				"type": "string"
+			},
+			"param_storage_account_name": {
+				"type": "string"
+			},
+			"param_csv_container_name": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"var_Activity_Name": {
+				"type": "String",
+				"defaultValue": "Litigation_Extract"
+			},
+			"var_PL_Log_State_Ins": {
+				"type": "String",
+				"defaultValue": "ins"
+			},
+			"var_PL_Log_Status_InProgress": {
+				"type": "String",
+				"defaultValue": "In-Progress"
+			},
+			"var_PL_Log_State_Upd": {
+				"type": "String",
+				"defaultValue": "upd"
+			},
+			"var_PL_Status_Success": {
+				"type": "String",
+				"defaultValue": "Success"
+			},
+			"var_PL_Status_Failure": {
+				"type": "String",
+				"defaultValue": "Failed"
+			},
+			"var_LSC_Activity_Name": {
+				"type": "String",
+				"defaultValue": "Litigation_SecCounsels_Extract"
+			}
+		},
 		"folder": {
 			"name": "Claims Extract"
 		},
