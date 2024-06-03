@@ -66,7 +66,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('dbx_Start_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
+						"value": "@equals(activity('dbx_Start_PL_LSC_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -87,7 +87,7 @@
 							}
 						},
 						{
-							"name": "dbx_End_PL_Audit_Log_S",
+							"name": "dbx_End_PL_LSC_Audit_Log_S",
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
@@ -114,7 +114,7 @@
 							}
 						},
 						{
-							"name": "dbx_End_PL_Audit_Log_F",
+							"name": "dbx_End_PL_LSC_Audit_Log_F",
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
@@ -194,7 +194,7 @@
 				}
 			},
 			{
-				"name": "if_Prev_Litigation_PL_Complete_copy1",
+				"name": "if_Prev_Litigation_PL_Complete",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -228,7 +228,7 @@
 							}
 						},
 						{
-							"name": "dbx_End_PL_Audit_Log_S_copy1",
+							"name": "dbx_End_PL_Audit_Log_S",
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
@@ -247,7 +247,41 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log"
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+								"baseParameters": {
+									"batch_id": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									},
+									"in_pl_audit_id": {
+										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
+										"type": "Expression"
+									},
+									"pl_activity_name": {
+										"value": "@variables('var_Activity_Name')",
+										"type": "Expression"
+									},
+									"pl_log_state": {
+										"value": "@variables('var_PL_Log_State_Upd')",
+										"type": "Expression"
+									},
+									"pl_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"pl_status": {
+										"value": "@variables('var_PL_Status_Success')",
+										"type": "Expression"
+									},
+									"Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									}
+								}
 							},
 							"linkedServiceName": {
 								"referenceName": "claims_data_extraction",
@@ -255,7 +289,7 @@
 							}
 						},
 						{
-							"name": "dbx_End_PL_Audit_Log_F_copy1",
+							"name": "dbx_End_PL_Audit_Log_F",
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
@@ -274,7 +308,45 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log"
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+								"baseParameters": {
+									"batch_id": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									},
+									"in_pl_audit_id": {
+										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
+										"type": "Expression"
+									},
+									"pl_activity_name": {
+										"value": "@variables('var_Activity_Name')",
+										"type": "Expression"
+									},
+									"pl_comments": {
+										"value": "@activity('epl_ext_litigation_seccounsel').Error.Message",
+										"type": "Expression"
+									},
+									"pl_log_state": {
+										"value": "@variables('var_PL_Log_State_Upd')",
+										"type": "Expression"
+									},
+									"pl_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"pl_status": {
+										"value": "@variables('var_PL_Status_Failure')",
+										"type": "Expression"
+									},
+									"Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									}
+								}
 							},
 							"linkedServiceName": {
 								"referenceName": "claims_data_extraction",
@@ -289,13 +361,13 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if_Prev_Litigation_PL_Complete_copy1",
+						"activity": "if_Prev_LitigationSecCounsel_PL_Complete",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "if_Prev_LitigationSecCounsel_PL_Complete",
+						"activity": "if_Prev_Litigation_PL_Complete",
 						"dependencyConditions": [
 							"Succeeded"
 						]
