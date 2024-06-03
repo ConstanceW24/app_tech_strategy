@@ -54,10 +54,8 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv",
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 					"baseParameters": {
-						"query": "SELECT\nCAST(ClaimMessage_MessageID AS VARCHAR(255)) AS ClaimMessage_MessageID,\nClaimMessage_MessageType,\nClaimMessage_CCMVersion,\nClaimMessage_CCMSchemaName,\nClaimMessage_OriginatingSystemCode,\nClaim_ReserveTransactionNumber,\nClaim_ReserveTransactionOriginatingSystemCode,\nClaim_ClaimFeatureNumber,\nClaim_PolicyNumber,\nCAST(Claim_ReserveTransactionSequenceNumber AS VARCHAR(255)) AS Claim_ReserveTransactionSequenceNumber,\n/* CAST(FORMAT(Reserve_EntryDate,'yyyy-MM-ddTHH:mm:ssZ') AS VARCHAR(255)) AS Reserve_EntryDate,\nCAST(CONVERT(DATE,Reserve_EffectiveDate) AS VARCHAR(255)) AS Reserve_EffectiveDate, */\nCAST(DATE_FORMAT(Reserve_EntryDate,'yyyy-MM-dd\\'T\\'HH:mm:ss\\'Z\\'') AS VARCHAR(255)) AS Reserve_EntryDate,\nCAST(DATE_FORMAT(Reserve_EffectiveDate, 'yyyy-MM-dd') AS VARCHAR(255)) AS Reserve_EffectiveDate,\nDetails_CostTypeCode,\nDetails_CostCategoryCode,\nDetails_RecoveryTypeCode,\nCAST(Details_ReserveAmount AS VARCHAR(255)) AS Details_ReserveAmount ,\nDetails_CurrencyCode,\n/* CAST(CONVERT(DATETIME2(0),RecCrtTs) AS VARCHAR(30)) AS RecordCreateTime, */\nCAST(DATE_FORMAT(RecCrtTs, 'yyyy-MM-dd HH:mm:ss') AS VARCHAR(30)) AS RecordCreateTime,\nClaim_ClaimFolderNumber\nFROM STG_EXT_Reserve\nWHERE \nSent_To_CSV =0 and Is_current='Y'",
-						"target": "STG_EXT_Reserve",
 						"Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -73,7 +71,20 @@
 						"file_name": {
 							"value": "@concat(variables('var_Reserve_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
 							"type": "Expression"
-						}
+						},
+						"storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
+						},
+						"csv_container_name": {
+							"value": "@pipeline().parameters.param_csv_container_name",
+							"type": "Expression"
+						},
+						"query_container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"path": "reserve/csv_generation.sql"
 					}
 				},
 				"linkedServiceName": {
@@ -168,6 +179,15 @@
 				"type": "string"
 			},
 			"param_CDA_Catalog_Name": {
+				"type": "string"
+			},
+			"param_storage_account_name": {
+				"type": "string"
+			},
+			"param_query_container_name": {
+				"type": "string"
+			},
+			"param_csv_container_name": {
 				"type": "string"
 			}
 		},

@@ -32,6 +32,14 @@
 						"CDA_Schema_Name": {
 							"value": "@pipeline().parameters.param_CDA_Schema_Name",
 							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
 						}
 					}
 				},
@@ -62,7 +70,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
 					"baseParameters": {
-						"Query": {
+						"query_location": {
 							"value": "@activity('dbx_Get_Insured_Payment_SrcQry').output.runOutput",
 							"type": "Expression"
 						},
@@ -73,6 +81,14 @@
 						},
 						"Refined_Schema_Name": {
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
 							"type": "Expression"
 						}
 					}
@@ -183,6 +199,12 @@
 				"type": "string"
 			},
 			"param_Refined_Schema_Name": {
+				"type": "string"
+			},
+			"param_query_container_name": {
+				"type": "string"
+			},
+			"param_storage_account_name": {
 				"type": "string"
 			}
 		},

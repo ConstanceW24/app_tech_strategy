@@ -53,6 +53,18 @@
 						"param_CDA_Schema_Name": {
 							"value": "@variables('var_CDA_Schema_Name')",
 							"type": "Expression"
+						},
+						"param_query_container_name": {
+							"value": "@variables('var_param_query_container_name')",
+							"type": "Expression"
+						},
+						"param_storage_account_name": {
+							"value": "@variables('var_param_storage_account_name')",
+							"type": "Expression"
+						},
+						"param_csv_container_name": {
+							"value": "@variables('var_param_csv_container_name')",
+							"type": "Expression"
 						}
 					}
 				}
@@ -305,6 +317,18 @@
 			"var_CDA_Schema_Name": {
 				"type": "String",
 				"defaultValue": "claimscenter_dbo_dbo"
+			},
+			"var_param_query_container_name": {
+				"type": "String",
+				"defaultValue": "mkl-dds-fsys-edl-dev-001"
+			},
+			"var_param_storage_account_name": {
+				"type": "String",
+				"defaultValue": "mnause2devddsadls01"
+			},
+			"var_param_csv_container_name": {
+				"type": "String",
+				"defaultValue": "test"
 			}
 		},
 		"folder": {

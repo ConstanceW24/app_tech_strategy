@@ -214,6 +214,18 @@
 									"param_CDA_Catalog_Name": {
 										"value": "@pipeline().parameters.param_CDA_Catalog_Name",
 										"type": "Expression"
+									},
+									"param_storage_account_name": {
+										"value": "@pipeline().parameters.param_storage_account_name",
+										"type": "Expression"
+									},
+									"param_query_container_name": {
+										"value": "@pipeline().parameters.param_query_container_name",
+										"type": "Expression"
+									},
+									"param_csv_container_name": {
+										"value": "@pipeline().parameters.param_csv_container_name",
+										"type": "Expression"
 									}
 								}
 							}
@@ -253,7 +265,7 @@
 										"type": "Expression"
 									},
 									"in_pl_audit_id": {
-										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput)",
+										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
 										"type": "Expression"
 									},
 									"pl_activity_name": {
@@ -304,6 +316,15 @@
 				"type": "string"
 			},
 			"param_CDA_Schema_Name": {
+				"type": "string"
+			},
+			"param_storage_account_name": {
+				"type": "string"
+			},
+			"param_csv_container_name": {
+				"type": "string"
+			},
+			"param_query_container_name": {
 				"type": "string"
 			}
 		},

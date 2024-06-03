@@ -54,7 +54,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv_read_from_file",
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 					"baseParameters": {
 						"Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -77,8 +77,12 @@
 							"value": "@pipeline().parameters.param_storage_account_name",
 							"type": "Expression"
 						},
-						"container_name": {
-							"value": "@pipeline().parameters.param_container_name",
+						"query_container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"csv_container_name": {
+							"value": "@pipeline().parameters.param_csv_container_name",
 							"type": "Expression"
 						}
 					}
@@ -180,7 +184,10 @@
 			"param_storage_account_name": {
 				"type": "string"
 			},
-			"param_container_name": {
+			"param_query_container_name": {
+				"type": "string"
+			},
+			"param_csv_container_name": {
 				"type": "string"
 			}
 		},

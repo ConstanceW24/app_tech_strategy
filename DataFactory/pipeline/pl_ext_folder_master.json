@@ -116,7 +116,7 @@
 										"type": "Expression"
 									},
 									"param_container_name": {
-										"value": "@pipeline().parameters.param_container_name",
+										"value": "@pipeline().parameters.param_query_container_name",
 										"type": "Expression"
 									}
 								}
@@ -302,8 +302,12 @@
 							"value": "@pipeline().parameters.param_storage_account_name",
 							"type": "Expression"
 						},
-						"param_container_name": {
-							"value": "@pipeline().parameters.param_container_name",
+						"param_query_container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"param_csv_container_name": {
+							"value": "@pipeline().parameters.param_csv_container_name",
 							"type": "Expression"
 						}
 					}
@@ -329,17 +333,20 @@
 			"param_CDA_Schema_Name": {
 				"type": "string"
 			},
-			"param_container_name": {
+			"param_csv_container_name": {
 				"type": "string"
 			},
 			"param_storage_account_name": {
+				"type": "string"
+			},
+			"param_query_container_name": {
 				"type": "string"
 			}
 		},
 		"variables": {
 			"var_Activity_Name": {
 				"type": "String",
-				"defaultValue": "PrimaryExaminer_Extract"
+				"defaultValue": "Folder_Extract"
 			},
 			"var_PL_Log_State_Ins": {
 				"type": "String",
