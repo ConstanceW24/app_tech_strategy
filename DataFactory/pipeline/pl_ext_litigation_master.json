@@ -283,6 +283,35 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "epl_ext_litigation_csv_generation",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "if_Prev_Litigation_PL_Complete_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "if_Prev_LitigationSecCounsel_PL_Complete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "epl_ext_litigation_csv_generation",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"parameters": {
