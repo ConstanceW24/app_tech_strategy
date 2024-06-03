@@ -163,7 +163,7 @@
 							"type": "Expression"
 						},
 						"pl_activity_name": {
-							"value": "@variables('var_LSC_Activity_Name')",
+							"value": "@variables('var_Activity_Name')",
 							"type": "Expression"
 						},
 						"pl_log_state": {
