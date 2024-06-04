@@ -429,7 +429,42 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log"
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+								"baseParameters": {
+									"Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									},
+									"in_pl_audit_id": {
+										"value": "@string(activity('dbx_Start_LSC_PL_Audit_Log').output.runOutput.pl_audit_id)",
+										"type": "Expression"
+									},
+									"pl_activity_name": {
+										"value": "@variables('var_LSC_Activity_Name')",
+										"type": "Expression"
+									},
+									"pl_log_state": {
+										"value": "@variables('var_PL_Log_State_Upd')",
+										"type": "Expression"
+									},
+									"pl_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"pl_status": {
+										"value": "@variables('var_PL_Log_Status_Success')",
+										"type": "Expression"
+									},
+									"pl_comments": " ",
+									"batch_id": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									}
+								}
 							},
 							"linkedServiceName": {
 								"referenceName": "claims_data_extraction",
@@ -456,7 +491,45 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log"
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+								"baseParameters": {
+									"Catalog_Name": {
+										"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+										"type": "Expression"
+									},
+									"Schema_Name": {
+										"value": "@pipeline().parameters.param_Refined_Schema_Name",
+										"type": "Expression"
+									},
+									"batch_id": {
+										"value": "@pipeline().parameters.param_Batch_ID",
+										"type": "Expression"
+									},
+									"in_pl_audit_id": {
+										"value": "@string(activity('dbx_Start_LSC_PL_Audit_Log').output.runOutput.pl_audit_id)",
+										"type": "Expression"
+									},
+									"pl_activity_name": {
+										"value": "@variables('var_LSC_Activity_Name')",
+										"type": "Expression"
+									},
+									"pl_comments": {
+										"value": "@activity('epl_ext_Litigation_SecCounsel_csv').Error.Message",
+										"type": "Expression"
+									},
+									"pl_log_state": {
+										"value": "@variables('var_PL_Log_State_Upd')",
+										"type": "Expression"
+									},
+									"pl_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"pl_status": {
+										"value": "@variables('var_PL_Status_Failure')",
+										"type": "Expression"
+									}
+								}
 							},
 							"linkedServiceName": {
 								"referenceName": "claims_data_extraction",
