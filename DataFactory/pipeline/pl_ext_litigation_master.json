@@ -380,6 +380,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('dbx_Start_PL_LSC_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
+						"type": "Expression"
+					},
 					"ifFalseActivities": [
 						{
 							"name": "epl_ext_Litigation_SecCounsel",
