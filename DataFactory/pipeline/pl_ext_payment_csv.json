@@ -154,7 +154,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "var_Payment_CP_FileName",
+					"variableName": "var_Payment_FileName",
 					"value": {
 						"value": "@if(equals(activity('dbx_Payment_FileName').output.runOutput, 'None'),'CCM_Folder_Daily',activity('dbx_Payment_FileName').output.runOutput)",
 						"type": "Expression"
