@@ -45,7 +45,8 @@
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
 							"type": "Expression"
 						},
-						"pl_comments": " "
+						"pl_comments": " ",
+						"in_pl_audit_id": " "
 					}
 				},
 				"linkedServiceName": {
@@ -96,7 +97,8 @@
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
 							"type": "Expression"
 						},
-						"pl_comments": " "
+						"pl_comments": " ",
+						"in_pl_audit_id": " "
 					}
 				},
 				"linkedServiceName": {
@@ -142,7 +144,7 @@
 										"type": "Expression"
 									},
 									"param_PL_Audit_ID": {
-										"value": "@activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id",
+										"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
 										"type": "Expression"
 									},
 									"param_CDA_Catalog_Name": {
