@@ -87,7 +87,7 @@
 							"value": "@pipeline().parameters.param_query_container_name",
 							"type": "Expression"
 						},
-						"Query": {
+						"query_location": {
 							"value": "@activity('dbx_Get_Litigation_SrcQry').output.runOutput",
 							"type": "Expression"
 						}
