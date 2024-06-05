@@ -5,7 +5,14 @@
 			{
 				"name": "dbx_Start_PL_LSC_Audit_Log",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "if_Prev_Litigation_PL_Complete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -309,12 +316,6 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if_Prev_Litigation_PL_Complete",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
 						"activity": "if_Prev_Litigation_SecCounsel_PL_Complete",
 						"dependencyConditions": [
 							"Succeeded"
@@ -409,7 +410,7 @@
 										"type": "Expression"
 									},
 									"param_PL_Audit_ID": {
-										"value": "@activity('dbx_Start_PL_LSC_Audit_Log').output.runOutput.pl_audit_id",
+										"value": "@string(activity('dbx_Start_PL_LSC_Audit_Log').output.runOutput.pl_audit_id)",
 										"type": "Expression"
 									},
 									"param_CDA_Catalog_Name": {

@@ -84,7 +84,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_File_TimeStamp",
+						"activity": "if_Prev_Litigation_PL_Complete",
 						"dependencyConditions": [
 							"Succeeded"
 						]
