@@ -303,7 +303,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_File_TimeStamp",
+						"activity": "if_Prev_Payment_PL_Complete",
 						"dependencyConditions": [
 							"Succeeded"
 						]

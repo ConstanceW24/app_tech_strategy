@@ -257,12 +257,6 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if_Prev_Payment_PL_Complete",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
 						"activity": "if_Prev_Payment_CP_PL_Complete_copy1",
 						"dependencyConditions": [
 							"Succeeded"
@@ -275,7 +269,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_ext_folder_csv_generation",
+						"referenceName": "pl_ext_payment_csv_generation",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -322,7 +316,14 @@
 			{
 				"name": "dbx_Start_PL_CP_Audit_Log",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "if_Prev_Payment_PL_Complete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -570,7 +571,7 @@
 				}
 			},
 			{
-				"name": "dbc_Sent_To_CSV_Updates",
+				"name": "dbx_Sent_To_CSV_Updates",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
