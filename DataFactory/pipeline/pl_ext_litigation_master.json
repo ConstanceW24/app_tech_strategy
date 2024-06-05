@@ -44,7 +44,8 @@
 						"Schema_Name": {
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
 							"type": "Expression"
-						}
+						},
+						"pl_comments": " "
 					}
 				},
 				"linkedServiceName": {
@@ -94,7 +95,8 @@
 						"Schema_Name": {
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
 							"type": "Expression"
-						}
+						},
+						"pl_comments": " "
 					}
 				},
 				"linkedServiceName": {
