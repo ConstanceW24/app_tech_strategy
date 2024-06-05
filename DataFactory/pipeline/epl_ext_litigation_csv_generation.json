@@ -145,7 +145,9 @@
 						"batch_id": {
 							"value": "@pipeline().parameters.param_Batch_ID",
 							"type": "Expression"
-						}
+						},
+						"pl_comments": " ",
+						"in_pl_audit_id": " "
 					}
 				},
 				"linkedServiceName": {
