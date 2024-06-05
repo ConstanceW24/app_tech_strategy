@@ -279,7 +279,7 @@
 										"value": "@pipeline().parameters.param_Batch_ID",
 										"type": "Expression"
 									},
-									"pl_comments ": " "
+									"pl_comments": " "
 								}
 							},
 							"linkedServiceName": {
