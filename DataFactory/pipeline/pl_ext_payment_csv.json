@@ -93,7 +93,7 @@
 				}
 			},
 			{
-				"name": "dbx_Payment_CP_Inc_Log_Updates",
+				"name": "dbx_Payment_Inc_Log_Updates",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
