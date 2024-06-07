@@ -152,7 +152,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"notebookPath": "dbx_End_PL_Audit_Log_F",
+								"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
 								"baseParameters": {
 									"batch_id": {
 										"value": "@pipeline().parameters.param_Batch_ID",
