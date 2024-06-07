@@ -447,6 +447,62 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "epl_ext_payment_master",
+				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_ext_payment_master",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"param_Batch_ID": {
+							"value": "@pipeline().parameters.param_Batch_ID",
+							"type": "Expression"
+						},
+						"param_MDO_FolderName": {
+							"value": "@pipeline().parameters.param_MDO_FolderName",
+							"type": "Expression"
+						},
+						"param_CDA_Catalog_Name": {
+							"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+							"type": "Expression"
+						},
+						"param_Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"param_Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"param_CDA_Schema_Name": {
+							"value": "@pipeline().parameters.param_CDA_Schema_Name",
+							"type": "Expression"
+						},
+						"param_csv_container_name": {
+							"value": "@pipeline().parameters.param_csv_container_name",
+							"type": "Expression"
+						},
+						"param_storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
+						},
+						"param_query_container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
