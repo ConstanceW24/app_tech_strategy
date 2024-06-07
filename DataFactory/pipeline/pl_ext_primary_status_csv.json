@@ -157,7 +157,7 @@
 				"typeProperties": {
 					"variableName": "var_PrimaryStatus_FileName",
 					"value": {
-						"value": "@if(equals(activity('dbx_Primary_Status_FileName').output.runOutput, 'None'),'CCM_Folder_Primary_Status_Change_Daily',activity('dbx_Primary_Status_FileName').output.runOutput)",
+						"value": "@if(equals(activity('dbx_Primary_Status_FileName').output.runOutput, 'None'),'CCM_Folder_Status_Change_Daily',activity('dbx_Primary_Status_FileName').output.runOutput)",
 						"type": "Expression"
 					}
 				}
