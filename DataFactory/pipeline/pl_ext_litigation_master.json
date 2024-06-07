@@ -592,7 +592,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
 					"baseParameters": {
-						"Query": "UPDATE STG_EXT_Payment SET Sent_To_CSV = 1 WHERE Sent_To_CSV = 0;\n",
+						"Query": "UPDATE STG_EXT_Litigation SET Sent_To_CSV = 1 WHERE Sent_To_CSV = 0;",
 						"Schema_Name": {
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
 							"type": "Expression"
@@ -631,7 +631,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
 					"baseParameters": {
-						"Query": "UPDATE STG_EXT_Payment SET Sent_To_CSV = 1 WHERE Sent_To_CSV = 0;\n",
+						"Query": "UPDATE STG_EXT_Litigation_SecCounsel SET Sent_To_CSV = 1 WHERE Sent_To_CSV = 0;",
 						"Schema_Name": {
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
 							"type": "Expression"
