@@ -241,6 +241,45 @@
 							},
 							"firstRowOnly": false
 						}
+					},
+					{
+						"name": "data_reconciliation",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "db_process_node",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/adf_setup.py",
+							"parameters": [
+								"data_reconciliation_parallel",
+								"@activity('get_gw_adf_pl_config').output.value[2].param_value",
+								"@activity('get_gw_adf_pl_config').output.value[0].param_value",
+								"@activity('get_gw_adf_pl_config').output.value[4].param_value",
+								"@activity('get_gw_adf_pl_config').output.value[6].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/2eca81e7_7d02_4305_8409_37440922f67e/cdaaccelerator-0.0.1-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "CDA_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"policy": {
