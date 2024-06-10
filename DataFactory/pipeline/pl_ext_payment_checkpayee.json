@@ -120,7 +120,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
 					"baseParameters": {
-						"src_table": "SRC_EXT_Payment_Checkpayee",
+						"src_table": "SRC_EXT_Payment_CheckPayee",
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
