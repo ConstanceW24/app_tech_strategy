@@ -5,14 +5,7 @@
 			{
 				"name": "dbx_Start_PL_LSC_Audit_Log",
 				"type": "DatabricksNotebook",
-				"dependsOn": [
-					{
-						"activity": "dbx_Start_PL_Audit_Log",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -118,7 +111,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "dbx_Start_PL_LSC_Audit_Log",
+						"activity": "dbx_Start_PL_Audit_Log",
 						"dependencyConditions": [
 							"Succeeded"
 						]
