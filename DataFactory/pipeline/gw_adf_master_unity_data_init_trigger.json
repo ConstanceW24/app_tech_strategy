@@ -64,7 +64,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/2eca81e7_7d02_4305_8409_37440922f67e/cdaaccelerator-0.0.1-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/5610c152_daa6_4f11_9fb9_0fe1919dfd59/cdaaccelerator-0.0.1-py3-none-any.whl"
 						}
 					]
 				},
@@ -140,7 +140,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/2eca81e7_7d02_4305_8409_37440922f67e/cdaaccelerator-0.0.1-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/5610c152_daa6_4f11_9fb9_0fe1919dfd59/cdaaccelerator-0.0.1-py3-none-any.whl"
 						}
 					]
 				},
