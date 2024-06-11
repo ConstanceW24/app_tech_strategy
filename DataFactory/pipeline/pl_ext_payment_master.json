@@ -261,6 +261,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "if_Prev_Payment_PL_Complete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -316,14 +322,7 @@
 			{
 				"name": "dbx_Start_PL_CP_Audit_Log",
 				"type": "DatabricksNotebook",
-				"dependsOn": [
-					{
-						"activity": "if_Prev_Payment_PL_Complete",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
