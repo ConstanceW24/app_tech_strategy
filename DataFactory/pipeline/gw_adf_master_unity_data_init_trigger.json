@@ -37,7 +37,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "get_gw_adf_pl_config",
+						"activity": "generate_config",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -136,6 +136,46 @@
 						"@activity('get_gw_adf_pl_config').output.value[2].param_value",
 						"@activity('get_gw_adf_pl_config').output.value[0].param_value",
 						"@activity('get_gw_adf_pl_config').output.value[4].param_value",
+						"@activity('get_gw_adf_pl_config').output.value[6].param_value"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/5610c152_daa6_4f11_9fb9_0fe1919dfd59/cdaaccelerator-0.0.1-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "CDA_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "generate_config",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [
+					{
+						"activity": "get_gw_adf_pl_config",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/adf_setup.py",
+					"parameters": [
+						"generate_config",
+						"@activity('get_gw_adf_pl_config').output.value[2].param_value",
+						"@activity('get_gw_adf_pl_config').output.value[0].param_value",
+						"@activity('get_gw_adf_pl_config').output.value[1].param_value",
+						"@activity('get_gw_adf_pl_config').output.value[5].param_value",
 						"@activity('get_gw_adf_pl_config').output.value[6].param_value"
 					],
 					"libraries": [
