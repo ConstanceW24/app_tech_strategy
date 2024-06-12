@@ -312,7 +312,7 @@
 			},
 			"var_Refined_Schema_Name": {
 				"type": "String",
-				"defaultValue": "claims"
+				"defaultValue": "claims_staging"
 			},
 			"var_CDA_Schema_Name": {
 				"type": "String",
