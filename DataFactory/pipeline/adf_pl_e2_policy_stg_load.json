@@ -406,6 +406,47 @@
 					"referenceName": "AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "POLICY_PREMIUM Stage load",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [
+					{
+						"activity": "adf_pl_params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+					"parameters": [
+						"stage_load",
+						"@activity('adf_pl_params').output.value[0].param_value",
+						"@activity('adf_pl_params').output.value[1].param_value",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"POLICY_PREMIUM",
+						"raw to stage",
+						"@activity('adf_pl_params').output.value[3].param_value"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/c4cdda1d_b2cf_4c19_98fc_61bbb6e7d1e2/industryclouddatapipeline-0.1.4-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"annotations": [],
