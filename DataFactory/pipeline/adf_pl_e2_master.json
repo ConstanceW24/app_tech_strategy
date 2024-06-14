@@ -69,7 +69,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "execute policy_risk_unit_load",
+						"activity": "adf_pl_e2_policy_coverage",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -259,6 +259,29 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "adf_pl_e2_policy_risk_unit_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "adf_pl_e2_policy_coverage",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "execute policy_risk_unit_load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_e2_policy_covergae_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
