@@ -5,6 +5,8 @@
 			{
 				"name": "adf_pl_params",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -37,6 +39,8 @@
 				"name": "LOB_LOCATION Refined load",
 				"description": "LOB_LOCATION",
 				"type": "DatabricksSparkPython",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
