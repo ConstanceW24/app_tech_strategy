@@ -1,9 +1,9 @@
 {
-	"name": "pl_ext_feature",
+	"name": "pl_ext_feature_phones",
 	"properties": {
 		"activities": [
 			{
-				"name": "dbx_Get_Feature_SrcQry",
+				"name": "dbx_Get_Feature_Phones_SrcQry",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -53,7 +53,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_Get_Feature_SrcQry",
+						"activity": "dbx_Get_Feature_Phones_SrcQry",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -70,7 +70,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
 					"baseParameters": {
-						"Table_Name": "SRC_EXT_Feature",
+						"Table_Name": "SRC_EXT_Feature_Phones",
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -88,7 +88,7 @@
 							"type": "Expression"
 						},
 						"query_location": {
-							"value": "@activity('dbx_Get_Feature_SrcQry').output.runOutput",
+							"value": "@activity('dbx_Get_Feature_Phones_SrcQry').output.runOutput",
 							"type": "Expression"
 						}
 					}
@@ -120,7 +120,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
 					"baseParameters": {
-						"src_table": "SRC_EXT_Feature",
+						"src_table": "SRC_EXT_Feature_Phones",
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -182,61 +182,9 @@
 				}
 			},
 			{
-				"name": "dbx_Get_Feature_Eco_SrcQry",
-				"type": "DatabricksNotebook",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_Get_feature_eco_SRC_Query",
-					"baseParameters": {
-						"Refined_Catalog_Name": {
-							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-							"type": "Expression"
-						},
-						"Refined_Schema_Name": {
-							"value": "@pipeline().parameters.param_Refined_Schema_Name",
-							"type": "Expression"
-						},
-						"CDA_Catalog_Name": {
-							"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-							"type": "Expression"
-						},
-						"CDA_Schema_Name": {
-							"value": "@pipeline().parameters.param_CDA_Schema_Name",
-							"type": "Expression"
-						},
-						"container_name": {
-							"value": "@pipeline().parameters.param_query_container_name",
-							"type": "Expression"
-						},
-						"storage_account_name": {
-							"value": "@pipeline().parameters.param_storage_account_name",
-							"type": "Expression"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "claims_data_extraction",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
 				"name": "dbx_Load_SRC_EXT_Feature_Eco",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
-					{
-						"activity": "dbx_Get_Feature_Eco_SrcQry",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
 					{
 						"activity": "dbx_Load_SRC_EXT_Feature",
 						"dependencyConditions": [
@@ -255,7 +203,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
 					"baseParameters": {
-						"Table_Name": "SRC_EXT_Feature",
+						"Table_Name": "SRC_EXT_Feature_Phones",
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -273,7 +221,7 @@
 							"type": "Expression"
 						},
 						"query_location": {
-							"value": "@activity('dbx_Get_Feature_Eco_SrcQry').output.runOutput",
+							"value": "@activity('dbx_Get_Litigation_SrcQry').output.runOutput",
 							"type": "Expression"
 						}
 					}
