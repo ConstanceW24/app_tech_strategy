@@ -112,7 +112,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_usp_Feature_Inc_Log_Updates",
+					"notebookPath": "/Shared/Claims Remediation/Feature Phones SPs/NB_usp_Feature_Phones_Inc_Log_Updates",
 					"baseParameters": {
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -154,7 +154,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "var_Feature_Phones_FileName",
+					"variableName": "var_Feature_FileName",
 					"value": {
 						"value": "@if(equals(activity('dbx_feature_phones_FileName').output.runOutput,'None'), 'CCM_Folder_Feature_Phones_Change_Daily',activity('dbx_feature_phones_FileName').output.runOutput)",
 						"type": "Expression"
