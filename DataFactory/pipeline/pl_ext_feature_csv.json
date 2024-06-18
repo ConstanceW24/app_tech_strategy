@@ -154,7 +154,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "var_Litigation_FileName",
+					"variableName": "var_Feature_FileName",
 					"value": {
 						"value": "@if(equals(activity('dbx_feature_FileName').output.runOutput,'None'), 'CCM_Folder_Feature_Change_Daily',activity('dbx_feature_FileName').output.runOutput)",
 						"type": "Expression"
@@ -192,7 +192,7 @@
 			}
 		},
 		"variables": {
-			"var_Litigation_FileName": {
+			"var_Feature_FileName": {
 				"type": "String"
 			}
 		},
