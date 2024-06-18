@@ -304,7 +304,7 @@
 			},
 			"var_CDA_Catalog_Name": {
 				"type": "String",
-				"defaultValue": "dev_dds_edl_raw"
+				"defaultValue": "dev_dds_edl_refined"
 			},
 			"var_Refined_Catalog_Name": {
 				"type": "String",
@@ -312,11 +312,11 @@
 			},
 			"var_Refined_Schema_Name": {
 				"type": "String",
-				"defaultValue": "claims"
+				"defaultValue": "claims_staging"
 			},
 			"var_CDA_Schema_Name": {
 				"type": "String",
-				"defaultValue": "claimscenter_dbo_dbo"
+				"defaultValue": "claims"
 			},
 			"var_param_query_container_name": {
 				"type": "String",

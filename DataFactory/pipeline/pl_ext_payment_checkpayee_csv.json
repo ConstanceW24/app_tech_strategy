@@ -1,9 +1,9 @@
 {
-	"name": "pl_ext_primary_status_csv",
+	"name": "pl_ext_payment_checkpayee_csv",
 	"properties": {
 		"activities": [
 			{
-				"name": "dbx_Primary_Status_FileName",
+				"name": "dbx_Payment_CP_FileName",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -18,7 +18,7 @@
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
 					"baseParameters": {
 						"Query": "SELECT Config_Value FROM Master_Config WHERE Config_Key ={} AND Config_IsActive = {}",
-						"Parameters_List": "'Primary_Status_File_Name',1",
+						"Parameters_List": " 'Payment_Payees_File_Name',1",
 						"Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -35,12 +35,11 @@
 				}
 			},
 			{
-				"name": "dbx_copy_Primary_Status_CSV_to_mDo",
-				"description": "",
+				"name": "dbx_copy_Payment_CP_CSV_to_mDo",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "sv_Primary_Status_FileName",
+						"activity": "sv_Payment_CP_FileName",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -70,20 +69,20 @@
 							"type": "Expression"
 						},
 						"file_name": {
-							"value": "@concat(variables('var_PrimaryStatus_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+							"value": "@concat(variables('var_Payment_CP_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
 							"type": "Expression"
 						},
-						"path": "primarystatus/csv_generation.sql",
+						"path": "paymentcheckpayee/csv_generation.sql",
 						"storage_account_name": {
 							"value": "@pipeline().parameters.param_storage_account_name",
 							"type": "Expression"
 						},
-						"csv_container_name": {
-							"value": "@pipeline().parameters.param_csv_container_name",
-							"type": "Expression"
-						},
 						"query_container_name": {
 							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"csv_container_name": {
+							"value": "@pipeline().parameters.param_csv_container_name",
 							"type": "Expression"
 						}
 					}
@@ -94,11 +93,11 @@
 				}
 			},
 			{
-				"name": "dbx_Primary_Status_Inc_Log_Updates",
+				"name": "dbx_Payment_CP_Inc_Log_Updates",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_copy_Primary_Status_CSV_to_mDo",
+						"activity": "dbx_copy_Payment_CP_CSV_to_mDo",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -113,7 +112,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Primary Status SPs/NB_usp_primary_status_Inc_Log_Updates",
+					"notebookPath": "/Shared/Claims Remediation/Payment CP SPs/NB_usp_Payment_checkpayee_Inc_Log_Updates",
 					"baseParameters": {
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -123,12 +122,12 @@
 							"value": "@pipeline().parameters.param_Refined_Schema_Name",
 							"type": "Expression"
 						},
-						"CDA_Catalog_Name": {
-							"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-							"type": "Expression"
-						},
 						"CDA_Schema_Name": {
 							"value": "@pipeline().parameters.param_CDA_Schema_Name",
+							"type": "Expression"
+						},
+						"CDA_Catalog_Name": {
+							"value": "@pipeline().parameters.param_CDA_Catalog_Name",
 							"type": "Expression"
 						}
 					}
@@ -139,11 +138,11 @@
 				}
 			},
 			{
-				"name": "sv_Primary_Status_FileName",
+				"name": "sv_Payment_CP_FileName",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "dbx_Primary_Status_FileName",
+						"activity": "dbx_Payment_CP_FileName",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -155,9 +154,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "var_PrimaryStatus_FileName",
+					"variableName": "var_Payment_CP_FileName",
 					"value": {
-						"value": "@if(equals(activity('dbx_Primary_Status_FileName').output.runOutput, 'None'),'CCM_Folder_Status_Change_Daily',activity('dbx_Primary_Status_FileName').output.runOutput)",
+						"value": "@if(equals(activity('dbx_Payment_CP_FileName').output.runOutput, 'None'),'CCM_Feature_Payment_Log_Payees_Daily',activity('dbx_Payment_CP_FileName').output.runOutput)",
 						"type": "Expression"
 					}
 				}
@@ -193,7 +192,7 @@
 			}
 		},
 		"variables": {
-			"var_PrimaryStatus_FileName": {
+			"var_Payment_CP_FileName": {
 				"type": "String"
 			}
 		},
@@ -201,7 +200,7 @@
 			"name": "Claims Extract"
 		},
 		"annotations": [],
-		"lastPublishTime": "2024-05-16T13:43:53Z"
+		"lastPublishTime": "2024-05-10T06:59:38Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
