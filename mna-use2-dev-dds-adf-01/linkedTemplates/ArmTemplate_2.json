@@ -202,6 +202,9 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "E2_CYBER"
+				},
 				"annotations": [],
 				"lastPublishTime": "2024-04-17T15:53:31Z"
 			},
@@ -259,6 +262,9 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_CYBER"
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:09Z"
@@ -318,6 +324,9 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "E2_CYBER"
+				},
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:09Z"
 			},
@@ -376,6 +385,9 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "E2_CYBER"
+				},
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:09Z"
 			},
@@ -433,6 +445,9 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_CYBER"
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:09Z"
@@ -2028,6 +2043,9 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_CYBER"
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:11Z"
