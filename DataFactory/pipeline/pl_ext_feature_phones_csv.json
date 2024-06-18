@@ -1,9 +1,9 @@
 {
-	"name": "pl_ext_feature_csv",
+	"name": "pl_ext_feature_phones_csv",
 	"properties": {
 		"activities": [
 			{
-				"name": "dbx_feature_FileName",
+				"name": "dbx_feature_phones_FileName",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -35,11 +35,11 @@
 				}
 			},
 			{
-				"name": "dbx_copy_feature_CSV_to_mDo",
+				"name": "dbx_copy_feature_phones_CSV_to_mDo",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "sv_feature_FileName",
+						"activity": "sv_feature_phones_FileName",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -69,10 +69,10 @@
 							"type": "Expression"
 						},
 						"file_name": {
-							"value": "@concat(variables('var_Litigation_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+							"value": "@concat(variables('var_Feature_Phones_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
 							"type": "Expression"
 						},
-						"path": "feature/csv_generation.sql",
+						"path": "featurephones/csv_generation.sql",
 						"storage_account_name": {
 							"value": "@pipeline().parameters.param_storage_account_name",
 							"type": "Expression"
@@ -93,11 +93,11 @@
 				}
 			},
 			{
-				"name": "dbx_feature_Inc_Log_Updates",
+				"name": "dbx_feature_phones_Inc_Log_Updates",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_copy_feature_CSV_to_mDo",
+						"activity": "dbx_copy_feature_phones_CSV_to_mDo",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -138,11 +138,11 @@
 				}
 			},
 			{
-				"name": "sv_feature_FileName",
+				"name": "sv_feature_phones_FileName",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "dbx_feature_FileName",
+						"activity": "dbx_feature_phones_FileName",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -154,9 +154,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "var_Litigation_FileName",
+					"variableName": "var_Feature_Phones_FileName",
 					"value": {
-						"value": "@if(equals(activity('dbx_feature_FileName').output.runOutput,'None'), 'CCM_Folder_Feature_Change_Daily',activity('dbx_feature_FileName').output.runOutput)",
+						"value": "@if(equals(activity('dbx_feature_phones_FileName').output.runOutput,'None'), 'CCM_Folder_Feature_Phones_Change_Daily',activity('dbx_feature_phones_FileName').output.runOutput)",
 						"type": "Expression"
 					}
 				}
@@ -192,7 +192,7 @@
 			}
 		},
 		"variables": {
-			"var_Litigation_FileName": {
+			"var_Feature_Phones_FileName": {
 				"type": "String"
 			}
 		},
