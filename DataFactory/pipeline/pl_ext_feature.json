@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Litigation SPs/NB_Get_Litigation_Src_Qry",
+					"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_Get_feature_SRC_Query",
 					"baseParameters": {
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -156,7 +156,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Litigation SPs/NB_usp_Litigation_Upsert",
+					"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_STG_Feature_Upsert",
 					"baseParameters": {
 						"batch_id": {
 							"value": "@pipeline().parameters.param_Batch_ID",
@@ -194,7 +194,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Litigation SPs/NB_Get_Litigation_Src_Qry",
+					"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_Get_feature_eco_SRC_Query",
 					"baseParameters": {
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
