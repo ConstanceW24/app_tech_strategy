@@ -329,7 +329,7 @@
 							"type": "Expression"
 						},
 						"pl_activity_name": {
-							"value": "@variables('var_FP_Activity_Name')",
+							"value": "@variables('var_Phones_Activity_Name')",
 							"type": "Expression"
 						},
 						"in_pl_audit_id": " ",
@@ -410,7 +410,7 @@
 										"type": "Expression"
 									},
 									"pl_activity_name": {
-										"value": "@variables('var_FP_Activity_Name')",
+										"value": "@variables('var_Phones_Activity_Name')",
 										"type": "Expression"
 									},
 									"pl_log_state": {
@@ -530,7 +530,7 @@
 										"type": "Expression"
 									},
 									"pl_activity_name": {
-										"value": "@variables('var_FP_Activity_Name')",
+										"value": "@variables('var_Phones_Activity_Name')",
 										"type": "Expression"
 									},
 									"pl_comments": {
@@ -578,7 +578,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "dbx_End_FMA_PL_Audit_Log_S_copy1",
+							"name": "dbx_End_FMA_PL_Audit_Log_S",
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
@@ -612,7 +612,7 @@
 										"type": "Expression"
 									},
 									"pl_activity_name": {
-										"value": "@variables('var_FMA_Activity_Name')",
+										"value": "@variables('var_MA_Activity_Name')",
 										"type": "Expression"
 									},
 									"pl_log_state": {
@@ -732,7 +732,7 @@
 										"type": "Expression"
 									},
 									"pl_activity_name": {
-										"value": "@variables('var_FMA_Activity_Name')",
+										"value": "@variables('var_MA_Activity_Name')",
 										"type": "Expression"
 									},
 									"pl_comments": {
@@ -792,7 +792,7 @@
 							"type": "Expression"
 						},
 						"pl_activity_name": {
-							"value": "@variables('var_FMA_Activity_Name')",
+							"value": "@variables('var_MA_Activity_Name')",
 							"type": "Expression"
 						},
 						"in_pl_audit_id": " ",
@@ -875,13 +875,13 @@
 				"type": "String",
 				"defaultValue": "Failed"
 			},
-			"var_FMA_Activity_Name": {
+			"var_MA_Activity_Name": {
 				"type": "String",
-				"defaultValue": "Feature_MA_CSV"
+				"defaultValue": "Exposure_MailingAddress_Extract"
 			},
-			"var_FP_Activity_Name": {
+			"var_Phones_Activity_Name": {
 				"type": "String",
-				"defaultValue": "Feature_Phone_CSV"
+				"defaultValue": "Exposure_Phones_Extract"
 			}
 		},
 		"folder": {
