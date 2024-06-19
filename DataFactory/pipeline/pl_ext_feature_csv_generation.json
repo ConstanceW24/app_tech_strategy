@@ -371,7 +371,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('dbx_Start_CP_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
+						"value": "@equals(activity('dbx_Start_FP_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -573,7 +573,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('dbx_Start_CP_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
+						"value": "@equals(activity('dbx_Start_FMA_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
