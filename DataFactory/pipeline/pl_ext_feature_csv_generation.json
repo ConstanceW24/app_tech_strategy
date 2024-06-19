@@ -329,7 +329,7 @@
 							"type": "Expression"
 						},
 						"pl_activity_name": {
-							"value": "@variables('var_CP_Activity_Name')",
+							"value": "@variables('var_FP_Activity_Name')",
 							"type": "Expression"
 						},
 						"in_pl_audit_id": " ",
@@ -792,7 +792,7 @@
 							"type": "Expression"
 						},
 						"pl_activity_name": {
-							"value": "@variables('var_CP_Activity_Name')",
+							"value": "@variables('var_FMA_Activity_Name')",
 							"type": "Expression"
 						},
 						"in_pl_audit_id": " ",
@@ -875,7 +875,7 @@
 				"type": "String",
 				"defaultValue": "Failed"
 			},
-			"var_FM_Activity_Name": {
+			"var_FMA_Activity_Name": {
 				"type": "String",
 				"defaultValue": "Feature_MA_CSV"
 			},
