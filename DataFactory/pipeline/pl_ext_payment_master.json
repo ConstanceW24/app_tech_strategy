@@ -257,7 +257,13 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if_Prev_Payment_CP_PL_Complete_copy1",
+						"activity": "if_Prev_Payment_CP_PL_Complete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "if_Prev_Payment_PL_Complete",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -316,14 +322,7 @@
 			{
 				"name": "dbx_Start_PL_CP_Audit_Log",
 				"type": "DatabricksNotebook",
-				"dependsOn": [
-					{
-						"activity": "if_Prev_Payment_PL_Complete",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -373,7 +372,7 @@
 				}
 			},
 			{
-				"name": "if_Prev_Payment_CP_PL_Complete_copy1",
+				"name": "if_Prev_Payment_CP_PL_Complete",
 				"type": "IfCondition",
 				"dependsOn": [
 					{

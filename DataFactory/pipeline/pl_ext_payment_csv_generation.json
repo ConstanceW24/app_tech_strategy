@@ -303,7 +303,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "if_Prev_Payment_PL_Complete",
+						"activity": "dbx_File_TimeStamp",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -592,7 +592,7 @@
 		"variables": {
 			"var_Activity_Name": {
 				"type": "String",
-				"defaultValue": "Folder_CSV"
+				"defaultValue": "Payment_CSV"
 			},
 			"var_PL_Log_State_Ins": {
 				"type": "String",

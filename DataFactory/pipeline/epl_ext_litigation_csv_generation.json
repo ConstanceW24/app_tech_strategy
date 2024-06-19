@@ -101,12 +101,6 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "if_Prev_Litigation_PL_Complete",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
 						"activity": "dbx_File_TimeStamp",
 						"dependencyConditions": [
 							"Succeeded"
