@@ -1,9 +1,9 @@
 {
-	"name": "pl_ext_litigation_csv",
+	"name": "pl_ext_feature_csv",
 	"properties": {
 		"activities": [
 			{
-				"name": "dbx_litigation_FileName",
+				"name": "dbx_feature_FileName",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -18,7 +18,7 @@
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
 					"baseParameters": {
 						"Query": "SELECT Config_Value FROM Master_Config WHERE Config_Key ={} AND Config_IsActive = {}",
-						"Parameters_List": "'Litigation_File_Name',1",
+						"Parameters_List": "'Feature_File_Name',1",
 						"Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -35,11 +35,11 @@
 				}
 			},
 			{
-				"name": "dbx_copy_litigation_CSV_to_mDo",
+				"name": "dbx_copy_feature_CSV_to_mDo",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "sv_litigation_FileName",
+						"activity": "sv_feature_FileName",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -69,10 +69,10 @@
 							"type": "Expression"
 						},
 						"file_name": {
-							"value": "@concat(variables('var_Litigation_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+							"value": "@concat(variables('var_Feature_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
 							"type": "Expression"
 						},
-						"path": "litigation/csv_generation.sql",
+						"path": "feature/csv_generation.sql",
 						"storage_account_name": {
 							"value": "@pipeline().parameters.param_storage_account_name",
 							"type": "Expression"
@@ -93,11 +93,11 @@
 				}
 			},
 			{
-				"name": "dbx_litigation_Inc_Log_Updates",
+				"name": "dbx_feature_Inc_Log_Updates",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_copy_litigation_CSV_to_mDo",
+						"activity": "dbx_copy_feature_CSV_to_mDo",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -112,7 +112,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Litigation SPs/NB_usp_Litigation_Inc_Log_Updates",
+					"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_usp_Feature_Inc_Log_Updates",
 					"baseParameters": {
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -138,11 +138,11 @@
 				}
 			},
 			{
-				"name": "sv_litigation_FileName",
+				"name": "sv_feature_FileName",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "dbx_litigation_FileName",
+						"activity": "dbx_feature_FileName",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -154,9 +154,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "var_Litigation_FileName",
+					"variableName": "var_Feature_FileName",
 					"value": {
-						"value": "@if(equals(activity('dbx_litigation_FileName').output.runOutput,'None'), 'CCM_Folder_Litigation_Change_Daily',activity('dbx_litigation_FileName').output.runOutput)",
+						"value": "@if(equals(activity('dbx_feature_FileName').output.runOutput,'None'), 'CCM_Folder_Feature_Change_Daily',activity('dbx_feature_FileName').output.runOutput)",
 						"type": "Expression"
 					}
 				}
@@ -192,7 +192,7 @@
 			}
 		},
 		"variables": {
-			"var_Litigation_FileName": {
+			"var_Feature_FileName": {
 				"type": "String"
 			}
 		},

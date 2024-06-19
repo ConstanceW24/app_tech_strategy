@@ -1,0 +1,216 @@
+{
+	"name": "pl_ext_feature_mailingaddress",
+	"properties": {
+		"activities": [
+			{
+				"name": "dbx_Get_Feature_MA_SrcQry",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Feature Phones SPs/NB_Get_feature_Phones_SRC_Query",
+					"baseParameters": {
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"CDA_Catalog_Name": {
+							"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+							"type": "Expression"
+						},
+						"CDA_Schema_Name": {
+							"value": "@pipeline().parameters.param_CDA_Schema_Name",
+							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dbx_Gen_Hash_SRC",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dbx_Load_SRC_EXT_Feature_MA_SrcQry",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
+					"baseParameters": {
+						"src_table": "SRC_EXT_Feature_MailingAddress",
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dbx_STG_Feature_MA_Upsert",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dbx_Gen_Hash_SRC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Feature Ma SPs/NB_usp_Feature_MA_Upsert",
+					"baseParameters": {
+						"batch_id": {
+							"value": "@pipeline().parameters.param_Batch_ID",
+							"type": "Expression"
+						},
+						"PL_Audit_ID": {
+							"value": "@pipeline().parameters.param_PL_Audit_ID",
+							"type": "Expression"
+						},
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dbx_Load_SRC_EXT_Feature_MA_SrcQry",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dbx_Get_Feature_MA_SrcQry",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
+					"baseParameters": {
+						"Table_Name": "SRC_EXT_Feature_MailingAddress",
+						"Refined_Catalog_Name": {
+							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+							"type": "Expression"
+						},
+						"Refined_Schema_Name": {
+							"value": "@pipeline().parameters.param_Refined_Schema_Name",
+							"type": "Expression"
+						},
+						"storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"query_location": {
+							"value": "@activity('dbx_Get_Feature_MA_SrcQry').output.runOutput",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "claims_data_extraction",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"param_Batch_ID": {
+				"type": "string"
+			},
+			"param_PL_Audit_ID": {
+				"type": "string"
+			},
+			"param_CDA_Catalog_Name": {
+				"type": "string"
+			},
+			"param_CDA_Schema_Name": {
+				"type": "string"
+			},
+			"param_Refined_Catalog_Name": {
+				"type": "string"
+			},
+			"param_Refined_Schema_Name": {
+				"type": "string"
+			},
+			"param_query_container_name": {
+				"type": "string"
+			},
+			"param_storage_account_name": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Claims Extract"
+		},
+		"annotations": []
+	}
+}
