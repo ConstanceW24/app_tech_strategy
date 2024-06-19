@@ -376,7 +376,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "dbx_End_CP_PL_Audit_Log_S",
+							"name": "dbx_End_FP_PL_Audit_Log_S",
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
@@ -492,7 +492,7 @@
 							}
 						},
 						{
-							"name": "dbx_End_CP_PL_Audit_Log_F",
+							"name": "dbx_End_FP_PL_Audit_Log_F",
 							"type": "DatabricksNotebook",
 							"dependsOn": [
 								{
