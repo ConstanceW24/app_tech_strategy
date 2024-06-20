@@ -1,0 +1,54 @@
+{
+	"name": "adf_pl_e2_policy_load_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "execute policy_lob_stg_load",
+				"description": "Loading the stage tables under Policy_Risk_Unit\n",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_e2_policy_stg_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "execute policy_risk_unit_refined_load",
+				"description": "Loading the Refined Tables under Policy_Risk_Unit",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "execute policy_lob_stg_load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_e2_policy_refined_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "E2_Cyber_clone"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-16T09:54:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
