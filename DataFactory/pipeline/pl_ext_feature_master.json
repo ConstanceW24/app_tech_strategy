@@ -55,7 +55,7 @@
 				}
 			},
 			{
-				"name": "if_Prev_Payment_PL_Complete",
+				"name": "if_Prev_Feature_PL_Complete",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -263,7 +263,7 @@
 						]
 					},
 					{
-						"activity": "if_Prev_Payment_PL_Complete",
+						"activity": "if_Prev_Feature_PL_Complete",
 						"dependencyConditions": [
 							"Succeeded"
 						]
