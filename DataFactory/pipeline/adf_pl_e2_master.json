@@ -31,7 +31,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
 						}
 					]
 				},
@@ -94,7 +94,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/4977be7f_849e_4852_80e6_c61771709ca5/industryclouddatapipeline-0.0.7-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
 						}
 					]
 				},
@@ -166,7 +166,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
 						}
 					]
 				},
@@ -207,7 +207,7 @@
 					],
 					"libraries": [
 						{
-							"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
 						}
 					]
 				},
