@@ -154,7 +154,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "var_Feature_FileName",
+					"variableName": "var_Feature_Phones_FileName",
 					"value": {
 						"value": "@if(equals(activity('dbx_feature_phones_FileName').output.runOutput,'None'), 'CCM_Folder_Feature_Phones_Change_Daily',activity('dbx_feature_phones_FileName').output.runOutput)",
 						"type": "Expression"
