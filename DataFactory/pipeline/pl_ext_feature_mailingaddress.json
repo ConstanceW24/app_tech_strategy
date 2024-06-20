@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Feature Phones SPs/NB_Get_feature_Phones_SRC_Query",
+					"notebookPath": "/Shared/Claims Remediation/Feature Ma SPs/NB_Get_feature_MA_SRC_Query",
 					"baseParameters": {
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
