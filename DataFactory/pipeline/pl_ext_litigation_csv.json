@@ -156,7 +156,7 @@
 				"typeProperties": {
 					"variableName": "var_Litigation_FileName",
 					"value": {
-						"value": "@if(equals(activity('dbx_litigation_FileName').output.runOutput,'None'), 'CCM_Folder_Litigation_Change_Daily',activity('dbx_litigation_FileName').output.runOutput)",
+						"value": "@if(equals(activity('dbx_litigation_FileName').output.runOutput,'None'), 'CCM_Folder_Litigation_Daily',activity('dbx_litigation_FileName').output.runOutput)",
 						"type": "Expression"
 					}
 				}
