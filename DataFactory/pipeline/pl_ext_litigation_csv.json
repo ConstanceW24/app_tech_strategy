@@ -39,7 +39,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "sv_litihgation_FileName",
+						"activity": "sv_litigation_FileName",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -138,7 +138,7 @@
 				}
 			},
 			{
-				"name": "sv_litihgation_FileName",
+				"name": "sv_litigation_FileName",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
