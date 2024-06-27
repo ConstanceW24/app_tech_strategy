@@ -186,7 +186,7 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
-						"LOB_LOCATION",
+						"LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE",
 						"raw to stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
@@ -205,6 +205,8 @@
 				"name": "LOB_LOCATION Stage load",
 				"description": "policy_nonpremium_transaction",
 				"type": "DatabricksSparkPython",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "POLICY_LOB_RISK_UNIT_SEGMENT Stage load",
