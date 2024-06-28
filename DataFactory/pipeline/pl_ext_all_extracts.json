@@ -592,6 +592,10 @@
 						"param_query_container_name": {
 							"value": "@pipeline().parameters.param_query_container_name",
 							"type": "Expression"
+						},
+						"param_csv_storage_account_name": {
+							"value": "@pipeline().parameters.param_csv_storage_account_name",
+							"type": "Expression"
 						}
 					}
 				}
