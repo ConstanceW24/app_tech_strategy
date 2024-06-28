@@ -65,6 +65,10 @@
 						"param_csv_container_name": {
 							"value": "@variables('var_param_csv_container_name')",
 							"type": "Expression"
+						},
+						"param_csv_storage_account_name": {
+							"value": "@variables('var_param_csv_storage_account_name')",
+							"type": "Expression"
 						}
 					}
 				}
