@@ -328,7 +328,11 @@
 			},
 			"var_param_csv_container_name": {
 				"type": "String",
-				"defaultValue": "test"
+				"defaultValue": "claimcenter-drop-container"
+			},
+			"var_param_csv_storage_account_name": {
+				"type": "String",
+				"defaultValue": "mnause2dev2samdo01"
 			}
 		},
 		"folder": {

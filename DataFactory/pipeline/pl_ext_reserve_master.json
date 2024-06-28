@@ -341,6 +341,9 @@
 			},
 			"param_csv_container_name": {
 				"type": "string"
+			},
+			"param_csv_storage_account_name": {
+				"type": "string"
 			}
 		},
 		"variables": {

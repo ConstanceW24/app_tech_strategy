@@ -84,7 +84,11 @@
 							"value": "@pipeline().parameters.param_query_container_name",
 							"type": "Expression"
 						},
-						"path": "reserve/csv_generation.sql"
+						"path": "reserve/csv_generation.sql",
+						"csv_storage_account_name": {
+							"value": "@pipeline().parameters.param_csv_storage_account_name",
+							"type": "Expression"
+						}
 					}
 				},
 				"linkedServiceName": {
@@ -188,6 +192,9 @@
 				"type": "string"
 			},
 			"param_csv_container_name": {
+				"type": "string"
+			},
+			"param_csv_storage_account_name": {
 				"type": "string"
 			}
 		},
