@@ -1,9 +1,9 @@
 {
-	"name": "pl_ext_secondaryexaminer",
+	"name": "pl_ext_payment_checkpayee",
 	"properties": {
 		"activities": [
 			{
-				"name": "dbx_Get_Secondaryexaminer_SrcQry",
+				"name": "dbx_Get_Payment_CP_SrcQry",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Secondary Examiner SPs/NB_Get_secondaryexaminer_SRC_Query",
+					"notebookPath": "/Shared/Claims Remediation/Payment CP SPs/NB_Get_Payment_CheckPayeeSrc_Query",
 					"baseParameters": {
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -34,7 +34,7 @@
 							"type": "Expression"
 						},
 						"container_name": {
-							"value": "@pipeline().parameters.param_query_container_name",
+							"value": "@pipeline().parameters.param_container_name",
 							"type": "Expression"
 						},
 						"storage_account_name": {
@@ -49,11 +49,11 @@
 				}
 			},
 			{
-				"name": "dbx_Load_SRC_EXT_Secondaryexaminer",
+				"name": "dbx_Load_SRC_EXT_Payment_CP",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_Get_Secondaryexaminer_SrcQry",
+						"activity": "dbx_Get_Payment_CP_SrcQry",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -71,10 +71,10 @@
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
 					"baseParameters": {
 						"query_location": {
-							"value": "@activity('dbx_Get_Secondaryexaminer_SrcQry').output.runOutput",
+							"value": "@activity('dbx_Get_Payment_CP_SrcQry').output.runOutput",
 							"type": "Expression"
 						},
-						"Table_Name": "src_ext_secondaryexaminer",
+						"Table_Name": "src_ext_payment_checkpayee",
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -88,7 +88,7 @@
 							"type": "Expression"
 						},
 						"container_name": {
-							"value": "@pipeline().parameters.param_query_container_name",
+							"value": "@pipeline().parameters.param_container_name",
 							"type": "Expression"
 						}
 					}
@@ -103,7 +103,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_Load_SRC_EXT_Secondaryexaminer",
+						"activity": "dbx_Load_SRC_EXT_Payment_CP",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -120,7 +120,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
 					"baseParameters": {
-						"src_table": "SRC_EXT_SecondaryExaminer",
+						"src_table": "SRC_EXT_Payment_CheckPayee",
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -137,7 +137,7 @@
 				}
 			},
 			{
-				"name": "dbx_STG_Secondaryexaminer_Upsert",
+				"name": "dbx_STG_Payment_CP_Upsert",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
@@ -156,7 +156,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Secondary Examiner SPs/NB_STG_secondaryexaminer_Upsert",
+					"notebookPath": "/Shared/Claims Remediation/Payment CP SPs/NB_usp_Payment_checkpayee_Upsert",
 					"baseParameters": {
 						"batch_id": {
 							"value": "@pipeline().parameters.param_Batch_ID",
@@ -201,10 +201,10 @@
 			"param_CDA_Schema_Name": {
 				"type": "string"
 			},
-			"param_query_container_name": {
+			"param_storage_account_name": {
 				"type": "string"
 			},
-			"param_storage_account_name": {
+			"param_container_name": {
 				"type": "string"
 			}
 		},
@@ -212,7 +212,7 @@
 			"name": "Claims Extract"
 		},
 		"annotations": [],
-		"lastPublishTime": "2024-05-16T13:37:06Z"
+		"lastPublishTime": "2024-05-10T04:55:37Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

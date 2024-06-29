@@ -1,9 +1,9 @@
 {
-	"name": "pl_ext_secondaryexaminer",
+	"name": "pl_ext_litigation_seccounsel",
 	"properties": {
 		"activities": [
 			{
-				"name": "dbx_Get_Secondaryexaminer_SrcQry",
+				"name": "dbx_Get_LitigationSecCounsel_SrcQry",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Secondary Examiner SPs/NB_Get_secondaryexaminer_SRC_Query",
+					"notebookPath": "/Shared/Claims Remediation/Litigation Seccounsel SPs/NB_Get_Litigation_SecCounsels_SRC_Query",
 					"baseParameters": {
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -49,11 +49,11 @@
 				}
 			},
 			{
-				"name": "dbx_Load_SRC_EXT_Secondaryexaminer",
+				"name": "dbx_Load_SRC_EXT_LitigationSecCounsel",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_Get_Secondaryexaminer_SrcQry",
+						"activity": "dbx_Get_LitigationSecCounsel_SrcQry",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -71,10 +71,10 @@
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
 					"baseParameters": {
 						"query_location": {
-							"value": "@activity('dbx_Get_Secondaryexaminer_SrcQry').output.runOutput",
+							"value": "@activity('dbx_Get_LitigationSecCounsel_SrcQry').output.runOutput",
 							"type": "Expression"
 						},
-						"Table_Name": "src_ext_secondaryexaminer",
+						"Table_Name": "SRC_EXT_Litigation_SecCounsels",
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -103,7 +103,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "dbx_Load_SRC_EXT_Secondaryexaminer",
+						"activity": "dbx_Load_SRC_EXT_LitigationSecCounsel",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -120,7 +120,7 @@
 				"typeProperties": {
 					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
 					"baseParameters": {
-						"src_table": "SRC_EXT_SecondaryExaminer",
+						"src_table": "SRC_EXT_Litigation_SecCounsels",
 						"Refined_Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -137,7 +137,7 @@
 				}
 			},
 			{
-				"name": "dbx_STG_Secondaryexaminer_Upsert",
+				"name": "dbx_STG_LitigationSecCounsel_Upsert",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
@@ -156,14 +156,14 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Secondary Examiner SPs/NB_STG_secondaryexaminer_Upsert",
+					"notebookPath": "/Shared/Claims Remediation/Litigation Seccounsel SPs/NB_STG_LitigationSecCounsel_Upsert",
 					"baseParameters": {
 						"batch_id": {
 							"value": "@pipeline().parameters.param_Batch_ID",
 							"type": "Expression"
 						},
 						"PL_Audit_ID": {
-							"value": "@string(pipeline().parameters.param_PL_Audit_ID)",
+							"value": "@pipeline().parameters.param_PL_Audit_ID",
 							"type": "Expression"
 						},
 						"Refined_Catalog_Name": {
@@ -192,13 +192,13 @@
 			"param_CDA_Catalog_Name": {
 				"type": "string"
 			},
+			"param_CDA_Schema_Name": {
+				"type": "string"
+			},
 			"param_Refined_Catalog_Name": {
 				"type": "string"
 			},
 			"param_Refined_Schema_Name": {
-				"type": "string"
-			},
-			"param_CDA_Schema_Name": {
 				"type": "string"
 			},
 			"param_query_container_name": {
@@ -211,8 +211,6 @@
 		"folder": {
 			"name": "Claims Extract"
 		},
-		"annotations": [],
-		"lastPublishTime": "2024-05-16T13:37:06Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"annotations": []
+	}
 }

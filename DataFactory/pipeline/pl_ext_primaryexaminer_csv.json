@@ -54,10 +54,8 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv",
+					"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 					"baseParameters": {
-						"query": "SELECT  \n\tCAST(ClaimMessage_MessageID AS VARCHAR(255)) AS ClaimMessage_MessageID,\n\tClaimMessage_MessageType,\n\tClaimMessage_CCMVersion,\n\tClaimMessage_CCMSchemaName,\n\tClaimMessage_OriginatingSystemCode,\n\tClaim_ClaimFolderNumber,\n\tClaim_PolicyNumber,\n\tClaim_PrimaryClaimExaminerCode,\n\tCAST(DATE_FORMAT(Claim_AssignmentDate,'yyyy-MM-dd\\'T\\'HH:mm:ss\\'Z\\'') AS VARCHAR(255)) AS Claim_AssignmentDate,\n\tClaim_ExaminerGroupCode,\n\t/* CAST(CONVERT(DATETIME2(0),RecCrtTs) AS VARCHAR(30)) AS RecordCreateTime */\n\tCAST(DATE_FORMAT(RecCrtTs, 'yyyy-MM-dd HH:mm:ss') AS VARCHAR(30)) AS RecordCreateTime\nFROM STG_EXT_PrimaryExaminer\nWHERE \nSent_To_CSV =0 and Is_current='Y'",
-						"target": "STG_EXT_PrimaryExaminer",
 						"Catalog_Name": {
 							"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 							"type": "Expression"
@@ -72,6 +70,23 @@
 						},
 						"file_name": {
 							"value": "@concat(variables('var_PrimaryExaminer_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+							"type": "Expression"
+						},
+						"path": "primaryexaminer/csv_generation.sql",
+						"storage_account_name": {
+							"value": "@pipeline().parameters.param_storage_account_name",
+							"type": "Expression"
+						},
+						"csv_container_name": {
+							"value": "@pipeline().parameters.param_csv_container_name",
+							"type": "Expression"
+						},
+						"query_container_name": {
+							"value": "@pipeline().parameters.param_query_container_name",
+							"type": "Expression"
+						},
+						"csv_storage_account_name": {
+							"value": "@pipeline().parameters.param_csv_storage_account_name",
 							"type": "Expression"
 						}
 					}
@@ -168,6 +183,18 @@
 				"type": "string"
 			},
 			"param_CDA_Catalog_Name": {
+				"type": "string"
+			},
+			"param_storage_account_name": {
+				"type": "string"
+			},
+			"param_query_container_name": {
+				"type": "string"
+			},
+			"param_csv_container_name": {
+				"type": "string"
+			},
+			"param_csv_storage_account_name": {
 				"type": "string"
 			}
 		},
