@@ -157,11 +157,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
 					"parameters": [
-						"E2E",
+						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_VERSION",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -201,8 +204,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_ACTION_JOB",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [

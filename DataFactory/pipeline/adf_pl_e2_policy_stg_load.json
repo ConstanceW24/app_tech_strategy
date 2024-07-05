@@ -28,8 +28,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_ACTION",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -69,9 +71,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_ADDITIONAL_ATTRIBUTE",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -111,8 +115,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"PARTY",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -151,9 +157,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_FORM",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -192,9 +200,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_SEGMENT",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -234,9 +244,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_SEGMENT_ATTRIBUTE",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -307,9 +319,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"PARTY_ADDRESS",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -350,8 +364,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_NONPREMIUM",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -392,8 +408,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_NONPREMIUM_TRANSACTION",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -433,8 +451,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_PREMIUM",
-						"raw to stage",
+						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [

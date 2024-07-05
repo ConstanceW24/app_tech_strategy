@@ -28,8 +28,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_ACTION",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -70,8 +72,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_ADDITIONAL_ATTRIBUTE",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -110,9 +114,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"PARTY",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -151,9 +157,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_FORM",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -192,9 +200,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_SEGMENT",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -235,8 +245,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_SEGMENT_ATTRIBUTE",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -285,14 +297,7 @@
 				"name": "PARTY_ADDRESS Refinedload",
 				"description": "party_address",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [
-					{
-						"activity": "POLICY_SEGMENT_A Refined load",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -307,9 +312,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"PARTY_ADDRESS",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -349,9 +356,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_NONPREMIUM",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -392,8 +401,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
-						"POLICY_NONPREMIUM_TRANSACTION",
-						"stage to refined",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
+						"POLICY_NONPREMUIM_TRANSACTION",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -433,8 +444,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_ACTION_JOB",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
