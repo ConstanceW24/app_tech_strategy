@@ -4,6 +4,7 @@
 		"activities": [
 			{
 				"name": "Intiate_Batch",
+				"description": "",
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
