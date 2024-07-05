@@ -59,9 +59,11 @@
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"dev_dds_edl_refined.audit",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_LOB_RISK_UNIT",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -102,8 +104,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_LOB_RISK_UNIT_SEGMENT",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -144,8 +148,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"LOB_RISK_UNIT_SEGMENT_ATTRIBUTE",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -186,8 +192,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
-						"LOB_LOCATION",
-						"stage to refined",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
+						"LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -228,8 +236,10 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"LOB_LOCATION",
-						"stage to refined",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
