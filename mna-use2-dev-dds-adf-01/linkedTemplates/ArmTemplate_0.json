@@ -57,6 +57,13 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/default')]",
+			"type": "Microsoft.DataFactory/factories/globalparameters",
+			"apiVersion": "2018-06-01",
+			"properties": {},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -253,13 +260,13 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_primary_status')]",
+			"name": "[concat(parameters('factoryName'), '/pl_ext_feature')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "dbx_Get_Primary_Status_SrcQry",
+						"name": "dbx_Get_Feature_SrcQry",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -271,7 +278,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Primary Status SPs/NB_Get_primary_status_SRC_Query",
+							"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_Get_feature_SRC_Query",
 							"baseParameters": {
 								"Refined_Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -288,6 +295,14 @@
 								"CDA_Schema_Name": {
 									"value": "@pipeline().parameters.param_CDA_Schema_Name",
 									"type": "Expression"
+								},
+								"container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
+									"type": "Expression"
+								},
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
+									"type": "Expression"
 								}
 							}
 						},
@@ -297,7 +312,45 @@
 						}
 					},
 					{
-						"name": "dbx_STG_Primary_Status_Upsert",
+						"name": "dbx_Gen_Hash_SRC",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "dbx_Load_SRC_EXT_Feature",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
+							"baseParameters": {
+								"src_table": "SRC_EXT_Feature",
+								"Refined_Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Refined_Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_STG_Feature_Upsert",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
@@ -316,14 +369,14 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Primary Status SPs/NB_STG_primary_status_Upsert",
+							"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_STG_Feature_Upsert",
 							"baseParameters": {
 								"batch_id": {
 									"value": "@pipeline().parameters.param_Batch_ID",
 									"type": "Expression"
 								},
 								"PL_Audit_ID": {
-									"value": "@string(pipeline().parameters.param_PL_Audit_ID)",
+									"value": "@pipeline().parameters.param_PL_Audit_ID",
 									"type": "Expression"
 								},
 								"Refined_Catalog_Name": {
@@ -342,11 +395,63 @@
 						}
 					},
 					{
-						"name": "dbx_Load_SRC_EXT_Primary_Status",
+						"name": "dbx_Get_Feature_Eco_SrcQry",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_Get_feature_eco_SRC_Query",
+							"baseParameters": {
+								"Refined_Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Refined_Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								},
+								"CDA_Catalog_Name": {
+									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+									"type": "Expression"
+								},
+								"CDA_Schema_Name": {
+									"value": "@pipeline().parameters.param_CDA_Schema_Name",
+									"type": "Expression"
+								},
+								"container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
+									"type": "Expression"
+								},
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_Load_SRC_EXT_Feature",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "dbx_Get_Primary_Status_SrcQry",
+								"activity": "dbx_Get_Feature_Eco_SrcQry",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "dbx_Get_Feature_SrcQry",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -363,11 +468,7 @@
 						"typeProperties": {
 							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
 							"baseParameters": {
-								"Query": {
-									"value": "@activity('dbx_Get_Primary_Status_SrcQry').output.runOutput",
-									"type": "Expression"
-								},
-								"Table_Name": "src_ext_primarystatus",
+								"Table_Name": "SRC_EXT_Feature",
 								"Refined_Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 									"type": "Expression"
@@ -375,43 +476,17 @@
 								"Refined_Schema_Name": {
 									"value": "@pipeline().parameters.param_Refined_Schema_Name",
 									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Gen_Hash_SRC",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Load_SRC_EXT_Primary_Status",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
-							"baseParameters": {
-								"src_table": "SRC_EXT_PrimaryStatus",
-								"Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+								},
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
 									"type": "Expression"
 								},
-								"Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+								"container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
+									"type": "Expression"
+								},
+								"query_location": {
+									"value": "@concat(activity('dbx_Get_Feature_SrcQry').output.runOutput, ',', activity('dbx_Get_Feature_Eco_SrcQry').output.runOutput)\n",
 									"type": "Expression"
 								}
 							}
@@ -435,336 +510,7 @@
 					"param_CDA_Catalog_Name": {
 						"type": "string"
 					},
-					"param_Refined_Catalog_Name": {
-						"type": "string"
-					},
-					"param_Refined_Schema_Name": {
-						"type": "string"
-					},
 					"param_CDA_Schema_Name": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"var_Primary_Status_Src_Query": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "Claims Extract"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-16T13:32:01Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/claims_data_extraction')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_primary_status_csv')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dbx_Primary_Status_FileName",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/dbx_Reserve_File_name"
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_copy_Primary_Status_CSV_to_mDo",
-						"description": "",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "sv_Primary_Status_FileName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv"
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Primary_Status_Inc_Log_Updates",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_copy_Primary_Status_CSV_to_mDo",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Primary Status SPs/NB_usp_primary_status_Inc_Log_Updates"
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "sv_Primary_Status_FileName",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "dbx_Primary_Status_FileName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "var_Reserve_FileName",
-							"value": {
-								"value": "@pipeline().DataFactory",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"var_Reserve_FileName": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "Claims Extract"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-16T13:43:53Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/claims_data_extraction')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_primaryexaminer')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dbx_Get_PrimaryExaminer_SrcQry",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Primary Examiner SPs/NB_Get_Primary_Examiner_SRC_Query",
-							"baseParameters": {
-								"Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Load_SRC_EXT_PrimaryExaminer",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Get_PrimaryExaminer_SrcQry",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
-							"baseParameters": {
-								"Query": {
-									"value": "@activity('dbx_Get_PrimaryExaminer_SrcQry').output.runOutput",
-									"type": "Expression"
-								},
-								"Table_Name": "src_ext_primaryexaminer",
-								"Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Gen_Hash_SRC",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Load_SRC_EXT_PrimaryExaminer",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
-							"baseParameters": {
-								"src_table": "SRC_EXT_PrimaryExaminer",
-								"Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_STG_PrimaryExaminer_Upsert",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Gen_Hash_SRC",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Primary Examiner SPs/NB_STG_Primary_Examiner_Upsert",
-							"baseParameters": {
-								"batch_id": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"PL_Audit_ID": {
-									"value": "@string(pipeline().parameters.param_PL_Audit_ID)",
-									"type": "Expression"
-								},
-								"Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"param_Batch_ID": {
-						"type": "string"
-					},
-					"param_PL_Audit_ID": {
-						"type": "string"
-					},
-					"param_CDA_Catalog_Name": {
 						"type": "string"
 					},
 					"param_Refined_Catalog_Name": {
@@ -773,28 +519,30 @@
 					"param_Refined_Schema_Name": {
 						"type": "string"
 					},
-					"param_CDA_Schema_Name": {
+					"param_query_container_name": {
+						"type": "string"
+					},
+					"param_storage_account_name": {
 						"type": "string"
 					}
 				},
 				"folder": {
 					"name": "Claims Extract"
 				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-10T04:55:37Z"
+				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/claims_data_extraction')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_primaryexaminer_csv')]",
+			"name": "[concat(parameters('factoryName'), '/pl_ext_feature_csv')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "dbx_PrimaryExaminer_FileName",
+						"name": "dbx_feature_FileName",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -809,7 +557,7 @@
 							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
 							"baseParameters": {
 								"Query": "SELECT Config_Value FROM Master_Config WHERE Config_Key ={} AND Config_IsActive = {}",
-								"Parameters_List": " 'Primary_Examiner_File_Name',1",
+								"Parameters_List": "'Feature_File_Name',1",
 								"Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 									"type": "Expression"
@@ -826,11 +574,11 @@
 						}
 					},
 					{
-						"name": "dbx_copy_PrimaryExaminer_CSV_to_mDo",
+						"name": "dbx_copy_feature_CSV_to_mDo",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "sv_Reserve_FileName",
+								"activity": "sv_feature_FileName",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -845,10 +593,8 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv",
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 							"baseParameters": {
-								"query": "SELECT  \n\tCAST(ClaimMessage_MessageID AS VARCHAR(255)) AS ClaimMessage_MessageID,\n\tClaimMessage_MessageType,\n\tClaimMessage_CCMVersion,\n\tClaimMessage_CCMSchemaName,\n\tClaimMessage_OriginatingSystemCode,\n\tClaim_ClaimFolderNumber,\n\tClaim_PolicyNumber,\n\tClaim_PrimaryClaimExaminerCode,\n\tCAST(DATE_FORMAT(Claim_AssignmentDate,'yyyy-MM-dd\\'T\\'HH:mm:ss\\'Z\\'') AS VARCHAR(255)) AS Claim_AssignmentDate,\n\tClaim_ExaminerGroupCode,\n\t/* CAST(CONVERT(DATETIME2(0),RecCrtTs) AS VARCHAR(30)) AS RecordCreateTime */\n\tCAST(DATE_FORMAT(RecCrtTs, 'yyyy-MM-dd HH:mm:ss') AS VARCHAR(30)) AS RecordCreateTime\nFROM STG_EXT_PrimaryExaminer\nWHERE \nSent_To_CSV =0 and Is_current='Y'",
-								"target": "STG_EXT_PrimaryExaminer",
 								"Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 									"type": "Expression"
@@ -862,7 +608,24 @@
 									"type": "Expression"
 								},
 								"file_name": {
-									"value": "@concat(variables('var_PrimaryExaminer_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+									"value": "@concat(variables('var_Feature_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+									"type": "Expression"
+								},
+								"path": "feature/csv_generation.sql",
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
+									"type": "Expression"
+								},
+								"csv_container_name": {
+									"value": "@pipeline().parameters.param_csv_container_name",
+									"type": "Expression"
+								},
+								"query_container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
+									"type": "Expression"
+								},
+								"csv_storage_account_name": {
+									"value": "@pipeline().parameters.param_csv_storage_account_name",
 									"type": "Expression"
 								}
 							}
@@ -873,11 +636,11 @@
 						}
 					},
 					{
-						"name": "dbx_PrimaryExaminer_Inc_Log_Updates",
+						"name": "dbx_feature_Inc_Log_Updates",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "dbx_copy_PrimaryExaminer_CSV_to_mDo",
+								"activity": "dbx_copy_feature_CSV_to_mDo",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -892,7 +655,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Primary Examiner SPs/NB_usp_Primary_Examiner_Inc_Log_Updates",
+							"notebookPath": "/Shared/Claims Remediation/Feature SPs/NB_usp_Feature_Inc_Log_Updates",
 							"baseParameters": {
 								"Refined_Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -902,12 +665,12 @@
 									"value": "@pipeline().parameters.param_Refined_Schema_Name",
 									"type": "Expression"
 								},
-								"CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
 								"CDA_Catalog_Name": {
 									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+									"type": "Expression"
+								},
+								"CDA_Schema_Name": {
+									"value": "@pipeline().parameters.param_CDA_Schema_Name",
 									"type": "Expression"
 								}
 							}
@@ -918,11 +681,11 @@
 						}
 					},
 					{
-						"name": "sv_Reserve_FileName",
+						"name": "sv_feature_FileName",
 						"type": "SetVariable",
 						"dependsOn": [
 							{
-								"activity": "dbx_PrimaryExaminer_FileName",
+								"activity": "dbx_feature_FileName",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -934,9 +697,9 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "var_PrimaryExaminer_FileName",
+							"variableName": "var_Feature_FileName",
 							"value": {
-								"value": "@if(equals(activity('dbx_PrimaryExaminer_FileName').output.runOutput, 'None'),'CCM_Folder_Primary_Examiner_Change_Daily',activity('dbx_PrimaryExaminer_FileName').output.runOutput)",
+								"value": "@if(equals(activity('dbx_feature_FileName').output.runOutput,'None'), 'CCM_Feature_Daily',activity('dbx_feature_FileName').output.runOutput)",
 								"type": "Expression"
 							}
 						}
@@ -958,36 +721,47 @@
 					"param_dbx_File_TimeStamp": {
 						"type": "string"
 					},
+					"param_CDA_Catalog_Name": {
+						"type": "string"
+					},
 					"param_CDA_Schema_Name": {
 						"type": "string"
 					},
-					"param_CDA_Catalog_Name": {
+					"param_storage_account_name": {
+						"type": "string"
+					},
+					"param_query_container_name": {
+						"type": "string"
+					},
+					"param_csv_container_name": {
+						"type": "string"
+					},
+					"param_csv_storage_account_name": {
 						"type": "string"
 					}
 				},
 				"variables": {
-					"var_PrimaryExaminer_FileName": {
+					"var_Feature_FileName": {
 						"type": "String"
 					}
 				},
 				"folder": {
 					"name": "Claims Extract"
 				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-10T06:59:38Z"
+				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/claims_data_extraction')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_reserve')]",
+			"name": "[concat(parameters('factoryName'), '/pl_ext_feature_mailingaddress')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "dbx_Get_Reserve_SrcQry",
+						"name": "dbx_Get_Feature_MA_SrcQry",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -999,7 +773,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Reserve SPs/NB_Get_Reserve_SRC_Query",
+							"notebookPath": "/Shared/Claims Remediation/Feature Ma SPs/NB_Get_feature_MA_SRC_Query",
 							"baseParameters": {
 								"Refined_Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -1016,47 +790,13 @@
 								"CDA_Schema_Name": {
 									"value": "@pipeline().parameters.param_CDA_Schema_Name",
 									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Load_SRC_EXT_Reserve",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Get_Reserve_SrcQry",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
-							"baseParameters": {
-								"Query": {
-									"value": "@activity('dbx_Get_Reserve_SrcQry').output.runOutput",
+								},
+								"container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
 									"type": "Expression"
 								},
-								"Table_Name": "src_ext_reserve",
-								"Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
 									"type": "Expression"
 								}
 							}
@@ -1071,7 +811,7 @@
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "dbx_Load_SRC_EXT_Reserve",
+								"activity": "dbx_Load_SRC_EXT_Feature_MA_SrcQry",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1088,7 +828,7 @@
 						"typeProperties": {
 							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
 							"baseParameters": {
-								"src_table": "SRC_EXT_Reserve",
+								"src_table": "SRC_EXT_Feature_MailingAddress",
 								"Refined_Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 									"type": "Expression"
@@ -1105,7 +845,7 @@
 						}
 					},
 					{
-						"name": "dbx_STG_Reserve_Upsert",
+						"name": "dbx_STG_Feature_MA_Upsert",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
@@ -1124,14 +864,14 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Reserve SPs/NB_STG_Reserve_Upsert",
+							"notebookPath": "/Shared/Claims Remediation/Feature Ma SPs/NB_usp_Feature_MA_Upsert",
 							"baseParameters": {
 								"batch_id": {
 									"value": "@pipeline().parameters.param_Batch_ID",
 									"type": "Expression"
 								},
 								"PL_Audit_ID": {
-									"value": "@string(pipeline().parameters.param_PL_Audit_ID)",
+									"value": "@pipeline().parameters.param_PL_Audit_ID",
 									"type": "Expression"
 								},
 								"Refined_Catalog_Name": {
@@ -1140,6 +880,56 @@
 								},
 								"Refined_Schema_Name": {
 									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_Load_SRC_EXT_Feature_MA_SrcQry",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "dbx_Get_Feature_MA_SrcQry",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
+							"baseParameters": {
+								"Table_Name": "SRC_EXT_Feature_MailingAddress",
+								"Refined_Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Refined_Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								},
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
+									"type": "Expression"
+								},
+								"container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
+									"type": "Expression"
+								},
+								"query_location": {
+									"value": "@activity('dbx_Get_Feature_MA_SrcQry').output.runOutput",
 									"type": "Expression"
 								}
 							}
@@ -1163,39 +953,39 @@
 					"param_CDA_Catalog_Name": {
 						"type": "string"
 					},
+					"param_CDA_Schema_Name": {
+						"type": "string"
+					},
 					"param_Refined_Catalog_Name": {
 						"type": "string"
 					},
 					"param_Refined_Schema_Name": {
 						"type": "string"
 					},
-					"param_CDA_Schema_Name": {
+					"param_query_container_name": {
 						"type": "string"
-					}
-				},
-				"variables": {
-					"var_Reserve_Src_Query": {
-						"type": "String"
+					},
+					"param_storage_account_name": {
+						"type": "string"
 					}
 				},
 				"folder": {
 					"name": "Claims Extract"
 				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-09T14:21:56Z"
+				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/claims_data_extraction')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_reserve_csv')]",
+			"name": "[concat(parameters('factoryName'), '/pl_ext_feature_mailingaddress_csv')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "dbx_Reserve_FileName",
+						"name": "dbx_feature_ma_FileName",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -1210,7 +1000,7 @@
 							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
 							"baseParameters": {
 								"Query": "SELECT Config_Value FROM Master_Config WHERE Config_Key ={} AND Config_IsActive = {}",
-								"Parameters_List": " 'Reserve_File_Name',1",
+								"Parameters_List": "'Feature_MailingAddresses_File_Name',1",
 								"Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 									"type": "Expression"
@@ -1227,11 +1017,11 @@
 						}
 					},
 					{
-						"name": "dbx_copy_Reserve_CSV_to_mDo",
+						"name": "dbx_copy_feature_ma_CSV_to_mDo",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "sv_Reserve_FileName",
+								"activity": "sv_feature_ma_FileName",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1246,10 +1036,8 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_reserve_mdo_csv",
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
 							"baseParameters": {
-								"query": "SELECT\nCAST(ClaimMessage_MessageID AS VARCHAR(255)) AS ClaimMessage_MessageID,\nClaimMessage_MessageType,\nClaimMessage_CCMVersion,\nClaimMessage_CCMSchemaName,\nClaimMessage_OriginatingSystemCode,\nClaim_ReserveTransactionNumber,\nClaim_ReserveTransactionOriginatingSystemCode,\nClaim_ClaimFeatureNumber,\nClaim_PolicyNumber,\nCAST(Claim_ReserveTransactionSequenceNumber AS VARCHAR(255)) AS Claim_ReserveTransactionSequenceNumber,\n/* CAST(FORMAT(Reserve_EntryDate,'yyyy-MM-ddTHH:mm:ssZ') AS VARCHAR(255)) AS Reserve_EntryDate,\nCAST(CONVERT(DATE,Reserve_EffectiveDate) AS VARCHAR(255)) AS Reserve_EffectiveDate, */\nCAST(DATE_FORMAT(Reserve_EntryDate,'yyyy-MM-dd\\'T\\'HH:mm:ss\\'Z\\'') AS VARCHAR(255)) AS Reserve_EntryDate,\nCAST(DATE_FORMAT(Reserve_EffectiveDate, 'yyyy-MM-dd') AS VARCHAR(255)) AS Reserve_EffectiveDate,\nDetails_CostTypeCode,\nDetails_CostCategoryCode,\nDetails_RecoveryTypeCode,\nCAST(Details_ReserveAmount AS VARCHAR(255)) AS Details_ReserveAmount ,\nDetails_CurrencyCode,\n/* CAST(CONVERT(DATETIME2(0),RecCrtTs) AS VARCHAR(30)) AS RecordCreateTime, */\nCAST(DATE_FORMAT(RecCrtTs, 'yyyy-MM-dd HH:mm:ss') AS VARCHAR(30)) AS RecordCreateTime,\nClaim_ClaimFolderNumber\nFROM STG_EXT_Reserve\nWHERE \nSent_To_CSV =0 and Is_current='Y'",
-								"target": "STG_EXT_Reserve",
 								"Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
 									"type": "Expression"
@@ -1263,7 +1051,24 @@
 									"type": "Expression"
 								},
 								"file_name": {
-									"value": "@concat(variables('var_Reserve_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+									"value": "@concat(variables('var_Feature_Ma_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+									"type": "Expression"
+								},
+								"path": "featurema/csv_generation.sql",
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
+									"type": "Expression"
+								},
+								"csv_container_name": {
+									"value": "@pipeline().parameters.param_csv_container_name",
+									"type": "Expression"
+								},
+								"query_container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
+									"type": "Expression"
+								},
+								"csv_storage_account_name": {
+									"value": "@pipeline().parameters.param_csv_storage_account_name",
 									"type": "Expression"
 								}
 							}
@@ -1274,11 +1079,11 @@
 						}
 					},
 					{
-						"name": "dbx_Reserve_Inc_Log_Updates",
+						"name": "dbx_feature_ma_Inc_Log_Updates",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "dbx_copy_Reserve_CSV_to_mDo",
+								"activity": "dbx_copy_feature_ma_CSV_to_mDo",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1293,7 +1098,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Reserve SPs/NB_usp_Reserve_Inc_Log_Updates",
+							"notebookPath": "/Shared/Claims Remediation/Feature Ma SPs/NB_usp_Feature_MA_Inc_Log_Updates",
 							"baseParameters": {
 								"Refined_Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -1303,12 +1108,12 @@
 									"value": "@pipeline().parameters.param_Refined_Schema_Name",
 									"type": "Expression"
 								},
-								"CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
 								"CDA_Catalog_Name": {
 									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+									"type": "Expression"
+								},
+								"CDA_Schema_Name": {
+									"value": "@pipeline().parameters.param_CDA_Schema_Name",
 									"type": "Expression"
 								}
 							}
@@ -1319,11 +1124,11 @@
 						}
 					},
 					{
-						"name": "sv_Reserve_FileName",
+						"name": "sv_feature_ma_FileName",
 						"type": "SetVariable",
 						"dependsOn": [
 							{
-								"activity": "dbx_Reserve_FileName",
+								"activity": "dbx_feature_ma_FileName",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1335,9 +1140,9 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "var_Reserve_FileName",
+							"variableName": "var_Feature_Ma_FileName",
 							"value": {
-								"value": "@if(equals(activity('dbx_Reserve_FileName').output.runOutput, 'None'),'CCM_Feature_Reserve_Log_Daily',activity('dbx_Reserve_FileName').output.runOutput)",
+								"value": "@if(equals(activity('dbx_feature_ma_FileName').output.runOutput,'None'), 'CCM_Feature_MailingAddresses_Daily',activity('dbx_feature_ma_FileName').output.runOutput)",
 								"type": "Expression"
 							}
 						}
@@ -1359,36 +1164,47 @@
 					"param_dbx_File_TimeStamp": {
 						"type": "string"
 					},
+					"param_CDA_Catalog_Name": {
+						"type": "string"
+					},
 					"param_CDA_Schema_Name": {
 						"type": "string"
 					},
-					"param_CDA_Catalog_Name": {
+					"param_storage_account_name": {
+						"type": "string"
+					},
+					"param_query_container_name": {
+						"type": "string"
+					},
+					"param_csv_container_name": {
+						"type": "string"
+					},
+					"param_csv_storage_account_name": {
 						"type": "string"
 					}
 				},
 				"variables": {
-					"var_Reserve_FileName": {
+					"var_Feature_Ma_FileName": {
 						"type": "String"
 					}
 				},
 				"folder": {
 					"name": "Claims Extract"
 				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-09T06:53:35Z"
+				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/claims_data_extraction')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_secondaryexaminer')]",
+			"name": "[concat(parameters('factoryName'), '/pl_ext_feature_phones')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "dbx_Get_Secondaryexaminer_SrcQry",
+						"name": "dbx_Get_Feature_Phones_SrcQry",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -1400,7 +1216,332 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Secondary Examiner SPs/NB_Get_secondaryexaminer_SRC_Query",
+							"notebookPath": "/Shared/Claims Remediation/Feature Phones SPs/NB_Get_feature_Phones_SRC_Query",
+							"baseParameters": {
+								"Refined_Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Refined_Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								},
+								"CDA_Catalog_Name": {
+									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+									"type": "Expression"
+								},
+								"CDA_Schema_Name": {
+									"value": "@pipeline().parameters.param_CDA_Schema_Name",
+									"type": "Expression"
+								},
+								"container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
+									"type": "Expression"
+								},
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_Gen_Hash_SRC",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "dbx_Load_SRC_EXT_Feature_Phones",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
+							"baseParameters": {
+								"src_table": "SRC_EXT_Feature_Phones",
+								"Refined_Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Refined_Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_STG_Feature_Phones_Upsert",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "dbx_Gen_Hash_SRC",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Feature Phones SPs/NB_STG_Features_Phone_Upsert",
+							"baseParameters": {
+								"batch_id": {
+									"value": "@pipeline().parameters.param_Batch_ID",
+									"type": "Expression"
+								},
+								"PL_Audit_ID": {
+									"value": "@pipeline().parameters.param_PL_Audit_ID",
+									"type": "Expression"
+								},
+								"Refined_Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Refined_Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_Load_SRC_EXT_Feature_Phones",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "dbx_Get_Feature_Phones_SrcQry",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
+							"baseParameters": {
+								"Table_Name": "SRC_EXT_Feature_Phones",
+								"Refined_Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Refined_Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								},
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
+									"type": "Expression"
+								},
+								"container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
+									"type": "Expression"
+								},
+								"query_location": {
+									"value": "@activity('dbx_Get_Feature_Phones_SrcQry').output.runOutput",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"param_Batch_ID": {
+						"type": "string"
+					},
+					"param_PL_Audit_ID": {
+						"type": "string"
+					},
+					"param_CDA_Catalog_Name": {
+						"type": "string"
+					},
+					"param_CDA_Schema_Name": {
+						"type": "string"
+					},
+					"param_Refined_Catalog_Name": {
+						"type": "string"
+					},
+					"param_Refined_Schema_Name": {
+						"type": "string"
+					},
+					"param_query_container_name": {
+						"type": "string"
+					},
+					"param_storage_account_name": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Claims Extract"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/claims_data_extraction')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_ext_feature_phones_csv')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dbx_feature_phones_FileName",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
+							"baseParameters": {
+								"Query": "SELECT Config_Value FROM Master_Config WHERE Config_Key ={} AND Config_IsActive = {}",
+								"Parameters_List": "'Feature_Communications_File_Name',1",
+								"Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_copy_feature_phones_CSV_to_mDo",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "sv_feature_phones_FileName",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_mdo_csv",
+							"baseParameters": {
+								"Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								},
+								"param_MDO_FolderName": {
+									"value": "@pipeline().parameters.param_MDO_FolderName",
+									"type": "Expression"
+								},
+								"file_name": {
+									"value": "@concat(variables('var_Feature_Phones_FileName'),'_',pipeline().parameters.param_dbx_File_TimeStamp,'.csv')",
+									"type": "Expression"
+								},
+								"path": "featurephones/csv_generation.sql",
+								"storage_account_name": {
+									"value": "@pipeline().parameters.param_storage_account_name",
+									"type": "Expression"
+								},
+								"csv_container_name": {
+									"value": "@pipeline().parameters.param_csv_container_name",
+									"type": "Expression"
+								},
+								"query_container_name": {
+									"value": "@pipeline().parameters.param_query_container_name",
+									"type": "Expression"
+								},
+								"csv_storage_account_name": {
+									"value": "@pipeline().parameters.param_csv_storage_account_name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_feature_phones_Inc_Log_Updates",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "dbx_copy_feature_phones_CSV_to_mDo",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Feature Phones SPs/NB_usp_Feature_Phones_Inc_Log_Updates",
 							"baseParameters": {
 								"Refined_Catalog_Name": {
 									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
@@ -1426,128 +1567,27 @@
 						}
 					},
 					{
-						"name": "dbx_Load_SRC_EXT_Secondaryexaminer",
-						"type": "DatabricksNotebook",
+						"name": "sv_feature_phones_FileName",
+						"type": "SetVariable",
 						"dependsOn": [
 							{
-								"activity": "dbx_Get_Secondaryexaminer_SrcQry",
+								"activity": "dbx_feature_phones_FileName",
 								"dependencyConditions": [
 									"Succeeded"
 								]
 							}
 						],
 						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Load_SRC_EXT",
-							"baseParameters": {
-								"Query": {
-									"value": "@activity('dbx_Get_Secondaryexaminer_SrcQry').output.runOutput",
-									"type": "Expression"
-								},
-								"Table_Name": "src_ext_secondaryexaminer",
-								"Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
+							"variableName": "var_Feature_Phones_FileName",
+							"value": {
+								"value": "@if(equals(activity('dbx_feature_phones_FileName').output.runOutput,'None'), 'CCM_Feature_Communications_Daily',activity('dbx_feature_phones_FileName').output.runOutput)",
+								"type": "Expression"
 							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Gen_Hash_SRC",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Load_SRC_EXT_Secondaryexaminer",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Gen_HashKey",
-							"baseParameters": {
-								"src_table": "SRC_EXT_SecondaryExaminer",
-								"Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_STG_Secondaryexaminer_Upsert",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Gen_Hash_SRC",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Secondary Examiner SPs/NB_STG_secondaryexaminer_Upsert",
-							"baseParameters": {
-								"batch_id": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"PL_Audit_ID": {
-									"value": "@string(pipeline().parameters.param_PL_Audit_ID)",
-									"type": "Expression"
-								},
-								"Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
 						}
 					}
 				],
@@ -1555,30 +1595,46 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"param_Batch_ID": {
-						"type": "string"
-					},
-					"param_PL_Audit_ID": {
-						"type": "string"
-					},
-					"param_CDA_Catalog_Name": {
-						"type": "string"
-					},
 					"param_Refined_Catalog_Name": {
 						"type": "string"
 					},
 					"param_Refined_Schema_Name": {
 						"type": "string"
 					},
+					"param_MDO_FolderName": {
+						"type": "string"
+					},
+					"param_dbx_File_TimeStamp": {
+						"type": "string"
+					},
+					"param_CDA_Catalog_Name": {
+						"type": "string"
+					},
 					"param_CDA_Schema_Name": {
 						"type": "string"
+					},
+					"param_storage_account_name": {
+						"type": "string"
+					},
+					"param_query_container_name": {
+						"type": "string"
+					},
+					"param_csv_container_name": {
+						"type": "string"
+					},
+					"param_csv_storage_account_name": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"var_Feature_Phones_FileName": {
+						"type": "String"
 					}
 				},
 				"folder": {
 					"name": "Claims Extract"
 				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-16T13:37:06Z"
+				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/claims_data_extraction')]"
