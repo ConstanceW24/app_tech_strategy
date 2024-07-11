@@ -337,8 +337,6 @@
 					{
 						"name": "adf_pl_e2_policy_coverage",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "execute policy_risk_unit_load",
@@ -1959,8 +1957,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_SEGMENT_ATTRIBUTE",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2001,8 +2001,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_ADDITIONAL_ATTRIBUTE",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2043,8 +2045,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"POLICY_COVERAGE",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2064,7 +2068,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Stage load",
+								"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2085,8 +2089,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_SEGMENT_SIR",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2127,8 +2133,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"POLICY_COVERAGE_SEGMENT",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2169,8 +2177,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE_COLLECTION",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2211,8 +2221,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_SEGMENT_SIR_COLLECTION",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2253,8 +2265,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_SEGMENT_LIMIT_COLLECTION",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2274,7 +2288,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Stage load",
+								"activity": "POLICY_COVERAGE_SEGMENTStage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2295,8 +2309,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2316,7 +2332,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Stage load",
+								"activity": "POLICY_COVERAGE_SEGMENTStage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2337,8 +2353,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_SEGMENT_DEDUCTIBLE",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2379,8 +2397,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_SEGMENT_LIMIT",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2421,8 +2441,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -2463,8 +2485,10 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"POLICY_PREMIUM_TRANSACTION",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
@@ -6042,8 +6066,6 @@
 						"name": "LOB_LOCATION Stage load",
 						"description": "policy_nonpremium_transaction",
 						"type": "DatabricksSparkPython",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "POLICY_LOB_RISK_UNIT_SEGMENT Stage load",

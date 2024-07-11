@@ -5980,8 +5980,6 @@
 					{
 						"name": "adf_pl_e2_policy_coverage",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "execute policy_risk_unit_load",
