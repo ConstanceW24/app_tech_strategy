@@ -45,7 +45,7 @@
 								],
 								"libraries": [
 									{
-										"whl": "dbfs:/FileStore/jars/5610c152_daa6_4f11_9fb9_0fe1919dfd59/cdaaccelerator-0.0.1-py3-none-any.whl"
+										"whl": "dbfs:/FileStore/jars/cdaaccelerator/cdaaccelerator-0.0.2-py3-none-any.whl"
 									}
 								]
 							},
