@@ -171,7 +171,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "COVERAGE_SEGMENT_SIR Stage load",
+						"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -389,7 +389,14 @@
 				"name": "COVERAGE_SEGMENT_ADL_ATTRIBUTEStage load",
 				"description": "COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "POLICY_COVERAGE_SEGMENTStage load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -428,7 +435,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "COVERAGE_SEGMENT_DEDUCTIBLE Stage load",
+						"activity": "POLICY_COVERAGE_SEGMENTStage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
