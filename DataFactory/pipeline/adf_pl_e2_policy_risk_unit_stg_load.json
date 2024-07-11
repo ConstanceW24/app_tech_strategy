@@ -213,8 +213,6 @@
 				"name": "LOB_LOCATION Stage load",
 				"description": "policy_nonpremium_transaction",
 				"type": "DatabricksSparkPython",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "POLICY_LOB_RISK_UNIT_SEGMENT Stage load",
