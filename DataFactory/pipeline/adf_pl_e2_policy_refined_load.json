@@ -297,7 +297,14 @@
 				"name": "PARTY_ADDRESS Refinedload",
 				"description": "party_address",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "POLICY_SEGMENT Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
