@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "execute policy_lob_stg_load",
-				"description": "Loading the stage tables under Policy_Risk_Unit\n",
+				"name": "execute policy_stg_load",
+				"description": "Loading the stage tables under Policy\n",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -25,7 +25,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "execute policy_lob_stg_load",
+						"activity": "execute policy_stg_load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
