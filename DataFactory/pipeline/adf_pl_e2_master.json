@@ -23,7 +23,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"create_batch",
 						"@activity('adf_pl_params').output.value[0].param_value",
@@ -85,7 +85,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"close_batch",
 						"@activity('adf_pl_params').output.value[0].param_value",
@@ -156,7 +156,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
@@ -199,7 +199,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"stage_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
