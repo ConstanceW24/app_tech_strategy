@@ -283,7 +283,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_covergae_load",
+						"referenceName": "adf_pl_e2_policy_coverage_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
