@@ -81,14 +81,7 @@
 				"name": "POLICY_LOB_RISK_UNIT_SEGMENT Stage load",
 				"description": "policy_nonpremium_transaction",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [
-					{
-						"activity": "POLICY_LOB_RISK_UNIT Stage",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -213,14 +206,7 @@
 				"name": "LOB_LOCATION Stage load",
 				"description": "policy_nonpremium_transaction",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [
-					{
-						"activity": "POLICY_LOB_RISK_UNIT_SEGMENT Stage load",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
