@@ -13,14 +13,14 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_lob_load')]",
+			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "execute policy_lob_unit_stg_load",
-						"description": "Loading the stage tables under Policy_Lob\n",
+						"name": "execute policy_lob_stg_load",
+						"description": "Loading the stage tables under Policy_Risk_Unit\n",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"policy": {
@@ -29,7 +29,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "adf_pl_e2_policy_lob_stg_load",
+								"referenceName": "adf_pl_e2_policy_stg_load",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -37,12 +37,12 @@
 						}
 					},
 					{
-						"name": "execute policy_lob_refined_load",
-						"description": "Loading the Refined Tables under Policy_Lob",
+						"name": "execute policy_risk_unit_refined_load",
+						"description": "Loading the Refined Tables under Policy_Risk_Unit",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "execute policy_lob_unit_stg_load",
+								"activity": "execute policy_lob_stg_load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -54,7 +54,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "adf_pl_e2_policy_lob_refined_load",
+								"referenceName": "adf_pl_e2_policy_refined_load",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -74,14 +74,14 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_lob_load_copy1')]",
+			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_load_copy1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "execute policy_lob_unit_stg_load",
-						"description": "Loading the stage tables under Policy_Lob\n",
+						"name": "execute policy_lob_stg_load",
+						"description": "Loading the stage tables under Policy_Risk_Unit\n",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"policy": {
@@ -90,7 +90,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "adf_pl_e2_policy_lob_stg_load",
+								"referenceName": "adf_pl_e2_policy_stg_load",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -98,12 +98,12 @@
 						}
 					},
 					{
-						"name": "execute policy_lob_refined_load",
-						"description": "Loading the Refined Tables under Policy_Lob",
+						"name": "execute policy_risk_unit_refined_load",
+						"description": "Loading the Refined Tables under Policy_Risk_Unit",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "execute policy_lob_unit_stg_load",
+								"activity": "execute policy_lob_stg_load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -115,7 +115,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "adf_pl_e2_policy_lob_refined_load",
+								"referenceName": "adf_pl_e2_policy_refined_load",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -6012,7 +6012,7 @@
 				"lastPublishTime": "2024-05-16T09:54:11Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_lob_load')]",
+				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_load')]",
 				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_risk_unit_load')]"
 			]
 		},
@@ -6325,7 +6325,7 @@
 				"lastPublishTime": "2024-05-16T09:54:11Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_lob_load')]",
+				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_load')]",
 				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_risk_unit_load')]"
 			]
 		},
