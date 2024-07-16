@@ -237,6 +237,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "COVERAGE_SEGMENT_ATTRIBUTE Stage load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -363,7 +369,14 @@
 				"name": "COVERAGE_SEGMENT_LIMIT_COLLECTION Stage load",
 				"description": "COVERAGE_SEGMENT_LIMIT_COLLECTION",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "POLICY_COVERAGE Stage load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -532,7 +545,14 @@
 				"name": "COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION Stage load",
 				"description": "COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "POLICY_COVERAGE Stage load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
