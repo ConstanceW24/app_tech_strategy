@@ -1851,7 +1851,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+								"activity": "POLICY_COVERAGE Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1983,7 +1983,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+								"activity": "COVERAGE_SEGMENT_SIR_COLLECTION Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2031,6 +2031,30 @@
 								"dependencyConditions": [
 									"Succeeded"
 								]
+							},
+							{
+								"activity": "COVERAGE_SEGMENT_LIMIT Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "COVERAGE_SEGMENT_DEDUCTIBLE Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "COVERAGE_SEGMENT_ATTRIBUTE Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTEStage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
 							}
 						],
 						"policy": {
@@ -2071,7 +2095,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+								"activity": "POLICY_COVERAGE Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2115,7 +2139,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+								"activity": "POLICY_COVERAGE Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2159,7 +2183,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+								"activity": "POLICY_COVERAGE Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2203,7 +2227,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "POLICY_COVERAGE_SEGMENTStage load",
+								"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2247,7 +2271,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "POLICY_COVERAGE_SEGMENTStage load",
+								"activity": "COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2291,7 +2315,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Stage load",
+								"activity": "COVERAGE_SEGMENT_LIMIT_COLLECTION Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2335,7 +2359,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+								"activity": "POLICY_COVERAGE Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
