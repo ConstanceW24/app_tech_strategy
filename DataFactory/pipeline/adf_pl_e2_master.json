@@ -90,8 +90,8 @@
 						"close_batch",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value"
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value"
 					],
 					"libraries": [
 						{
