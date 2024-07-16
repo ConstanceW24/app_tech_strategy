@@ -5936,7 +5936,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "POLICY_LOB_RISK_UNIT Stage",
+								"activity": "LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE Stage load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -6068,7 +6068,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "POLICY_LOB_RISK_UNIT_SEGMENT Stage load",
+								"activity": "POLICY_LOB_RISK_UNIT Stage",
 								"dependencyConditions": [
 									"Succeeded"
 								]
