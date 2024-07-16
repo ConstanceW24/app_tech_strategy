@@ -20,7 +20,7 @@
 				}
 			},
 			{
-				"name": "execute policy_risk_unit_refined_load",
+				"name": "execute policy_refined_load",
 				"description": "Loading the Refined Tables under Policy_Risk_Unit",
 				"type": "ExecutePipeline",
 				"dependsOn": [
