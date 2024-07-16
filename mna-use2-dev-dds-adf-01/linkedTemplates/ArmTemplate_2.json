@@ -4766,7 +4766,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
@@ -4810,7 +4810,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
@@ -4854,7 +4854,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
@@ -4898,7 +4898,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
@@ -4942,7 +4942,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
@@ -5242,7 +5242,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_risk_unit_stg_load_copy1')]",
+			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_risk_unit_stg_load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -5300,19 +5300,21 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"POLICY_LOB_RISK_UNIT",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
 								{
-									"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
 								}
 							]
 						},
@@ -5342,19 +5344,21 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"POLICY_LOB_RISK_UNIT_SEGMENT",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
 								{
-									"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
 								}
 							]
 						},
@@ -5384,19 +5388,21 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"LOB_RISK_UNIT_SEGMENT_ATTRIBUTE",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
 								{
-									"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
 								}
 							]
 						},
@@ -5426,19 +5432,21 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
-								"LOB_LOCATION",
-								"raw to stage",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
 								{
-									"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
 								}
 							]
 						},
@@ -5468,19 +5476,21 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
 								"LOB_LOCATION",
-								"raw to stage",
+								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
 							"libraries": [
 								{
-									"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
 								}
 							]
 						},
@@ -5494,7 +5504,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "E2_Cyber_clone"
+					"name": "E2_CYBER"
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
