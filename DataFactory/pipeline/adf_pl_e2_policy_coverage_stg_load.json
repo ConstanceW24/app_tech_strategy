@@ -39,7 +39,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+						"activity": "POLICY_COVERAGE Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -83,7 +83,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "POLICY_COVERAGE Stage load",
+						"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -231,6 +231,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -271,7 +277,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+						"activity": "POLICY_COVERAGE Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -315,7 +321,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
+						"activity": "POLICY_COVERAGE Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
