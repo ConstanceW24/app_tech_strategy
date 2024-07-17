@@ -13,6 +13,189 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_covergae_load_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "execute policy_coverage_stg_load",
+						"description": "Loading the stage tables under POLICY COVERAGE\n",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "adf_pl_e2_policy_coverage_stg_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "execute policy_coverage_refined_load",
+						"description": "Loading the Refined Tables under POLICY COVERAGE",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "execute policy_coverage_stg_load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "adf_pl_e2_policy_coverage_refined_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_Cyber_clone"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-16T09:54:09Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "execute policy_stg_load",
+						"description": "Loading the stage tables under Policy\n",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "adf_pl_e2_policy_stg_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "execute policy_refined_load",
+						"description": "Loading the Refined Tables under Policy",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "execute policy_stg_load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "adf_pl_e2_policy_refined_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_CYBER"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-16T09:54:09Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_load_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "execute policy_lob_stg_load",
+						"description": "Loading the stage tables under Policy_Risk_Unit\n",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "adf_pl_e2_policy_stg_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "execute policy_risk_unit_refined_load",
+						"description": "Loading the Refined Tables under Policy_Risk_Unit",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "execute policy_lob_stg_load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "adf_pl_e2_policy_refined_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_Cyber_clone"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-16T09:54:09Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_lob_load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -473,6 +656,64 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-02-02T11:40:22Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/horse_load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "HORSE_STG_LOAD",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "horse_stage_table_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "HORSE_REF_LOAD",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "HORSE_STG_LOAD",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "horse_refined_table_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_HORSE"
+				},
+				"annotations": []
 			},
 			"dependsOn": []
 		},
@@ -6012,1336 +6253,9 @@
 				"lastPublishTime": "2024-05-16T09:54:11Z"
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_load')]",
 				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_lob_load')]",
 				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_risk_unit_load')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_master_copy1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Intiate_Batch",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
-							"parameters": [
-								"create_batch",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "execute policy_load",
-						"description": "Loading for Policy Subject Area",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "POLICY_ACTION_JOB Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "adf_pl_e2_policy_load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "Close_Batch",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_e2_policy_coverage",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
-							"parameters": [
-								"close_batch",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/4977be7f_849e_4852_80e6_c61771709ca5/industryclouddatapipeline-0.0.7-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "adf_pl_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "job_params",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "Load Initiation",
-						"description": "Policy version identification",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "Intiate_Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
-							"parameters": [
-								"E2E",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"POLICY_VERSION",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_ACTION_JOB Stage load",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "Load Initiation",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup_4.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"POLICY_ACTION_JOB",
-								"raw to stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/9143fd48_1560_495c_9084_21fed6a2adc5/industryclouddatapipeline-0.1.2-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "execute policy_lob load",
-						"description": "Loading for Policy Line Of Business Subject Area",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "execute policy_load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "adf_pl_e2_policy_lob_load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "execute policy_risk_unit_load",
-						"description": "Loading for Policy Risk Unit Subject Area",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "execute policy_lob load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "adf_pl_e2_policy_risk_unit_load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "adf_pl_e2_policy_coverage",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "execute policy_risk_unit_load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "adf_pl_e2_policy_coverage_load",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "E2_Cyber_clone"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-16T09:54:11Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_lob_load')]",
-				"[concat(variables('factoryId'), '/pipelines/adf_pl_e2_policy_risk_unit_load')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_all_extracts')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "epl_Extract_SecondaryExaminer_Master",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_secondaryexaminer_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "epl_Extract_PrimaryExaminer_Master",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_primaryexaminer_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "epl_Extract_Reserve_Master",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_reserve_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "epl_Extract_PrimaryStatus_Master",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_primary_status_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "epl_ext_secondary_status_master",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_secondary_status_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "epl_ext_insured_payment_master",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_insured_payment_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "epl_ext_folder_master",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_folder_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "epl_ext_litigation_master",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_litigation_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "epl_ext_payment_master",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_payment_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "epl_ext_feature_master",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_feature_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"param_Batch_ID": {
-						"type": "string"
-					},
-					"param_MDO_FolderName": {
-						"type": "string"
-					},
-					"param_CDA_Catalog_Name": {
-						"type": "string"
-					},
-					"param_Refined_Catalog_Name": {
-						"type": "string"
-					},
-					"param_Refined_Schema_Name": {
-						"type": "string"
-					},
-					"param_CDA_Schema_Name": {
-						"type": "string"
-					},
-					"param_query_container_name": {
-						"type": "string"
-					},
-					"param_storage_account_name": {
-						"type": "string"
-					},
-					"param_csv_container_name": {
-						"type": "string"
-					},
-					"param_csv_storage_account_name": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "Claims Extract"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-15T10:21:41Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_secondaryexaminer_master')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_primaryexaminer_master')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_reserve_master')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_primary_status_master')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_secondary_status_master')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_insured_payment_master')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_folder_master')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_litigation_master')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_payment_master')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_feature_master')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_master')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "epl_ext_all_extracts",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "dbx_Start_Batch_Log",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "dbx_Get_MDO_FolderName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_all_extracts",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@string(activity('dbx_Start_Batch_Log').output.runOutput)",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@activity('dbx_Get_MDO_FolderName').output.runOutput",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@variables('var_CDA_Catalog_Name')",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@variables('var_Refined_Catalog_Name')",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@variables('var_Refined_Schema_Name')",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@variables('var_CDA_Schema_Name')",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@variables('var_param_query_container_name')",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@variables('var_param_storage_account_name')",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@variables('var_param_csv_container_name')",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@variables('var_param_csv_storage_account_name')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "dbx_Start_Batch_Log",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Batch_Log",
-							"baseParameters": {
-								"batch_comments": " ",
-								"batch_log_state": {
-									"value": "@variables('var_Batch_Log_State_Ins')",
-									"type": "Expression"
-								},
-								"batch_name": {
-									"value": "@variables('var_Batch_Name')",
-									"type": "Expression"
-								},
-								"batch_status": {
-									"value": "@variables('var_Batch_Status_InProgress')",
-									"type": "Expression"
-								},
-								"refined_catalog_name": {
-									"value": "@variables('var_Refined_Catalog_Name')",
-									"type": "Expression"
-								},
-								"refined_schema_name": {
-									"value": "@variables('var_Refined_Schema_Name')",
-									"type": "Expression"
-								},
-								"in_batch_id": " ",
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Get_MDO_FolderName",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
-							"baseParameters": {
-								"Query": "SELECT Config_Value FROM Master_Config\nWHERE Config_Key ={} AND Config_IsActive = {}",
-								"Parameters_List": "'MDO_Folder_Name',1",
-								"Schema_Name": {
-									"value": "@variables('var_Refined_Schema_Name')",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@variables('var_Refined_Catalog_Name')",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_End_Batch_Log_S",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "epl_ext_all_extracts",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Batch_Log",
-							"baseParameters": {
-								"batch_comments": " ",
-								"batch_id": " ",
-								"batch_log_state": {
-									"value": "@variables('var_Batch_Log_State_Upd')",
-									"type": "Expression"
-								},
-								"batch_name": {
-									"value": "@variables('var_Batch_Name')",
-									"type": "Expression"
-								},
-								"batch_status": {
-									"value": "@variables('var_Batch_Status_Success')",
-									"type": "Expression"
-								},
-								"refined_catalog_name": {
-									"value": "@variables('var_Refined_Catalog_Name')",
-									"type": "Expression"
-								},
-								"refined_schema_name": {
-									"value": "@variables('var_Refined_Schema_Name')",
-									"type": "Expression"
-								},
-								"in_batch_id": {
-									"value": "@string(activity('dbx_Start_Batch_Log').output.runOutput)",
-									"type": "Expression"
-								},
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_End_Batch_Log_F",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "epl_ext_all_extracts",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Batch_Log",
-							"baseParameters": {
-								"batch_comments": {
-									"value": "@activity('epl_ext_all_extracts').Error.Message",
-									"type": "Expression"
-								},
-								"batch_id": " ",
-								"batch_log_state": {
-									"value": "@variables('var_Batch_Log_State_Upd')",
-									"type": "Expression"
-								},
-								"batch_name": {
-									"value": "@variables('var_Batch_Name')",
-									"type": "Expression"
-								},
-								"batch_status": {
-									"value": "@variables('var_Batch_Status_Failure')",
-									"type": "Expression"
-								},
-								"refined_catalog_name": {
-									"value": "@variables('var_Refined_Catalog_Name')",
-									"type": "Expression"
-								},
-								"refined_schema_name": {
-									"value": "@variables('var_Refined_Schema_Name')",
-									"type": "Expression"
-								},
-								"in_batch_id": {
-									"value": "@string(activity('dbx_Start_Batch_Log').output.runOutput)",
-									"type": "Expression"
-								},
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"var_Batch_ID": {
-						"type": "Integer"
-					},
-					"var_Batch_Name": {
-						"type": "String",
-						"defaultValue": "CCM_Extracts"
-					},
-					"var_Batch_Status_InProgress": {
-						"type": "String",
-						"defaultValue": "In-Progress"
-					},
-					"var_Batch_Log_State_Ins": {
-						"type": "String",
-						"defaultValue": "ins"
-					},
-					"var_Batch_Log_State_Upd": {
-						"type": "String",
-						"defaultValue": "upd"
-					},
-					"var_Batch_Status_Success": {
-						"type": "String",
-						"defaultValue": "Success"
-					},
-					"var_Batch_Status_Failure": {
-						"type": "String",
-						"defaultValue": "Failed"
-					},
-					"var_MDO_Drop_FolderName": {
-						"type": "String"
-					},
-					"var_CDA_Catalog_Name": {
-						"type": "String",
-						"defaultValue": "dev_dds_edl_refined"
-					},
-					"var_Refined_Catalog_Name": {
-						"type": "String",
-						"defaultValue": "dev_dds_edl_refined"
-					},
-					"var_Refined_Schema_Name": {
-						"type": "String",
-						"defaultValue": "claims_staging"
-					},
-					"var_CDA_Schema_Name": {
-						"type": "String",
-						"defaultValue": "claims"
-					},
-					"var_param_query_container_name": {
-						"type": "String",
-						"defaultValue": "mkl-dds-fsys-edl-dev-001"
-					},
-					"var_param_storage_account_name": {
-						"type": "String",
-						"defaultValue": "mnause2devddsadls01"
-					},
-					"var_param_csv_container_name": {
-						"type": "String",
-						"defaultValue": "test"
-					},
-					"var_param_csv_storage_account_name": {
-						"type": "String",
-						"defaultValue": "mnause2devddsadls01"
-					}
-				},
-				"folder": {
-					"name": "Claims Extract"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-10T17:42:22Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_all_extracts')]"
 			]
 		}
 	]
