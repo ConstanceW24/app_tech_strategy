@@ -388,7 +388,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "POLICY COVERAGE Stage Load",
+						"activity": "POLICY COVERAGE SEGMENT Stage Load",
 						"dependencyConditions": [
 							"Succeeded"
 						]

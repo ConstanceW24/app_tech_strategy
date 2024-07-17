@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "HORSE_STAGE_LOAD",
+				"name": "HORSE_STG_LOAD",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -11,15 +11,19 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "horse_stage_table_load",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "HORSE_REFINED_LOAD",
+				"name": "HORSE_REF_LOAD",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "HORSE_STAGE_LOAD",
+						"activity": "HORSE_STG_LOAD",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -30,6 +34,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "horse_refined_table_load",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			}
