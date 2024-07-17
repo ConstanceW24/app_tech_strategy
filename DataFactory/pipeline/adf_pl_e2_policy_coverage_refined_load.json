@@ -56,12 +56,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_SEGMENT_ATTRIBUTE",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -98,12 +100,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_ADDITIONAL_ATTRIBUTE",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -140,12 +144,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_COVERAGE",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -182,12 +188,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_SEGMENT_SIR",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -224,12 +232,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_COVERAGE_SEGMENT",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -266,12 +276,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE_COLLECTION",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -308,12 +320,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_SEGMENT_SIR_COLLECTION",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -350,12 +364,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_SEGMENT_LIMIT_COLLECTION",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -392,12 +408,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -434,12 +452,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_SEGMENT_DEDUCTIBLE",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -476,12 +496,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_SEGMENT_LIMIT",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -518,12 +540,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
@@ -560,12 +584,14 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[5].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
 						"POLICY_PREMIUM_TRANSACTION",
-						"raw to stage",
+						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
 					"libraries": [
