@@ -37,14 +37,7 @@
 				"name": "COVERAGE_SEGMENT_ATTRIBUTE Refined load",
 				"description": "COVERAGE_SEGMENT_ATTRIBUTE",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [
-					{
-						"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Refined load",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -565,7 +558,14 @@
 				"name": "POLICY_PREMIUM_TRANSACTION Refined load",
 				"description": "POLICY_PREMIUM_TRANSACTION",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "POLICY_COVERAGE_SEGMENTRefined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
