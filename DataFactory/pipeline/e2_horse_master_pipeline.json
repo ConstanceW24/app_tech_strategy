@@ -66,7 +66,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "job_params",
+						"referenceName": "E2_HORSE_PARAMS",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
@@ -75,7 +75,14 @@
 			{
 				"name": "POLICY_ACTION_JOB Stage load",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Intiate_Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -106,6 +113,18 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"waitOnCompletion": true
 				}
 			}
 		],

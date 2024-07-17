@@ -1,0 +1,42 @@
+{
+	"name": "horse_load",
+	"properties": {
+		"activities": [
+			{
+				"name": "HORSE_STAGE_LOAD",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "HORSE_REFINED_LOAD",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "HORSE_STAGE_LOAD",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "E2_HORSE"
+		},
+		"annotations": []
+	}
+}
