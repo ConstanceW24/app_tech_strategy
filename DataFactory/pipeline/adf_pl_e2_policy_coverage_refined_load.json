@@ -164,7 +164,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Refined load",
+						"activity": "COVERAGE_SEGMENT_SIR_COLLECTION Refined load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -209,6 +209,18 @@
 				"dependsOn": [
 					{
 						"activity": "COVERAGE_SEGMENT_SIR Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTERefined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "COVERAGE_SEGMENT_LIMIT Refined load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -428,7 +440,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Refined load",
+						"activity": "COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION Refined load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -472,7 +484,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Refined load",
+						"activity": "COVERAGE_SEGMENT_LIMIT_COLLECTION Refined load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
