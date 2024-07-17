@@ -37,7 +37,14 @@
 				"name": "COVERAGE_SEGMENT_ATTRIBUTE Refined load",
 				"description": "COVERAGE_SEGMENT_ATTRIBUTE",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "POLICY_COVERAGE Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -221,6 +228,18 @@
 					},
 					{
 						"activity": "COVERAGE_SEGMENT_LIMIT Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "COVERAGE_SEGMENT_DEDUCTIBLE Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "COVERAGE_SEGMENT_ATTRIBUTE Refined load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
