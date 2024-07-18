@@ -44,7 +44,7 @@
 				}
 			},
 			{
-				"name": "execute policy_load",
+				"name": "load",
 				"description": "Loading for Policy Subject Area",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -225,12 +225,12 @@
 				}
 			},
 			{
-				"name": "execute policy_lob load",
+				"name": "POLICY_LOB load",
 				"description": "Loading for Policy Line Of Business Subject Area",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "execute policy_load",
+						"activity": "load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -249,12 +249,12 @@
 				}
 			},
 			{
-				"name": "execute policy_risk_unit_load",
+				"name": "POLICY_LOB_RISK_UNIT",
 				"description": "Loading for Policy Risk Unit Subject Area",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "execute policy_lob load",
+						"activity": "POLICY_LOB load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -277,7 +277,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "execute policy_risk_unit_load",
+						"activity": "POLICY_LOB_RISK_UNIT",
 						"dependencyConditions": [
 							"Succeeded"
 						]
