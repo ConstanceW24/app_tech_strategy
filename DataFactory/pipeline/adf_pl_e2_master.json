@@ -6,6 +6,8 @@
 				"name": "Intiate_Batch",
 				"description": "",
 				"type": "DatabricksSparkPython",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adf_pl_params",
