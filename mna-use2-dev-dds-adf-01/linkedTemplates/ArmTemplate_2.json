@@ -3651,7 +3651,7 @@
 								"@activity('adf_pl_params').output.value[2].param_value",
 								"@activity('adf_pl_params').output.value[5].param_value",
 								"@activity('adf_pl_params').output.value[6].param_value",
-								"LOB_SEGEMNT_ATTRIBUTE",
+								"LOB_SEGMENT_ATTRIBUTE",
 								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],

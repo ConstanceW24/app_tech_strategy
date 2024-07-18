@@ -5950,6 +5950,8 @@
 						"name": "Intiate_Batch",
 						"description": "",
 						"type": "DatabricksSparkPython",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "adf_pl_params",
@@ -6036,7 +6038,7 @@
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value"
+								"@activity('adf_pl_params').output.value[4].param_value"
 							],
 							"libraries": [
 								{
