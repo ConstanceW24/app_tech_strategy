@@ -68,7 +68,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
@@ -111,7 +111,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
@@ -154,7 +154,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
@@ -197,7 +197,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
@@ -241,7 +241,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
@@ -316,7 +316,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
@@ -360,7 +360,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
@@ -404,7 +404,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
@@ -447,7 +447,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"stage_load",
+						"refined_load",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
