@@ -104,7 +104,7 @@
 						}
 					},
 					{
-						"name": "execute policy_load",
+						"name": "POLICY Load",
 						"description": "Loading for Policy Subject Area",
 						"type": "ExecutePipeline",
 						"dependsOn": [
@@ -133,7 +133,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "adf_pl_e2_policy_coverage",
+								"activity": "POLICY_COVERAGE Load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -287,12 +287,12 @@
 						}
 					},
 					{
-						"name": "execute policy_lob load",
+						"name": "POLICY_LOB Load",
 						"description": "Loading for Policy Line Of Business Subject Area",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "execute policy_load",
+								"activity": "POLICY Load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -312,12 +312,12 @@
 						}
 					},
 					{
-						"name": "execute policy_risk_unit_load",
+						"name": "POLICY_LOB_RISK_UNIT Load",
 						"description": "Loading for Policy Risk Unit Subject Area",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "execute policy_lob load",
+								"activity": "POLICY_LOB Load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -337,11 +337,11 @@
 						}
 					},
 					{
-						"name": "adf_pl_e2_policy_coverage",
+						"name": "POLICY_COVERAGE Load",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "execute policy_risk_unit_load",
+								"activity": "POLICY_LOB_RISK_UNIT Load",
 								"dependencyConditions": [
 									"Succeeded"
 								]
