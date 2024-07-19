@@ -58,10 +58,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_load",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			},
@@ -239,10 +235,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_lob_load",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			},
@@ -263,10 +255,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_risk_unit_load",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			},
@@ -286,10 +274,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_coverage_load",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			}
