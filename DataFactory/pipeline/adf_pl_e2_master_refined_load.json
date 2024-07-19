@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "execute policy_refined_load",
+				"name": "Policy Refined Load",
 				"description": "Loading the Refined Tables under Policy",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
@@ -20,7 +20,7 @@
 				}
 			},
 			{
-				"name": "execute policy_risk_unit_refined_load",
+				"name": "Policy Risk Unit Refined Load",
 				"description": "Loading the Refined Tables under Policy_Risk_Unit",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
@@ -37,7 +37,7 @@
 				}
 			},
 			{
-				"name": "execute policy_lob_refined_load",
+				"name": "Policy LOB Refined Load",
 				"description": "Loading the Refined Tables under Policy_Lob",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
@@ -54,8 +54,8 @@
 				}
 			},
 			{
-				"name": "execute policy_refined_load_copy1",
-				"description": "Loading the Refined Tables under Policy",
+				"name": "Policy Coverage Refined Load",
+				"description": "Loading the Refined Tables under POLICY COVERAGE",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -64,7 +64,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_refined_load",
+						"referenceName": "adf_pl_e2_policy_coverage_refined_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
