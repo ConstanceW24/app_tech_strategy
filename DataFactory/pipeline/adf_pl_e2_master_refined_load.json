@@ -1,0 +1,28 @@
+{
+	"name": "adf_pl_e2_master_refined_load",
+	"properties": {
+		"activities": [
+			{
+				"name": "execute policy_refined_load",
+				"description": "Loading the Refined Tables under Policy",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_e2_policy_refined_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "E2_CYBER"
+		},
+		"annotations": []
+	}
+}
