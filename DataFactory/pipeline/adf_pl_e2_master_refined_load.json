@@ -12,10 +12,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_refined_load",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			},
