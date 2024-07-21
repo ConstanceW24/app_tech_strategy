@@ -37,6 +37,8 @@
 				"name": "COVERAGE_SEGMENT_ATTRIBUTE Refined load",
 				"description": "COVERAGE_SEGMENT_ATTRIBUTE",
 				"type": "DatabricksSparkPython",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "POLICY_COVERAGE Refined load",
@@ -81,6 +83,8 @@
 				"name": "COVERAGE_ADDITIONAL_ATTRIBUTE Refined load",
 				"description": "COVERAGE_ADDITIONAL_ATTRIBUTE",
 				"type": "DatabricksSparkPython",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "POLICY_COVERAGE Refined load",
