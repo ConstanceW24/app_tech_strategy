@@ -212,7 +212,7 @@
 				}
 			},
 			{
-				"name": "POLICY_COVERAGE_SEGMENTStage load",
+				"name": "POLICY_COVERAGE_SEGMENT Stage load",
 				"description": "POLICY_COVERAGE_SEGMENT",
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
@@ -597,7 +597,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "POLICY_COVERAGE_SEGMENTStage load",
+						"activity": "POLICY_COVERAGE_SEGMENT Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
