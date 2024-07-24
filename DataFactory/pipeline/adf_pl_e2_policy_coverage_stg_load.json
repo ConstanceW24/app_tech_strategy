@@ -81,8 +81,6 @@
 				"name": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
 				"description": "COVERAGE_ADDITIONAL_ATTRIBUTE",
 				"type": "DatabricksSparkPython",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "POLICY_COVERAGE Stage load",
