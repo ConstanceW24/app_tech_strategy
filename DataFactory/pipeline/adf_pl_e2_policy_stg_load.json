@@ -137,7 +137,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "POLICY_SEGMENT_A Stage load",
+						"activity": "POLICY_SEGMENT_ATTRIBUTE Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -180,7 +180,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "POLICY_SEGMENT_A Stage load",
+						"activity": "POLICY_SEGMENT_ATTRIBUTE Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -219,7 +219,7 @@
 				}
 			},
 			{
-				"name": "POLICY_SEGMENT_A Stage load",
+				"name": "POLICY_SEGMENT_ATTRIBUTE Stage load",
 				"description": "policy_segment_attribute",
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
@@ -299,7 +299,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "POLICY_SEGMENT_A Stage load",
+						"activity": "POLICY_SEGMENT_ATTRIBUTE Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
