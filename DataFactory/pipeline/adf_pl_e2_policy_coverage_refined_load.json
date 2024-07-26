@@ -37,8 +37,6 @@
 				"name": "COVERAGE_SEGMENT_ATTRIBUTE Refined load",
 				"description": "COVERAGE_SEGMENT_ATTRIBUTE",
 				"type": "DatabricksSparkPython",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "POLICY_COVERAGE Refined load",
@@ -83,8 +81,6 @@
 				"name": "COVERAGE_ADDITIONAL_ATTRIBUTE Refined load",
 				"description": "COVERAGE_ADDITIONAL_ATTRIBUTE",
 				"type": "DatabricksSparkPython",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "POLICY_COVERAGE Refined load",
@@ -285,8 +281,6 @@
 				"name": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Refined load",
 				"description": "COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE_COLLECTION",
 				"type": "DatabricksSparkPython",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "COVERAGE_ADDITIONAL_ATTRIBUTE Refined load",
@@ -419,8 +413,6 @@
 				"name": "COVERAGE_SEGMENT_ADL_ATTRIBUTERefined load",
 				"description": "COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE",
 				"type": "DatabricksSparkPython",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Refined load",
