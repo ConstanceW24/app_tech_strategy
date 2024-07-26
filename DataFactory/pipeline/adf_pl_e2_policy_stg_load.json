@@ -7,7 +7,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "adf_pl_params",
+						"activity": "POLICY_PREMIUM Stage load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
