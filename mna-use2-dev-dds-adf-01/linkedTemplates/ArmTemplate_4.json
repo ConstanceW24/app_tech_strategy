@@ -2017,8 +2017,6 @@
 					{
 						"name": "Close_Batch",
 						"type": "DatabricksSparkPython",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "adf_pl_e2_master_refined_load",
