@@ -7,7 +7,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "Repair Tables",
+						"activity": "Vacuum Tables",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -73,7 +73,7 @@
 				}
 			},
 			{
-				"name": "Repair Tables",
+				"name": "Vacuum Tables",
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
@@ -94,7 +94,7 @@
 				"typeProperties": {
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
-						"repair_table",
+						"vacuum_table",
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
