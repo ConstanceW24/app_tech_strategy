@@ -35,7 +35,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "horse_refined_table_load",
+						"referenceName": "Horse_refined_table_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
