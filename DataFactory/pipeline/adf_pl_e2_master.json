@@ -199,6 +199,29 @@
 					"referenceName": "AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "adf_repair_cyber_tables",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Close_Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_repair_cyber_tables",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"folder": {
