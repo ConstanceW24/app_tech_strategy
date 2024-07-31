@@ -23469,7 +23469,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/repair_cyber_tables')]",
+			"name": "[concat(parameters('factoryName'), '/adf_repair_cyber_tables')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
