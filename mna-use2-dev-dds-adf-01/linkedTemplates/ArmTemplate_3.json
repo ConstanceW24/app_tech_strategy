@@ -5181,7 +5181,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "adf_pl_params",
+								"activity": "Repair Tables",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5252,7 +5252,7 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "Optimize Tables",
+								"activity": "adf_pl_params",
 								"dependencyConditions": [
 									"Succeeded"
 								]
