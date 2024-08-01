@@ -201,7 +201,7 @@
 				}
 			},
 			{
-				"name": "adf_repair_cyber_tables",
+				"name": "adf_repair_horse_tables",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -217,7 +217,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_repair_cyber_tables",
+						"referenceName": "adf_repair_horse_tables",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
