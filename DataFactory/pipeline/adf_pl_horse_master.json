@@ -112,11 +112,11 @@
 				}
 			},
 			{
-				"name": "adf_pl_e2_master_stage_load",
+				"name": "adf_pl_horse_master_stage_load",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Intiate_Batch",
+						"activity": "Execute Pipeline",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -128,14 +128,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_master_stage_load",
+						"referenceName": "adf_pl_horse_master_stage_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "adf_pl_e2_master_refined_load",
+				"name": "adf_pl_horse_master_refined_load",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -151,7 +151,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_master_refined_load",
+						"referenceName": "adf_pl_horse_master_refined_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -162,7 +162,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "adf_pl_e2_master_refined_load",
+						"activity": "adf_pl_horse_master_refined_load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -228,7 +228,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "adf_pl_e2_master_stage_load",
+						"activity": "adf_pl_horse_master_stage_load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -264,6 +264,30 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Execute Pipeline",
+				"description": "Execute Horse Raw load",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Intiate_Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_horse_history_raw_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
 				}
 			}
 		],
