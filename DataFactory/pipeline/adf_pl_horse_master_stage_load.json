@@ -131,7 +131,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_lob_stg_load",
+						"referenceName": "adf_pl_horse_policy_lob_stg_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -155,7 +155,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_risk_unit_stg_load",
+						"referenceName": "adf_pl_horse_policy_risk_unit_stg_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -179,7 +179,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_coverage_stg_load",
+						"referenceName": "adf_pl_horse_policy_coverage_stg_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
