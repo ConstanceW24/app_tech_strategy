@@ -393,7 +393,7 @@
 					{
 						"activity": "adf_pl_params",
 						"dependencyConditions": [
-							"Skipped"
+							"Succeeded"
 						]
 					}
 				],
