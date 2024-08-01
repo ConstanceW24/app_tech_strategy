@@ -1,5 +1,5 @@
 {
-	"name": "e2_horse_master_pipeline",
+	"name": "adf_pl_horse_master_load",
 	"properties": {
 		"activities": [
 			{
