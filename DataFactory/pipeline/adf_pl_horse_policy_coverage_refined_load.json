@@ -37,7 +37,14 @@
 				"name": "POLICY_COVERAGE Refined load",
 				"description": "POLICY_COVERAGE",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "adf_pl_params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -159,10 +166,17 @@
 				}
 			},
 			{
-				"name": "POLICY_COVERAGE Refined load_copy1",
-				"description": "POLICY_COVERAGE",
+				"name": "POLICY_NONPREMIUM Refined load",
+				"description": "POLICY_NONPREMIUM",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "PARTY Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -180,7 +194,7 @@
 						"@activity('adf_pl_params').output.value[2].param_value",
 						"@activity('adf_pl_params').output.value[5].param_value",
 						"@activity('adf_pl_params').output.value[6].param_value",
-						"POLICY_COVERAGE",
+						"POLICY_NONPREMIUM",
 						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
@@ -196,10 +210,17 @@
 				}
 			},
 			{
-				"name": "POLICY_COVERAGE Refined load_copy2",
-				"description": "POLICY_COVERAGE",
+				"name": "PARTY Refined load",
+				"description": "PARTY",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "POLICY_ACTION Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -217,7 +238,7 @@
 						"@activity('adf_pl_params').output.value[2].param_value",
 						"@activity('adf_pl_params').output.value[5].param_value",
 						"@activity('adf_pl_params').output.value[6].param_value",
-						"POLICY_COVERAGE",
+						"PARTY",
 						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
@@ -233,10 +254,17 @@
 				}
 			},
 			{
-				"name": "POLICY_COVERAGE Refined load_copy3",
-				"description": "POLICY_COVERAGE",
+				"name": "POLICY_ACTION Refined load",
+				"description": "POLICY_ACTION",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "adf_pl_params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -254,7 +282,7 @@
 						"@activity('adf_pl_params').output.value[2].param_value",
 						"@activity('adf_pl_params').output.value[5].param_value",
 						"@activity('adf_pl_params').output.value[6].param_value",
-						"POLICY_COVERAGE",
+						"POLICY_ACTION",
 						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
@@ -270,10 +298,17 @@
 				}
 			},
 			{
-				"name": "POLICY_COVERAGE Refined load_copy4",
-				"description": "POLICY_COVERAGE",
+				"name": "ANIMAL Refined load",
+				"description": "ANIMAL",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "adf_pl_params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -291,7 +326,7 @@
 						"@activity('adf_pl_params').output.value[2].param_value",
 						"@activity('adf_pl_params').output.value[5].param_value",
 						"@activity('adf_pl_params').output.value[6].param_value",
-						"POLICY_COVERAGE",
+						"ANIMAL",
 						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
@@ -307,10 +342,17 @@
 				}
 			},
 			{
-				"name": "POLICY_COVERAGE Refined load_copy5",
-				"description": "POLICY_COVERAGE",
+				"name": "POLICY_LOB Refined load",
+				"description": "POLICY_LOB",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "ANIMAL Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -328,7 +370,7 @@
 						"@activity('adf_pl_params').output.value[2].param_value",
 						"@activity('adf_pl_params').output.value[5].param_value",
 						"@activity('adf_pl_params').output.value[6].param_value",
-						"POLICY_COVERAGE",
+						"POLICY_LOB",
 						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
@@ -344,10 +386,17 @@
 				}
 			},
 			{
-				"name": "POLICY_COVERAGE Refined load_copy6",
-				"description": "POLICY_COVERAGE",
+				"name": "POLICY_LOB_RISK_UNIT Refined load",
+				"description": "POLICY_LOB_RISK_UNIT",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "adf_pl_params",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -365,7 +414,7 @@
 						"@activity('adf_pl_params').output.value[2].param_value",
 						"@activity('adf_pl_params').output.value[5].param_value",
 						"@activity('adf_pl_params').output.value[6].param_value",
-						"POLICY_COVERAGE",
+						"POLICY_LOB_RISK_UNIT",
 						"refined",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
@@ -384,7 +433,14 @@
 				"name": "POLICY_ACTION_JOB Refined load",
 				"description": "POLICY_ACTION_JOB",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "adf_pl_params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
