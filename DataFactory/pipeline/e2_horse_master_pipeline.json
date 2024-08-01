@@ -116,7 +116,7 @@
 				}
 			},
 			{
-				"name": "Execute e2 horse",
+				"name": "Execute horse",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -143,7 +143,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "Execute e2 horse",
+						"activity": "Execute horse",
 						"dependencyConditions": [
 							"Succeeded"
 						]
