@@ -13,6 +13,1644 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/adf_pl_horse_policy_risk_unit_stg_load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "adf_pl_params",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "job_params",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "POLICY_LOB_RISK_UNIT Stage",
+						"description": "policy_lob_risk_unit",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "adf_pl_params",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_LOB_RISK_UNIT",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "POLICY_LOB_RISK_UNIT_SEGMENT Stage load",
+						"description": "policy_nonpremium_transaction",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_LOB_RISK_UNIT_SEGMENT",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "LOB_RISK_UNIT_SEGMENT_ATTRIBUTE Stage load",
+						"description": "LOB_RISK_UNIT_SEGMENT_ATTRIBUTE",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "LOB_LOCATION Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"LOB_RISK_UNIT_SEGMENT_ATTRIBUTE",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE Stage load",
+						"description": "LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "LOB_RISK_UNIT_SEGMENT_ATTRIBUTE Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "LOB_LOCATION Stage load",
+						"description": "policy_nonpremium_transaction",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_LOB_RISK_UNIT Stage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"LOB_LOCATION",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_CYBER"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-16T09:54:08Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adf_pl_horse_policy_stg_load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "POLICY_ACTION Stage load",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_PREMIUM Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_ACTION",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "POLICY_ADA Stage load",
+						"description": "policy_additional_attribute\n",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_ACTION Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_ADDITIONAL_ATTRIBUTE",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "PARTY Stage load",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_ACTION Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"PARTY",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "POLICY_FORM Stage load",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_SEGMENT_ATTRIBUTE Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_FORM",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "POLICY_SEGMENT Stage load",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_SEGMENT_ATTRIBUTE Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_SEGMENT",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "POLICY_SEGMENT_ATTRIBUTE Stage load",
+						"description": "policy_segment_attribute",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_ACTION Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_SEGMENT_ATTRIBUTE",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "adf_pl_params",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "job_params",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "PARTY_ADDRESS Stage load",
+						"description": "party_address",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_SEGMENT_ATTRIBUTE Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"PARTY_ADDRESS",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "POLICY_NONPREMIUM Stage load",
+						"description": "policy_nonpremium",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_SEGMENT Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_NONPREMIUM",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "POLICY_NONPREMIUM_TRANSACTION Stage load",
+						"description": "policy_nonpremium_transaction",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "POLICY_SEGMENT Stage load",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_NONPREMIUM_TRANSACTION",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "POLICY_PREMIUM Stage load",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "adf_pl_params",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"stage_load",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[5].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"POLICY_PREMIUM",
+								"stage",
+								"@activity('adf_pl_params').output.value[3].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_HORSE"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-16T09:54:08Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adf_repair_cyber_tables')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Optimize Tables",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "Vacuum Tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"optimize_table",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[7].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "adf_pl_params",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "job_params",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Vacuum Tables",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "adf_pl_params",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"vacuum_table",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[7].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "E2_CYBER"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/epl_ext_litigation_csv_generation')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dbx_File_TimeStamp",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
+							"baseParameters": {
+								"Query": "SELECT Ext_FileSuffix FROM LOG_Batch_Identifier\nWHERE Batch_ID = '{}'",
+								"Parameters_List": {
+									"value": "@pipeline().parameters.param_Batch_ID",
+									"type": "Expression"
+								},
+								"Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								},
+								"Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_Start_PL_Audit_Log",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "dbx_File_TimeStamp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+							"baseParameters": {
+								"Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								},
+								"pl_activity_name": {
+									"value": "@variables('var_Activity_Name')",
+									"type": "Expression"
+								},
+								"pl_log_state": {
+									"value": "@variables('var_PL_Log_State_Ins')",
+									"type": "Expression"
+								},
+								"pl_name": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								},
+								"pl_status": {
+									"value": "@variables('var_PL_Log_Status_InProgress')",
+									"type": "Expression"
+								},
+								"batch_id": {
+									"value": "@pipeline().parameters.param_Batch_ID",
+									"type": "Expression"
+								},
+								"in_pl_audit_id": " ",
+								"pl_comments": " "
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dbx_Start_LSC_PL_Audit_Log",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "dbx_File_TimeStamp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+							"baseParameters": {
+								"Catalog_Name": {
+									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+									"type": "Expression"
+								},
+								"Schema_Name": {
+									"value": "@pipeline().parameters.param_Refined_Schema_Name",
+									"type": "Expression"
+								},
+								"pl_activity_name": {
+									"value": "@variables('var_LSC_Activity_Name')",
+									"type": "Expression"
+								},
+								"pl_log_state": {
+									"value": "@variables('var_PL_Log_State_Ins')",
+									"type": "Expression"
+								},
+								"pl_name": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								},
+								"pl_status": {
+									"value": "@variables('var_PL_Log_Status_InProgress')",
+									"type": "Expression"
+								},
+								"batch_id": {
+									"value": "@pipeline().parameters.param_Batch_ID",
+									"type": "Expression"
+								},
+								"pl_comments": " ",
+								"in_pl_audit_id": " "
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "claims_data_extraction",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "if_Prev_Litigation_PL_Complete",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "dbx_Start_PL_Audit_Log",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('dbx_Start_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "epl_ext_litigation_csv",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_ext_litigation_csv",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"param_Refined_Catalog_Name": {
+												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+												"type": "Expression"
+											},
+											"param_Refined_Schema_Name": {
+												"value": "@pipeline().parameters.param_Refined_Schema_Name",
+												"type": "Expression"
+											},
+											"param_MDO_FolderName": {
+												"value": "@pipeline().parameters.param_MDO_FolderName",
+												"type": "Expression"
+											},
+											"param_dbx_File_TimeStamp": {
+												"value": "@activity('dbx_File_TimeStamp').output.runOutput",
+												"type": "Expression"
+											},
+											"param_CDA_Catalog_Name": {
+												"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+												"type": "Expression"
+											},
+											"param_CDA_Schema_Name": {
+												"value": "@pipeline().parameters.param_CDA_Schema_Name",
+												"type": "Expression"
+											},
+											"param_storage_account_name": {
+												"value": "@pipeline().parameters.param_storage_account_name",
+												"type": "Expression"
+											},
+											"param_query_container_name": {
+												"value": "@pipeline().parameters.param_query_container_name",
+												"type": "Expression"
+											},
+											"param_csv_container_name": {
+												"value": "@pipeline().parameters.param_csv_container_name",
+												"type": "Expression"
+											},
+											"param_csv_storage_account_name": {
+												"value": "@pipeline().parameters.param_csv_storage_account_name",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "dbx_End_PL_Audit_Log_S",
+									"type": "DatabricksNotebook",
+									"dependsOn": [
+										{
+											"activity": "epl_ext_litigation_csv",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+										"baseParameters": {
+											"Catalog_Name": {
+												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+												"type": "Expression"
+											},
+											"Schema_Name": {
+												"value": "@pipeline().parameters.param_Refined_Schema_Name",
+												"type": "Expression"
+											},
+											"in_pl_audit_id": {
+												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
+												"type": "Expression"
+											},
+											"pl_activity_name": {
+												"value": "@variables('var_LSC_Activity_Name')",
+												"type": "Expression"
+											},
+											"pl_log_state": {
+												"value": "@variables('var_PL_Log_State_Upd')",
+												"type": "Expression"
+											},
+											"pl_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"pl_status": {
+												"value": "@variables('var_PL_Log_Status_Success')",
+												"type": "Expression"
+											},
+											"batch_id": {
+												"value": "@pipeline().parameters.param_Batch_ID",
+												"type": "Expression"
+											},
+											"pl_comments": " "
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "claims_data_extraction",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "dbx_End_PL_Audit_Log_F",
+									"type": "DatabricksNotebook",
+									"dependsOn": [
+										{
+											"activity": "epl_ext_litigation_csv",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+										"baseParameters": {
+											"Catalog_Name": {
+												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+												"type": "Expression"
+											},
+											"Schema_Name": {
+												"value": "@pipeline().parameters.param_Refined_Schema_Name",
+												"type": "Expression"
+											},
+											"in_pl_audit_id": {
+												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
+												"type": "Expression"
+											},
+											"pl_activity_name": {
+												"value": "@variables('var_Activity_Name')",
+												"type": "Expression"
+											},
+											"pl_log_state": {
+												"value": "@variables('var_PL_Log_State_Upd')",
+												"type": "Expression"
+											},
+											"pl_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"pl_status": {
+												"value": "@variables('var_PL_Status_Failure')",
+												"type": "Expression"
+											},
+											"pl_comments": {
+												"value": "@activity('epl_ext_litigation_csv').Error.Message",
+												"type": "Expression"
+											},
+											"batch_id": {
+												"value": "@pipeline().parameters.param_Batch_ID",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "claims_data_extraction",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "if_Prev_Litigation_SecCounsel_PL_Complete",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "dbx_Start_LSC_PL_Audit_Log",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('dbx_Start_LSC_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "epl_ext_Litigation_SecCounsel_csv",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_ext_litigation_seccounsel_csv",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"param_Refined_Catalog_Name": {
+												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+												"type": "Expression"
+											},
+											"param_Refined_Schema_Name": {
+												"value": "@pipeline().parameters.param_Refined_Schema_Name",
+												"type": "Expression"
+											},
+											"param_MDO_FolderName": {
+												"value": "@pipeline().parameters.param_MDO_FolderName",
+												"type": "Expression"
+											},
+											"param_dbx_File_TimeStamp": {
+												"value": "@activity('dbx_File_TimeStamp').output.runOutput",
+												"type": "Expression"
+											},
+											"param_CDA_Catalog_Name": {
+												"value": "@pipeline().parameters.param_CDA_Catalog_Name",
+												"type": "Expression"
+											},
+											"param_CDA_Schema_Name": {
+												"value": "@pipeline().parameters.param_CDA_Schema_Name",
+												"type": "Expression"
+											},
+											"param_storage_account_name": {
+												"value": "@pipeline().parameters.param_storage_account_name",
+												"type": "Expression"
+											},
+											"param_query_container_name": {
+												"value": "@pipeline().parameters.param_query_container_name",
+												"type": "Expression"
+											},
+											"param_csv_container_name": {
+												"value": "@pipeline().parameters.param_csv_container_name",
+												"type": "Expression"
+											},
+											"param_csv_storage_account_name": {
+												"value": "@pipeline().parameters.param_csv_storage_account_name",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "dbx_End_LSC_PL_Audit_Log_S",
+									"type": "DatabricksNotebook",
+									"dependsOn": [
+										{
+											"activity": "epl_ext_Litigation_SecCounsel_csv",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+										"baseParameters": {
+											"Catalog_Name": {
+												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+												"type": "Expression"
+											},
+											"Schema_Name": {
+												"value": "@pipeline().parameters.param_Refined_Schema_Name",
+												"type": "Expression"
+											},
+											"in_pl_audit_id": {
+												"value": "@string(activity('dbx_Start_LSC_PL_Audit_Log').output.runOutput.pl_audit_id)",
+												"type": "Expression"
+											},
+											"pl_activity_name": {
+												"value": "@variables('var_LSC_Activity_Name')",
+												"type": "Expression"
+											},
+											"pl_log_state": {
+												"value": "@variables('var_PL_Log_State_Upd')",
+												"type": "Expression"
+											},
+											"pl_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"pl_status": {
+												"value": "@variables('var_PL_Log_Status_Success')",
+												"type": "Expression"
+											},
+											"pl_comments": " ",
+											"batch_id": {
+												"value": "@pipeline().parameters.param_Batch_ID",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "claims_data_extraction",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "dbx_End_LSC_PL_Audit_Log_F",
+									"type": "DatabricksNotebook",
+									"dependsOn": [
+										{
+											"activity": "epl_ext_Litigation_SecCounsel_csv",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
+										"baseParameters": {
+											"Catalog_Name": {
+												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
+												"type": "Expression"
+											},
+											"Schema_Name": {
+												"value": "@pipeline().parameters.param_Refined_Schema_Name",
+												"type": "Expression"
+											},
+											"batch_id": {
+												"value": "@pipeline().parameters.param_Batch_ID",
+												"type": "Expression"
+											},
+											"in_pl_audit_id": {
+												"value": "@string(activity('dbx_Start_LSC_PL_Audit_Log').output.runOutput.pl_audit_id)",
+												"type": "Expression"
+											},
+											"pl_activity_name": {
+												"value": "@variables('var_LSC_Activity_Name')",
+												"type": "Expression"
+											},
+											"pl_comments": {
+												"value": "@activity('epl_ext_Litigation_SecCounsel_csv').Error.Message",
+												"type": "Expression"
+											},
+											"pl_log_state": {
+												"value": "@variables('var_PL_Log_State_Upd')",
+												"type": "Expression"
+											},
+											"pl_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"pl_status": {
+												"value": "@variables('var_PL_Status_Failure')",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "claims_data_extraction",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"param_Batch_ID": {
+						"type": "string"
+					},
+					"param_MDO_FolderName": {
+						"type": "string"
+					},
+					"param_CDA_Catalog_Name": {
+						"type": "string"
+					},
+					"param_CDA_Schema_Name": {
+						"type": "string"
+					},
+					"param_Refined_Catalog_Name": {
+						"type": "string"
+					},
+					"param_Refined_Schema_Name": {
+						"type": "string"
+					},
+					"param_csv_container_name": {
+						"type": "string"
+					},
+					"param_storage_account_name": {
+						"type": "string"
+					},
+					"param_query_container_name": {
+						"type": "string"
+					},
+					"param_csv_storage_account_name": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"var_PL_Audit_ID": {
+						"type": "String"
+					},
+					"var_Activity_Name": {
+						"type": "String",
+						"defaultValue": "Litigation_CSV"
+					},
+					"var_PL_Log_State_Ins": {
+						"type": "String",
+						"defaultValue": "ins"
+					},
+					"var_PL_Log_Status_InProgress": {
+						"type": "String",
+						"defaultValue": "In-Progress"
+					},
+					"var_PL_Log_State_Upd": {
+						"type": "String",
+						"defaultValue": "upd"
+					},
+					"var_PL_Log_Status_Success": {
+						"type": "String",
+						"defaultValue": "Success"
+					},
+					"var_PL_Status_Failure": {
+						"type": "String",
+						"defaultValue": "Failed"
+					},
+					"var_LSC_Activity_Name": {
+						"type": "String",
+						"defaultValue": "Litigation_SecCounsels_CSV"
+					}
+				},
+				"folder": {
+					"name": "Claims Extract"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/gw_adf_data_recon_unity_trigger')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "get_gw_adf_pl_config",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "dynamic_param_unity",
+								"type": "DatasetReference",
+								"parameters": {
+									"FileName": {
+										"value": "@concat(pipeline().parameters.TriggerParam, variables('slash'), variables('gw_adf_pl_config'))",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "data_reconciliation",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "get_gw_adf_pl_config",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/adf_setup.py",
+							"parameters": [
+								"data_reconciliation_parallel",
+								"@activity('get_gw_adf_pl_config').output.value[2].param_value",
+								"@activity('get_gw_adf_pl_config').output.value[0].param_value",
+								"@activity('get_gw_adf_pl_config').output.value[4].param_value",
+								"@activity('get_gw_adf_pl_config').output.value[6].param_value"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/5610c152_daa6_4f11_9fb9_0fe1919dfd59/cdaaccelerator-0.0.1-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "CDA_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"TriggerParam": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"slash": {
+						"type": "String",
+						"defaultValue": "/"
+					},
+					"gw_adf_pl_config": {
+						"type": "String",
+						"defaultValue": "gw_adf_pl_config.csv"
+					}
+				},
+				"folder": {
+					"name": "CDA"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-02-01T13:26:37Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/gw_adf_dp_process_node_unity_trigger')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -5250,235 +6888,14 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/gw_adf_master_unity_data_init_trigger')]",
+			"name": "[concat(parameters('factoryName'), '/adf_pl_horse_master_refined_load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "db_process_node",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "data_init",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "gw_adf_dp_process_node_unity_trigger",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"GwcenterName": {
-									"value": "@pipeline().parameters.TriggerParam",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "data_init",
-						"description": "",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "generate_config",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/adf_setup.py",
-							"parameters": [
-								"data_initialization",
-								"@activity('get_gw_adf_pl_config').output.value[2].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[0].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[3].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[5].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[6].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[1].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cdaaccelerator/cdaaccelerator-0.0.2-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "CDA_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "get_gw_adf_pl_config",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "dynamic_param_unity",
-								"type": "DatasetReference",
-								"parameters": {
-									"FileName": {
-										"value": "@concat(pipeline().parameters.TriggerParam, variables('slash'), variables('gw_adf_pl_config'))",
-										"type": "Expression"
-									}
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "data_reconciliation",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "db_process_node",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/adf_setup.py",
-							"parameters": [
-								"data_reconciliation_parallel",
-								"@activity('get_gw_adf_pl_config').output.value[2].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[0].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[4].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[6].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/5610c152_daa6_4f11_9fb9_0fe1919dfd59/cdaaccelerator-0.0.1-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "CDA_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "generate_config",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "get_gw_adf_pl_config",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/adf_setup.py",
-							"parameters": [
-								"generate_config",
-								"@activity('get_gw_adf_pl_config').output.value[2].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[0].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[1].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[5].param_value",
-								"@activity('get_gw_adf_pl_config').output.value[6].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cdaaccelerator/cdaaccelerator-0.0.2-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "CDA_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"TriggerParam": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"slash": {
-						"type": "String",
-						"defaultValue": "/"
-					},
-					"gw_adf_pl_config": {
-						"type": "String",
-						"defaultValue": "gw_adf_pl_config.csv"
-					}
-				},
-				"folder": {
-					"name": "CDA"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-02-02T11:40:22Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/gw_adf_dp_process_node_unity_trigger')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/horse_load')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "HORSE_STG_LOAD",
+						"name": "Policy Refined Load",
+						"description": "Loading the Refined Tables under Policy",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"policy": {
@@ -5487,7 +6904,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "horse_stage_table_load",
+								"referenceName": "adf_pl_e2_policy_refined_load",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -5495,23 +6912,53 @@
 						}
 					},
 					{
-						"name": "HORSE_REF_LOAD",
+						"name": "Policy Risk Unit Refined Load",
+						"description": "Loading the Refined Tables under Policy_Risk_Unit",
 						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "HORSE_STG_LOAD",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "Horse_refined_table_load",
+								"referenceName": "adf_pl_e2_policy_risk_unit_refined_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Policy LOB Refined Load",
+						"description": "Loading the Refined Tables under Policy_Lob",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "adf_pl_e2_policy_lob_refined_load",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Policy Coverage Refined Load",
+						"description": "Loading the Refined Tables under POLICY COVERAGE",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "adf_pl_e2_policy_coverage_refined_load",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -5523,2552 +6970,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "E2_HORSE"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/horse_stage_table_load')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_feature_master')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dbx_Start_PL_Audit_Log",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-							"baseParameters": {
-								"batch_id": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"in_pl_audit_id": " ",
-								"pl_activity_name": {
-									"value": "@variables('var_Activity_Name')",
-									"type": "Expression"
-								},
-								"pl_comments": " ",
-								"pl_log_state": {
-									"value": "@variables('var_PL_Log_State_Ins')",
-									"type": "Expression"
-								},
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								},
-								"pl_status": {
-									"value": "@variables('var_PL_Log_Status_InProgress')",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "if_Prev_Feature_PL_Complete",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "dbx_Start_PL_Audit_Log",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(activity('dbx_Start_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "epl_ext_feature",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "pl_ext_feature",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"param_Batch_ID": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"param_PL_Audit_ID": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"param_CDA_Catalog_Name": {
-												"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_CDA_Schema_Name": {
-												"value": "@pipeline().parameters.param_CDA_Schema_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											},
-											"param_query_container_name": {
-												"value": "@pipeline().parameters.param_query_container_name",
-												"type": "Expression"
-											},
-											"param_storage_account_name": {
-												"value": "@pipeline().parameters.param_storage_account_name",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "dbx_End_PL_Audit_Log_S",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_feature",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": " ",
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Success')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "dbx_End_PL_Audit_Log_F",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_feature",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": {
-												"value": "@activity('epl_ext_feature').Error.Message",
-												"type": "Expression"
-											},
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Failure')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "epl_ext_feature_csv_master",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "if_Prev_Feature_MA_PL_Complete",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "if_Prev_Feature_PL_Complete",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "if_Prev_Feature_Phones_PL_Complete",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_feature_csv_generation",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "dbx_Start_PL_MA_Audit_Log",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-							"baseParameters": {
-								"batch_id": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"in_pl_audit_id": " ",
-								"pl_activity_name": {
-									"value": "@variables('var_MA_Activity_Name')",
-									"type": "Expression"
-								},
-								"pl_comments": " ",
-								"pl_log_state": {
-									"value": "@variables('var_PL_Log_State_Ins')",
-									"type": "Expression"
-								},
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								},
-								"pl_status": {
-									"value": "@variables('var_PL_Log_Status_InProgress')",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "if_Prev_Feature_MA_PL_Complete",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "dbx_Start_PL_MA_Audit_Log",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(activity('dbx_Start_PL_MA_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "epl_ext_feature_ma",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "pl_ext_feature_mailingaddress",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"param_Batch_ID": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"param_PL_Audit_ID": {
-												"value": "@string(activity('dbx_Start_PL_MA_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"param_CDA_Catalog_Name": {
-												"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_CDA_Schema_Name": {
-												"value": "@pipeline().parameters.param_CDA_Schema_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											},
-											"param_query_container_name": {
-												"value": "@pipeline().parameters.param_query_container_name",
-												"type": "Expression"
-											},
-											"param_storage_account_name": {
-												"value": "@pipeline().parameters.param_storage_account_name",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "dbx_End_PL_MA_Audit_Log_S",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_feature_ma",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_MA_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_MA_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": " ",
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Success')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "dbx_End_PL_MA_Audit_Log_F",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_feature_ma",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_MA_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_MA_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": {
-												"value": "@activity('epl_ext_feature_ma').Error.Message",
-												"type": "Expression"
-											},
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Failure')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "dbx_Feature_Sent_To_CSV_Updates",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "epl_ext_feature_csv_master",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
-							"baseParameters": {
-								"Query": "UPDATE STG_EXT_Feature SET Sent_To_CSV = 1 WHERE Sent_To_CSV = 0;",
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Parameters_List": " "
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Feature_MA_Sent_To_CSV_Updates",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Feature_Sent_To_CSV_Updates",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
-							"baseParameters": {
-								"Query": "UPDATE STG_EXT_Feature_MailingAddress\nSET Sent_To_CSV = 1 WHERE Sent_To_CSV = 0;",
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Parameters_List": " "
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Start_PL_Phones_Audit_Log",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-							"baseParameters": {
-								"batch_id": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"in_pl_audit_id": " ",
-								"pl_activity_name": {
-									"value": "@variables('var_Phones_Activity_Name')",
-									"type": "Expression"
-								},
-								"pl_comments": " ",
-								"pl_log_state": {
-									"value": "@variables('var_PL_Log_State_Ins')",
-									"type": "Expression"
-								},
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								},
-								"pl_status": {
-									"value": "@variables('var_PL_Log_Status_InProgress')",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "if_Prev_Feature_Phones_PL_Complete",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "dbx_Start_PL_Phones_Audit_Log",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(activity('dbx_Start_PL_Phones_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "epl_ext_feature_phones",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "pl_ext_feature_phones",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"param_Batch_ID": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"param_PL_Audit_ID": {
-												"value": "@string(activity('dbx_Start_PL_Phones_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"param_CDA_Catalog_Name": {
-												"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_CDA_Schema_Name": {
-												"value": "@pipeline().parameters.param_CDA_Schema_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											},
-											"param_query_container_name": {
-												"value": "@pipeline().parameters.param_query_container_name",
-												"type": "Expression"
-											},
-											"param_storage_account_name": {
-												"value": "@pipeline().parameters.param_storage_account_name",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "dbx_End_PL_Phones_Audit_Log_S",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_feature_phones",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Phones_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Phones_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": " ",
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Success')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "dbx_End_PL_Phones_Audit_Log_F",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_feature_phones",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Phones_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Phones_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": {
-												"value": "@activity('epl_ext_feature_phones').Error.Message",
-												"type": "Expression"
-											},
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Failure')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "dbx_Feature_Phones_Sent_To_CSV_Updates",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Feature_MA_Sent_To_CSV_Updates",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
-							"baseParameters": {
-								"Query": "UPDATE STG_EXT_Feature_Phones\nSET Sent_To_CSV = 1 WHERE Sent_To_CSV = 0;",
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Parameters_List": " "
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"param_Batch_ID": {
-						"type": "string"
-					},
-					"param_MDO_FolderName": {
-						"type": "string"
-					},
-					"param_CDA_Catalog_Name": {
-						"type": "string"
-					},
-					"param_Refined_Catalog_Name": {
-						"type": "string"
-					},
-					"param_Refined_Schema_Name": {
-						"type": "string"
-					},
-					"param_CDA_Schema_Name": {
-						"type": "string"
-					},
-					"param_csv_container_name": {
-						"type": "string"
-					},
-					"param_storage_account_name": {
-						"type": "string"
-					},
-					"param_query_container_name": {
-						"type": "string"
-					},
-					"param_csv_storage_account_name": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"var_Activity_Name": {
-						"type": "String",
-						"defaultValue": "Exposure_Extract"
-					},
-					"var_PL_Log_State_Ins": {
-						"type": "String",
-						"defaultValue": "ins"
-					},
-					"var_PL_Log_Status_InProgress": {
-						"type": "String",
-						"defaultValue": "In-Progress"
-					},
-					"var_PL_Log_State_Upd": {
-						"type": "String",
-						"defaultValue": "upd"
-					},
-					"var_PL_Status_Success": {
-						"type": "String",
-						"defaultValue": "Success"
-					},
-					"var_PL_Status_Failure": {
-						"type": "String",
-						"defaultValue": "Failed"
-					},
-					"var_MA_Activity_Name": {
-						"type": "String",
-						"defaultValue": "Exposure_MailingAddress_Extract"
-					},
-					"var_Phones_Activity_Name": {
-						"type": "String",
-						"defaultValue": "Exposure_Phones_Extract"
-					}
-				},
-				"folder": {
-					"name": "Claims Extract"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-10T04:32:46Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_feature_csv_generation')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_folder_master')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dbx_Start_PL_Audit_Log",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-							"baseParameters": {
-								"batch_id": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"in_pl_audit_id": " ",
-								"pl_activity_name": {
-									"value": "@variables('var_Activity_Name')",
-									"type": "Expression"
-								},
-								"pl_comments": " ",
-								"pl_log_state": {
-									"value": "@variables('var_PL_Log_State_Ins')",
-									"type": "Expression"
-								},
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								},
-								"pl_status": {
-									"value": "@variables('var_PL_Log_Status_InProgress')",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "if_Prev_Folder_PL_Complete",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "dbx_Start_PL_Audit_Log",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(activity('dbx_Start_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "epl_ext_folder",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "pl_ext_folder",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"param_Batch_ID": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"param_PL_Audit_ID": {
-												"value": "@activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id",
-												"type": "Expression"
-											},
-											"param_CDA_Catalog_Name": {
-												"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											},
-											"param_CDA_Schema_Name": {
-												"value": "@pipeline().parameters.param_CDA_Schema_Name",
-												"type": "Expression"
-											},
-											"param_storage_account_name": {
-												"value": "@pipeline().parameters.param_storage_account_name",
-												"type": "Expression"
-											},
-											"param_container_name": {
-												"value": "@pipeline().parameters.param_query_container_name",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "dbx_End_PL_Audit_Log_S",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_folder",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": " ",
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Success')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "dbx_End_PL_Audit_Log_F",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_folder",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": {
-												"value": "@activity('epl_ext_folder').Error.Message",
-												"type": "Expression"
-											},
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Failure')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "epl_ext_folder_csv_master",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "if_Prev_Folder_PL_Complete",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_folder_csv_generation",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"param_Batch_ID": {
-						"type": "string"
-					},
-					"param_MDO_FolderName": {
-						"type": "string"
-					},
-					"param_CDA_Catalog_Name": {
-						"type": "string"
-					},
-					"param_Refined_Catalog_Name": {
-						"type": "string"
-					},
-					"param_Refined_Schema_Name": {
-						"type": "string"
-					},
-					"param_CDA_Schema_Name": {
-						"type": "string"
-					},
-					"param_csv_container_name": {
-						"type": "string"
-					},
-					"param_storage_account_name": {
-						"type": "string"
-					},
-					"param_query_container_name": {
-						"type": "string"
-					},
-					"param_csv_storage_account_name": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"var_Activity_Name": {
-						"type": "String",
-						"defaultValue": "Folder_Extract"
-					},
-					"var_PL_Log_State_Ins": {
-						"type": "String",
-						"defaultValue": "ins"
-					},
-					"var_PL_Log_Status_InProgress": {
-						"type": "String",
-						"defaultValue": "In-Progress"
-					},
-					"var_PL_Log_State_Upd": {
-						"type": "String",
-						"defaultValue": "upd"
-					},
-					"var_PL_Status_Success": {
-						"type": "String",
-						"defaultValue": "Success"
-					},
-					"var_PL_Status_Failure": {
-						"type": "String",
-						"defaultValue": "Failed"
-					}
-				},
-				"folder": {
-					"name": "Claims Extract"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-10T04:32:46Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_folder_csv_generation')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_insured_payment_master')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dbx_Start_PL_Audit_Log",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-							"baseParameters": {
-								"batch_id": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"in_pl_audit_id": " ",
-								"pl_activity_name": {
-									"value": "@variables('var_Activity_Name')",
-									"type": "Expression"
-								},
-								"pl_comments": " ",
-								"pl_log_state": {
-									"value": "@variables('var_PL_Log_State_Ins')",
-									"type": "Expression"
-								},
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								},
-								"pl_status": {
-									"value": "@variables('var_PL_Log_Status_InProgress')",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "if_Prev_InsuredPayment_PL_Complete",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "dbx_Start_PL_Audit_Log",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(activity('dbx_Start_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "epl_ext_insured_payment",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "pl_ext_insured_payment",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"param_Batch_ID": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"param_PL_Audit_ID": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"param_CDA_Catalog_Name": {
-												"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_CDA_Schema_Name": {
-												"value": "@pipeline().parameters.param_CDA_Schema_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											},
-											"param_query_container_name": {
-												"value": "@pipeline().parameters.param_query_container_name",
-												"type": "Expression"
-											},
-											"param_storage_account_name": {
-												"value": "@pipeline().parameters.param_storage_account_name",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "dbx_End_PL_Audit_Log_S",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_insured_payment",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": " ",
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Success')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "dbx_End_PL_Audit_Log_F",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_insured_payment",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": {
-												"value": "@activity('epl_ext_insured_payment').Error.Message",
-												"type": "Expression"
-											},
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Failure')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "epl_ext_insured_payment_csv_master",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "if_Prev_InsuredPayment_PL_Complete",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ext_insured_payment_csv_generation",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"param_Batch_ID": {
-						"type": "string"
-					},
-					"param_MDO_FolderName": {
-						"type": "string"
-					},
-					"param_CDA_Catalog_Name": {
-						"type": "string"
-					},
-					"param_CDA_Schema_Name": {
-						"type": "string"
-					},
-					"param_Refined_Catalog_Name": {
-						"type": "string"
-					},
-					"param_Refined_Schema_Name": {
-						"type": "string"
-					},
-					"param_query_container_name": {
-						"type": "string"
-					},
-					"param_storage_account_name": {
-						"type": "string"
-					},
-					"param_csv_container_name": {
-						"type": "string"
-					},
-					"param_csv_storage_account_name": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"var_Activity_Name": {
-						"type": "String",
-						"defaultValue": "Insuredpayment_Extract"
-					},
-					"var_PL_Log_State_Ins": {
-						"type": "String",
-						"defaultValue": "ins"
-					},
-					"var_PL_Log_Status_InProgress": {
-						"type": "String",
-						"defaultValue": "In-Progress"
-					},
-					"var_PL_Log_State_Upd": {
-						"type": "String",
-						"defaultValue": "upd"
-					},
-					"var_PL_Status_Success": {
-						"type": "String",
-						"defaultValue": "Success"
-					},
-					"var_PL_Status_Failure": {
-						"type": "String",
-						"defaultValue": "Failed"
-					}
-				},
-				"folder": {
-					"name": "Claims Extract"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_ext_insured_payment_csv_generation')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ext_litigation_master')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dbx_Start_PL_LSC_Audit_Log",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-							"baseParameters": {
-								"batch_id": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"pl_activity_name": {
-									"value": "@variables('var_LSC_Activity_Name')",
-									"type": "Expression"
-								},
-								"pl_log_state": {
-									"value": "@variables('var_PL_Log_State_Ins')",
-									"type": "Expression"
-								},
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								},
-								"pl_status": {
-									"value": "@variables('var_PL_Log_Status_InProgress')",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"pl_comments": " ",
-								"in_pl_audit_id": " "
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Start_PL_Audit_Log",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-							"baseParameters": {
-								"batch_id": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"pl_activity_name": {
-									"value": "@variables('var_Activity_Name')",
-									"type": "Expression"
-								},
-								"pl_log_state": {
-									"value": "@variables('var_PL_Log_State_Ins')",
-									"type": "Expression"
-								},
-								"pl_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
-								},
-								"pl_status": {
-									"value": "@variables('var_PL_Log_Status_InProgress')",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"pl_comments": " ",
-								"in_pl_audit_id": " "
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "if_Prev_Litigation_PL_Complete",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "dbx_Start_PL_Audit_Log",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(activity('dbx_Start_PL_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "epl_ext_litigation",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "pl_ext_litigation",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"param_Batch_ID": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"param_PL_Audit_ID": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"param_CDA_Catalog_Name": {
-												"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_CDA_Schema_Name": {
-												"value": "@pipeline().parameters.param_CDA_Schema_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											},
-											"param_query_container_name": {
-												"value": "@pipeline().parameters.param_query_container_name",
-												"type": "Expression"
-											},
-											"param_storage_account_name": {
-												"value": "@pipeline().parameters.param_storage_account_name",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "dbx_End_PL_Audit_Log_S",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_litigation",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Success')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											},
-											"pl_comments": " "
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "dbx_End_PL_Audit_Log_F",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_litigation",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": {
-												"value": "@activity('epl_ext_litigation').Error.Message",
-												"type": "Expression"
-											},
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Failure')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "epl_ext_litigation_csv_generation",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "if_Prev_Litigation_SecCounsel_PL_Complete",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "if_Prev_Litigation_PL_Complete",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "epl_ext_litigation_csv_generation",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"param_Batch_ID": {
-									"value": "@pipeline().parameters.param_Batch_ID",
-									"type": "Expression"
-								},
-								"param_MDO_FolderName": {
-									"value": "@pipeline().parameters.param_MDO_FolderName",
-									"type": "Expression"
-								},
-								"param_CDA_Catalog_Name": {
-									"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_CDA_Schema_Name": {
-									"value": "@pipeline().parameters.param_CDA_Schema_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"param_Refined_Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"param_csv_container_name": {
-									"value": "@pipeline().parameters.param_csv_container_name",
-									"type": "Expression"
-								},
-								"param_storage_account_name": {
-									"value": "@pipeline().parameters.param_storage_account_name",
-									"type": "Expression"
-								},
-								"param_query_container_name": {
-									"value": "@pipeline().parameters.param_query_container_name",
-									"type": "Expression"
-								},
-								"param_csv_storage_account_name": {
-									"value": "@pipeline().parameters.param_csv_storage_account_name",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "if_Prev_Litigation_SecCounsel_PL_Complete",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "dbx_Start_PL_LSC_Audit_Log",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(activity('dbx_Start_PL_LSC_Audit_Log').output.runOutput.Prev_PL_Status_Complete, 'Y')",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "epl_ext_Litigation_SecCounsel",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "pl_ext_litigation_seccounsel",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"param_Batch_ID": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"param_PL_Audit_ID": {
-												"value": "@string(activity('dbx_Start_PL_LSC_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"param_CDA_Catalog_Name": {
-												"value": "@pipeline().parameters.param_CDA_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_CDA_Schema_Name": {
-												"value": "@pipeline().parameters.param_CDA_Schema_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"param_Refined_Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											},
-											"param_query_container_name": {
-												"value": "@pipeline().parameters.param_query_container_name",
-												"type": "Expression"
-											},
-											"param_storage_account_name": {
-												"value": "@pipeline().parameters.param_storage_account_name",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "dbx_End_PL_LSC_Audit_Log_S",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_Litigation_SecCounsel",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_LSC_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_LSC_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": " ",
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Success')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "dbx_End_PL_LSC_Audit_Log_F",
-									"type": "DatabricksNotebook",
-									"dependsOn": [
-										{
-											"activity": "epl_ext_Litigation_SecCounsel",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Audit_Log",
-										"baseParameters": {
-											"batch_id": {
-												"value": "@pipeline().parameters.param_Batch_ID",
-												"type": "Expression"
-											},
-											"in_pl_audit_id": {
-												"value": "@string(activity('dbx_Start_PL_LSC_Audit_Log').output.runOutput.pl_audit_id)",
-												"type": "Expression"
-											},
-											"pl_activity_name": {
-												"value": "@variables('var_LSC_Activity_Name')",
-												"type": "Expression"
-											},
-											"pl_comments": {
-												"value": "@activity('epl_ext_Litigation_SecCounsel').output.Error.Message",
-												"type": "Expression"
-											},
-											"pl_log_state": {
-												"value": "@variables('var_PL_Log_State_Upd')",
-												"type": "Expression"
-											},
-											"pl_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"pl_status": {
-												"value": "@variables('var_PL_Status_Failure')",
-												"type": "Expression"
-											},
-											"Catalog_Name": {
-												"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-												"type": "Expression"
-											},
-											"Schema_Name": {
-												"value": "@pipeline().parameters.param_Refined_Schema_Name",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "claims_data_extraction",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "dbx_Litigation_Sent_To_CSV_Updates",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "epl_ext_litigation_csv_generation",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
-							"baseParameters": {
-								"Query": "UPDATE STG_EXT_Litigation SET Sent_To_CSV = 1 WHERE Sent_To_CSV = 0;",
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Parameters_List": " "
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "dbx_Litigation_SecCounsel_Sent_To_CSV_Updates",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "dbx_Litigation_Sent_To_CSV_Updates",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Shared/Claims Remediation/Parameterized Notebooks/NB_Select_Statement",
-							"baseParameters": {
-								"Query": "UPDATE stg_ext_litigation_seccounsels SET Sent_To_CSV = 1 WHERE Sent_To_CSV = 0;",
-								"Schema_Name": {
-									"value": "@pipeline().parameters.param_Refined_Schema_Name",
-									"type": "Expression"
-								},
-								"Catalog_Name": {
-									"value": "@pipeline().parameters.param_Refined_Catalog_Name",
-									"type": "Expression"
-								},
-								"Parameters_List": " "
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "claims_data_extraction",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"param_Batch_ID": {
-						"type": "string"
-					},
-					"param_MDO_FolderName": {
-						"type": "string"
-					},
-					"param_CDA_Catalog_Name": {
-						"type": "string"
-					},
-					"param_CDA_Schema_Name": {
-						"type": "string"
-					},
-					"param_Refined_Catalog_Name": {
-						"type": "string"
-					},
-					"param_Refined_Schema_Name": {
-						"type": "string"
-					},
-					"param_query_container_name": {
-						"type": "string"
-					},
-					"param_storage_account_name": {
-						"type": "string"
-					},
-					"param_csv_container_name": {
-						"type": "string"
-					},
-					"param_csv_storage_account_name": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"var_Activity_Name": {
-						"type": "String",
-						"defaultValue": "Litigation_Extract"
-					},
-					"var_PL_Log_State_Ins": {
-						"type": "String",
-						"defaultValue": "ins"
-					},
-					"var_PL_Log_Status_InProgress": {
-						"type": "String",
-						"defaultValue": "In-Progress"
-					},
-					"var_PL_Log_State_Upd": {
-						"type": "String",
-						"defaultValue": "upd"
-					},
-					"var_PL_Status_Success": {
-						"type": "String",
-						"defaultValue": "Success"
-					},
-					"var_PL_Status_Failure": {
-						"type": "String",
-						"defaultValue": "Failed"
-					},
-					"var_LSC_Activity_Name": {
-						"type": "String",
-						"defaultValue": "Litigation_SecCounsels_Extract"
-					}
-				},
-				"folder": {
-					"name": "Claims Extract"
+					"name": "E2_CYBER"
 				},
 				"annotations": []
 			},
