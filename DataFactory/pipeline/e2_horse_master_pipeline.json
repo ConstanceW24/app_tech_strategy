@@ -77,7 +77,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "Intiate_Batch",
+						"activity": "Execute Horse Raw load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -175,6 +175,29 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Execute Horse Raw load",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Intiate_Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_horse_history_raw_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
 				}
 			}
 		],
