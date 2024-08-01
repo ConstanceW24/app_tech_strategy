@@ -151,7 +151,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_horse_master_refined_load",
+						"referenceName": "adf_pl_horse_master_refined_load1",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
