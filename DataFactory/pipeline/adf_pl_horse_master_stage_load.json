@@ -107,7 +107,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_stg_load",
+						"referenceName": "adf_pl_horse_policy_stg_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
