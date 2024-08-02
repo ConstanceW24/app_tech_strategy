@@ -73,7 +73,7 @@
 				}
 			},
 			{
-				"name": "adf_repair_cyber_tables",
+				"name": "adf_repair_horse_tables",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
