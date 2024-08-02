@@ -27,7 +27,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "job_params",
+						"referenceName": "E2_HORSE_PARAMS",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
@@ -89,7 +89,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_repair_cyber_tables",
+						"referenceName": "adf_repair_horse_tables",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
