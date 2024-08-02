@@ -4372,7 +4372,7 @@
 						"typeProperties": {
 							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
-								"raw_load",
+								"stage_load",
 								"@activity('adf_pl_params').output.value[0].param_value",
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",

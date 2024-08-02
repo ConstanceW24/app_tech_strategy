@@ -6347,50 +6347,11 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/adf_clear_cyber_tables')]",
+			"name": "[concat(parameters('factoryName'), '/adf_clear_Horse_tables')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
-					{
-						"name": "Vacuum Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "Clear Cyber Tables",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"vacuum_table",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
 					{
 						"name": "adf_pl_params",
 						"type": "Lookup",
@@ -6416,7 +6377,7 @@
 								}
 							},
 							"dataset": {
-								"referenceName": "job_params",
+								"referenceName": "E2_HORSE_PARAMS",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
@@ -6463,42 +6424,27 @@
 						}
 					},
 					{
-						"name": "Optimize Tables",
-						"type": "DatabricksSparkPython",
+						"name": "adf_repair_horse_tables",
+						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "Vacuum Tables",
+								"activity": "Clear Cyber Tables",
 								"dependencyConditions": [
 									"Succeeded"
 								]
 							}
 						],
 						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"optimize_table",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
+							"pipeline": {
+								"referenceName": "adf_repair_horse_tables",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
 						}
 					}
 				],
@@ -6506,11 +6452,13 @@
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "E2_CYBER"
+					"name": "HORSE"
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/adf_repair_horse_tables')]"
+			]
 		}
 	]
 }
