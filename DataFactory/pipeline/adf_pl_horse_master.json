@@ -6,9 +6,14 @@
 				"name": "Intiate_Batch",
 				"description": "",
 				"type": "DatabricksSparkPython",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "adf_pl_params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -267,7 +272,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "adf_pl_params",
+						"activity": "Intiate_Batch",
 						"dependencyConditions": [
 							"Succeeded"
 						]
