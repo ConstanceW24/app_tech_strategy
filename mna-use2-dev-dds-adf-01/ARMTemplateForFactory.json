@@ -583,7 +583,7 @@
 						}
 					},
 					{
-						"name": "Clear Cyber Tables",
+						"name": "Clear Norse Tables",
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
@@ -626,7 +626,7 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "Clear Cyber Tables",
+								"activity": "Clear Norse Tables",
 								"dependencyConditions": [
 									"Succeeded"
 								]
