@@ -34,7 +34,7 @@
 				}
 			},
 			{
-				"name": "Clear Norse Tables",
+				"name": "Clear Horse Tables",
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
@@ -59,7 +59,8 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value"
+						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.Batch_Id"
 					],
 					"libraries": [
 						{
@@ -77,7 +78,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Clear Norse Tables",
+						"activity": "Clear Horse Tables",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -96,6 +97,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"Batch_Id": {
+				"type": "int"
+			}
+		},
 		"folder": {
 			"name": "HORSE"
 		},
