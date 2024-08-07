@@ -99,7 +99,7 @@
 		],
 		"parameters": {
 			"Batch_Id": {
-				"type": "int"
+				"type": "string"
 			}
 		},
 		"folder": {
