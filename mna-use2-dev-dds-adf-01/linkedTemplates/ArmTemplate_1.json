@@ -13,64 +13,196 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "adf_cyber_stage_table_list.txt",
+						"container": "adf-cyber-metadata"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
 					{
-						"name": "email_test",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"notify",
-								"@pipeline().parameters.application_short_name",
-								"@pipeline().parameters.source",
-								"@pipeline().parameters.audit_db",
-								"success",
-								"Pipeline Succeeded"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
+						"name": "policy_action_job",
+						"type": "String"
 					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Dp_process_node_unity')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CDA_AzureBlobStorage",
+					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"application_short_name": {
+					"dp_processFileName": {
 						"type": "string"
-					},
-					"source": {
-						"type": "string"
-					},
-					"audit_db": {
-						"type": "string",
-						"defaultValue": "dev_dds_edl_refined"
 					}
 				},
-				"folder": {
-					"name": "E2_CYBER"
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().dp_processFileName",
+							"type": "Expression"
+						},
+						"folderPath": "gw_adf_job_parameters",
+						"container": "adf-cda-metadata"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": ""
 				},
-				"annotations": []
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/E2_HORSE_PARAMS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "horse_param.csv",
+						"container": "adf-cyber-metadata"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "policy_action_job",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dynamic_param_unity')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CDA_AzureBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": "gw_adf_job_parameters",
+						"container": "adf-cda-metadata"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/job_params')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "param.csv",
+						"container": "adf-cyber-metadata"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "policy_action_job",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Tgr_Cyber_Policy_Stage_load')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Month",
+					"interval": 1,
+					"startTime": "2024-04-12T16:11:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 10,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"offset": "0.00:11:00",
+							"referenceTrigger": {
+								"referenceName": "tgr_pl_cyber_policy_master",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
 			},
 			"dependsOn": []
 		},
@@ -557,7 +689,129 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/E2_HORSE_PARAMS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_clear_tables')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "adf_pl_params",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "job_params",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Clear Cyber Tables",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "adf_pl_params",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"clear_batch",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								"@pipeline().parameters.Batch_Id"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "adf_repair_cyber_tables",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Clear Cyber Tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "adf_pl_e2_repair_tables",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"Batch_Id": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "E2_CYBER"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/job_params')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_coverage_refined_load')]",
@@ -1203,653 +1457,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_coverage_stg_load')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "adf_pl_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "job_params",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "COVERAGE_SEGMENT_ATTRIBUTE Stage load",
-						"description": "COVERAGE_SEGMENT_ATTRIBUTE",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_COVERAGE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_SEGMENT_ATTRIBUTE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "COVERAGE_ADDITIONAL_ATTRIBUTE Stage load",
-						"description": "COVERAGE_ADDITIONAL_ATTRIBUTE",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_COVERAGE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_ADDITIONAL_ATTRIBUTE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_COVERAGE Stage load",
-						"description": "POLICY_COVERAGE",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_COVERAGE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "COVERAGE_SEGMENT_SIR Stage load",
-						"description": "COVERAGE_SEGMENT_SIR",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "COVERAGE_SEGMENT_SIR_COLLECTION Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_SEGMENT_SIR",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_COVERAGE_SEGMENT Stage load",
-						"description": "POLICY_COVERAGE_SEGMENT",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "COVERAGE_SEGMENT_SIR Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "COVERAGE_SEGMENT_LIMIT Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "COVERAGE_SEGMENT_DEDUCTIBLE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "COVERAGE_SEGMENT_ATTRIBUTE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTEStage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_COVERAGE_SEGMENT",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Stage load",
-						"description": "COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE_COLLECTION",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_COVERAGE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE_COLLECTION",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "COVERAGE_SEGMENT_SIR_COLLECTION Stage load",
-						"description": "COVERAGE_SEGMENT_SIR_COLLECTION",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_COVERAGE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_SEGMENT_SIR_COLLECTION",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "COVERAGE_SEGMENT_LIMIT_COLLECTION Stage load",
-						"description": "COVERAGE_SEGMENT_LIMIT_COLLECTION",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_COVERAGE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_SEGMENT_LIMIT_COLLECTION",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "COVERAGE_SEGMENT_ADL_ATTRIBUTEStage load",
-						"description": "COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "COVERAGE_SEGMENT_ADL_ATTRIBUTE_COLLECTION Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_SEGMENT_ADDITIONAL_ATTRIBUTE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "COVERAGE_SEGMENT_DEDUCTIBLE Stage load",
-						"description": "COVERAGE_SEGMENT_DEDUCTIBLE",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_SEGMENT_DEDUCTIBLE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "COVERAGE_SEGMENT_LIMIT Stage load",
-						"description": "COVERAGE_SEGMENT_LIMIT",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "COVERAGE_SEGMENT_LIMIT_COLLECTION Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_SEGMENT_LIMIT",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION Stage load",
-						"description": "COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_COVERAGE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"COVERAGE_SEGMENT_DEDUCTIBLE_COLLECTION",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_PREMIUM_TRANSACTION Stage load",
-						"description": "POLICY_PREMIUM_TRANSACTION",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_COVERAGE_SEGMENT Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_PREMIUM_TRANSACTION",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "E2_CYBER"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-16T09:54:08Z"
-			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/job_params')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_lob_refined_load')]",
@@ -2031,189 +1641,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_lob_stg_load')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "adf_pl_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "job_params",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "POLICY_LOB Stage load",
-						"description": "policy_lob",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_LOB",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_LOB_SEGMENT Stage load",
-						"description": "policy_nonpremium_transaction",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "LOB_SEGMENT_ATTRIBUTE Stage loa",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_LOB_SEGMENT",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "LOB_SEGMENT_ATTRIBUTE Stage loa",
-						"description": "policy_nonpremium_transaction",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_LOB Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"LOB_SEGMENT_ATTRIBUTE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "E2_CYBER"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-16T09:54:08Z"
-			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/job_params')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_refined_load')]",
@@ -2698,7 +2128,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/job_params')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_risk_unit_refined_load')]",
@@ -2968,976 +2400,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_risk_unit_stg_load')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "adf_pl_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "job_params",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "POLICY_LOB_RISK_UNIT Stage",
-						"description": "policy_lob_risk_unit",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_LOB_RISK_UNIT",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_LOB_RISK_UNIT_SEGMENT Stage load",
-						"description": "policy_nonpremium_transaction",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_LOB_RISK_UNIT_SEGMENT",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "LOB_RISK_UNIT_SEGMENT_ATTRIBUTE Stage load",
-						"description": "LOB_RISK_UNIT_SEGMENT_ATTRIBUTE",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "LOB_LOCATION Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"LOB_RISK_UNIT_SEGMENT_ATTRIBUTE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE Stage load",
-						"description": "LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "LOB_RISK_UNIT_SEGMENT_ATTRIBUTE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"LOB_RISK_UNIT_ADDITIONAL_ATTRIBUTE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "LOB_LOCATION Stage load",
-						"description": "policy_nonpremium_transaction",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_LOB_RISK_UNIT Stage",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"LOB_LOCATION",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "E2_CYBER"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-16T09:54:08Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_policy_stg_load')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "POLICY_ACTION Stage load",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_PREMIUM Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_ACTION",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_ADA Stage load",
-						"description": "policy_additional_attribute\n",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_ACTION Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_ADDITIONAL_ATTRIBUTE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "PARTY Stage load",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_ACTION Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"PARTY",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_FORM Stage load",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_SEGMENT_ATTRIBUTE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_FORM",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_SEGMENT Stage load",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_SEGMENT_ATTRIBUTE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_SEGMENT",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_SEGMENT_ATTRIBUTE Stage load",
-						"description": "policy_segment_attribute",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_ACTION Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_SEGMENT_ATTRIBUTE",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "adf_pl_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "job_params",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "PARTY_ADDRESS Stage load",
-						"description": "party_address",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_SEGMENT_ATTRIBUTE Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"PARTY_ADDRESS",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_NONPREMIUM Stage load",
-						"description": "policy_nonpremium",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_SEGMENT Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_NONPREMIUM",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_NONPREMIUM_TRANSACTION Stage load",
-						"description": "policy_nonpremium_transaction",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "POLICY_SEGMENT Stage load",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_NONPREMIUM_TRANSACTION",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "POLICY_PREMIUM Stage load",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_PREMIUM",
-								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "E2_CYBER"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-05-16T09:54:08Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_repair_tables')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Optimize Stage Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "Vacuum Stage Tables",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"optimize_table",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"stage"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "adf_pl_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "job_params",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "Vacuum Stage Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"vacuum_table",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"stage"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Optimize Refined Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "Vacuum Refined Tables",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"optimize_table",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"refined"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Vacuum Refined Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"vacuum_table",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"refined"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"application_name": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "E2_CYBER"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/job_params')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_horse_history_raw_load')]",
@@ -4031,7 +2496,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/E2_HORSE_PARAMS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_horse_master_refined_load')]",
@@ -4521,7 +2988,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/E2_HORSE_PARAMS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_horse_policy_coverage_stg_load')]",
@@ -4703,7 +3172,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/E2_HORSE_PARAMS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_horse_policy_lob_stg_load')]",
@@ -4797,7 +3268,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/E2_HORSE_PARAMS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_horse_policy_risk_unit_stg_load')]",
@@ -4935,7 +3408,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/E2_HORSE_PARAMS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_horse_policy_stg_load')]",
@@ -5115,7 +3590,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-05-16T09:54:08Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/E2_HORSE_PARAMS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/adf_repair_horse_tables')]",
@@ -5242,7 +3719,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/E2_HORSE_PARAMS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/gw_adf_data_recon_unity_trigger')]",
@@ -5351,136 +3830,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-02-01T13:26:37Z"
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/gw_adf_dp_process_node_unity_trigger')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ForEachBusinessCenter",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "get_dp_node_process_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('get_dp_node_process_params').output.value",
-								"type": "Expression"
-							},
-							"batchCount": 12,
-							"activities": [
-								{
-									"name": "dp_node_process",
-									"type": "DatabricksSparkPython",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pythonFile": "dbfs:/FileStore/adf_setup.py",
-										"parameters": [
-											"db_process_node",
-											"@item().node_list",
-											"@item().table_name",
-											"@item().fingerprint_id",
-											"@item().gw_center",
-											"@item().is_synapse"
-										],
-										"libraries": [
-											{
-												"whl": "dbfs:/FileStore/jars/cdaaccelerator/cdaaccelerator-0.0.2-py3-none-any.whl"
-											}
-										]
-									},
-									"linkedServiceName": {
-										"referenceName": "CDA_AzureDatabricks",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "get_dp_node_process_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "Dp_process_node_unity",
-								"type": "DatasetReference",
-								"parameters": {
-									"dp_processFileName": {
-										"value": "@concat(pipeline().parameters.GwcenterName, variables('slash'), variables('dp_process_node_file_path'))",
-										"type": "Expression"
-									}
-								}
-							},
-							"firstRowOnly": false
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"GwcenterName": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"slash": {
-						"type": "String",
-						"defaultValue": "/"
-					},
-					"dp_process_node_file_path": {
-						"type": "String",
-						"defaultValue": "gw_adf_pl_dp_process_node_config.csv"
-					},
-					"gw_adf_job_parameters": {
-						"type": "String",
-						"defaultValue": "gw_adf_job_parameters"
-					}
-				},
-				"folder": {
-					"name": "CDA"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-02-02T11:40:22Z"
-			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/dynamic_param_unity')]"
+			]
 		}
 	]
 }

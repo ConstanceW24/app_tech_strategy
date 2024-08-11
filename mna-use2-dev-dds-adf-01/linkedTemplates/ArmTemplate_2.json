@@ -13,6 +13,135 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/gw_adf_dp_process_node_unity_trigger')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEachBusinessCenter",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "get_dp_node_process_params",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('get_dp_node_process_params').output.value",
+								"type": "Expression"
+							},
+							"batchCount": 12,
+							"activities": [
+								{
+									"name": "dp_node_process",
+									"type": "DatabricksSparkPython",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pythonFile": "dbfs:/FileStore/adf_setup.py",
+										"parameters": [
+											"db_process_node",
+											"@item().node_list",
+											"@item().table_name",
+											"@item().fingerprint_id",
+											"@item().gw_center",
+											"@item().is_synapse"
+										],
+										"libraries": [
+											{
+												"whl": "dbfs:/FileStore/jars/cdaaccelerator/cdaaccelerator-0.0.2-py3-none-any.whl"
+											}
+										]
+									},
+									"linkedServiceName": {
+										"referenceName": "CDA_AzureDatabricks",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "get_dp_node_process_params",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "Dp_process_node_unity",
+								"type": "DatasetReference",
+								"parameters": {
+									"dp_processFileName": {
+										"value": "@concat(pipeline().parameters.GwcenterName, variables('slash'), variables('dp_process_node_file_path'))",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"GwcenterName": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"slash": {
+						"type": "String",
+						"defaultValue": "/"
+					},
+					"dp_process_node_file_path": {
+						"type": "String",
+						"defaultValue": "gw_adf_pl_dp_process_node_config.csv"
+					},
+					"gw_adf_job_parameters": {
+						"type": "String",
+						"defaultValue": "gw_adf_job_parameters"
+					}
+				},
+				"folder": {
+					"name": "CDA"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-02-02T11:40:22Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/gw_adf_unity_config_generator_trigger')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1168,124 +1297,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_clear_tables')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "adf_pl_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "job_params",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "Clear Cyber Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"clear_batch",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
-								"@pipeline().parameters.Batch_Id"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "adf_repair_cyber_tables",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Clear Cyber Tables",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "adf_pl_e2_repair_tables",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"Batch_Id": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "E2_CYBER"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/adf_pl_e2_master_refined_load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1384,14 +1395,7 @@
 						"name": "Load Initiation",
 						"description": "Policy version identification",
 						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -1404,14 +1408,14 @@
 							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
+								"@pipeline().parameters.application_short_name",
+								"@pipeline().parameters.source",
+								"@pipeline().parameters.audit_db",
+								"@pipeline().parameters.source_db",
+								"@pipeline().parameters.target_db",
 								"POLICY_VERSION",
 								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
+								"@pipeline().parameters.environment"
 							],
 							"libraries": [
 								{
@@ -1447,14 +1451,14 @@
 							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"stage_load",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"@activity('adf_pl_params').output.value[5].param_value",
-								"@activity('adf_pl_params').output.value[6].param_value",
+								"@pipeline().parameters.application_short_name",
+								"@pipeline().parameters.source",
+								"@pipeline().parameters.audit_db",
+								"@pipeline().parameters.source_db",
+								"@pipeline().parameters.target_db",
 								"POLICY_ACTION_JOB",
 								"stage",
-								"@activity('adf_pl_params').output.value[3].param_value"
+								"@pipeline().parameters.environment"
 							],
 							"libraries": [
 								{
@@ -1489,7 +1493,32 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"application_short_name": {
+									"value": "@pipeline().parameters.application_short_name",
+									"type": "Expression"
+								},
+								"source": {
+									"value": "@pipeline().parameters.source",
+									"type": "Expression"
+								},
+								"audit_db": {
+									"value": "@pipeline().parameters.audit_db",
+									"type": "Expression"
+								},
+								"source_db": {
+									"value": "@pipeline().parameters.source_db",
+									"type": "Expression"
+								},
+								"target_db": {
+									"value": "@pipeline().parameters.target_db",
+									"type": "Expression"
+								},
+								"environment": {
+									"value": "@pipeline().parameters.environment",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1514,7 +1543,32 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"application_short_name": {
+									"value": "@pipeline().parameters.application_short_name",
+									"type": "Expression"
+								},
+								"source": {
+									"value": "@pipeline().parameters.source",
+									"type": "Expression"
+								},
+								"audit_db": {
+									"value": "@pipeline().parameters.audit_db",
+									"type": "Expression"
+								},
+								"source_db": {
+									"value": "@pipeline().parameters.source_db",
+									"type": "Expression"
+								},
+								"target_db": {
+									"value": "@pipeline().parameters.target_db",
+									"type": "Expression"
+								},
+								"environment": {
+									"value": "@pipeline().parameters.environment",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1535,7 +1589,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "adf_pl_e2_policy_risk_unit_stg_load",
+								"referenceName": "adf_pl_horse_policy_risk_unit_stg_load",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -1568,38 +1622,6 @@
 						}
 					},
 					{
-						"name": "adf_pl_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "job_params",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
 						"name": "Clear Audit Entry",
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
@@ -1622,9 +1644,9 @@
 							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 							"parameters": [
 								"clear_audit",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
+								"@pipeline().parameters.application_short_name",
+								"@pipeline().parameters.source",
+								"@pipeline().parameters.audit_db",
 								""
 							],
 							"libraries": [
@@ -1641,6 +1663,26 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"application_short_name": {
+						"type": "string"
+					},
+					"source": {
+						"type": "string"
+					},
+					"audit_db": {
+						"type": "string"
+					},
+					"source_db": {
+						"type": "string"
+					},
+					"target_db": {
+						"type": "string"
+					},
+					"environment": {
+						"type": "string"
+					}
 				},
 				"folder": {
 					"name": "E2_CYBER"
@@ -2192,7 +2234,9 @@
 				"annotations": [],
 				"lastPublishTime": "2024-02-02T11:40:22Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/gw_adf_dp_process_node_unity_trigger')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/horse_load')]",
@@ -2391,7 +2435,32 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"application_short_name": {
+									"value": "@activity('adf_pl_params').output.value[0].param_value",
+									"type": "Expression"
+								},
+								"source": {
+									"value": "@activity('adf_pl_params').output.value[1].param_value",
+									"type": "Expression"
+								},
+								"audit_db": {
+									"value": "@activity('adf_pl_params').output.value[3].param_value",
+									"type": "Expression"
+								},
+								"source_db": {
+									"value": "@activity('adf_pl_params').output.value[5].param_value",
+									"type": "Expression"
+								},
+								"target_db": {
+									"value": "@activity('adf_pl_params').output.value[6].param_value",
+									"type": "Expression"
+								},
+								"environment": {
+									"value": "@activity('adf_pl_params').output.value[3].param_value",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
