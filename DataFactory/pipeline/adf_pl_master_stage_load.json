@@ -344,11 +344,11 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"notify",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
 						"failed",
-						"@concat(pipeline().Pipeline,' job failed')"
+						"@concat('Job Failed due to 0 records available for the date range from source. Clearing all audit entries')"
 					],
 					"libraries": [
 						{
