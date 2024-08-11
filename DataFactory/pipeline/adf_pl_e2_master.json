@@ -139,7 +139,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Validate Policy Job Status",
+						"activity": "Update Policy Job Status",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -224,7 +224,7 @@
 				}
 			},
 			{
-				"name": "Validate Policy Job Status",
+				"name": "Update Policy Job Status",
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
