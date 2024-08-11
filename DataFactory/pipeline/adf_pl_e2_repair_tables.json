@@ -159,13 +159,7 @@
 			"audit_db": {
 				"type": "string"
 			},
-			"source_db": {
-				"type": "string"
-			},
 			"target_db": {
-				"type": "string"
-			},
-			"environment": {
 				"type": "string"
 			}
 		},
