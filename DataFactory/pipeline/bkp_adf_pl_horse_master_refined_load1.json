@@ -64,7 +64,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_coverage_refined_load",
+						"referenceName": "adf_pl_policy_coverage_refined_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
