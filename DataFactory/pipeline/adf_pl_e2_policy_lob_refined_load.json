@@ -3,48 +3,10 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "adf_pl_params",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "job_params",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
 				"name": "POLICY_LOB Refined load",
 				"description": "policy_lob",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [
-					{
-						"activity": "adf_pl_params",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -57,14 +19,14 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"stage_load",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[5].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
 						"POLICY_LOB",
 						"refined",
-						"@activity('adf_pl_params').output.value[3].param_value"
+						"@pipeline().parameters.environment"
 					],
 					"libraries": [
 						{
@@ -101,14 +63,14 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"stage_load",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[5].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
 						"POLICY_LOB_SEGMENT",
 						"refined",
-						"@activity('adf_pl_params').output.value[3].param_value"
+						"@pipeline().parameters.environment"
 					],
 					"libraries": [
 						{
@@ -145,14 +107,14 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"stage_load",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[5].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
 						"LOB_SEGMENT_ATTRIBUTE",
 						"refined",
-						"@activity('adf_pl_params').output.value[3].param_value"
+						"@pipeline().parameters.environment"
 					],
 					"libraries": [
 						{
@@ -166,6 +128,26 @@
 				}
 			}
 		],
+		"parameters": {
+			"application_short_name": {
+				"type": "string"
+			},
+			"source": {
+				"type": "string"
+			},
+			"audit_db": {
+				"type": "string"
+			},
+			"source_db": {
+				"type": "string"
+			},
+			"target_db": {
+				"type": "string"
+			},
+			"environment": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "E2_CYBER"
 		},
