@@ -26,9 +26,9 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"create_batch",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value"
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db"
 					],
 					"libraries": [
 						{
@@ -64,10 +64,10 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"close_batch",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[4].param_value"
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"COMPLETED"
 					],
 					"libraries": [
 						{
@@ -142,7 +142,7 @@
 							"type": "Expression"
 						},
 						"audit_db": {
-							"value": "@activity('adf_pl_params').output.value[3].param_value",
+							"value": "@pipeline().parameters.environment",
 							"type": "Expression"
 						},
 						"source_db": {
@@ -154,7 +154,7 @@
 							"type": "Expression"
 						},
 						"environment": {
-							"value": "@activity('adf_pl_params').output.value[3].param_value",
+							"value": "@pipeline().parameters.environment",
 							"type": "Expression"
 						}
 					}
@@ -180,7 +180,33 @@
 						"referenceName": "adf_pl_e2_master_refined_load",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"application_short_name": {
+							"value": "@activity('adf_pl_params').output.value[0].param_value",
+							"type": "Expression"
+						},
+						"source": {
+							"value": "@activity('adf_pl_params').output.value[1].param_value",
+							"type": "Expression"
+						},
+						"audit_db": {
+							"value": "@pipeline().parameters.environment",
+							"type": "Expression"
+						},
+						"source_db": {
+							"value": "@activity('adf_pl_params').output.value[5].param_value",
+							"type": "Expression"
+						},
+						"target_db": {
+							"value": "@activity('adf_pl_params').output.value[6].param_value",
+							"type": "Expression"
+						},
+						"environment": {
+							"value": "@pipeline().parameters.environment",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -206,14 +232,14 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"refined_load",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[5].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
 						"MV_POLICY_ACTION_JOB",
 						"refined",
-						"@activity('adf_pl_params').output.value[3].param_value"
+						"@pipeline().parameters.environment"
 					],
 					"libraries": [
 						{
@@ -272,14 +298,14 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"refined_load",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[5].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
 						"VALIDATE_POLICY_ACTION_JOB",
 						"refined",
-						"@activity('adf_pl_params').output.value[3].param_value"
+						"@pipeline().parameters.environment"
 					],
 					"libraries": [
 						{
@@ -293,6 +319,26 @@
 				}
 			}
 		],
+		"parameters": {
+			"application_short_name": {
+				"type": "string"
+			},
+			"source": {
+				"type": "string"
+			},
+			"audit_db": {
+				"type": "string"
+			},
+			"source_db": {
+				"type": "string"
+			},
+			"target_db": {
+				"type": "string"
+			},
+			"environment": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "E2_CYBER"
 		},
