@@ -6,14 +6,7 @@
 				"name": "Intiate_Batch",
 				"description": "",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [
-					{
-						"activity": "adf_pl_params",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -81,38 +74,7 @@
 				}
 			},
 			{
-				"name": "adf_pl_params",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "job_params",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "adf_pl_e2_master_stage_load",
+				"name": "adf_pl_master_stage_load",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -161,7 +123,7 @@
 				}
 			},
 			{
-				"name": "adf_pl_e2_master_refined_load",
+				"name": "adf_pl_master_refined_load",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -214,7 +176,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "adf_pl_e2_master_refined_load",
+						"activity": "adf_pl_master_refined_load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -280,7 +242,7 @@
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
-						"activity": "adf_pl_e2_master_stage_load",
+						"activity": "adf_pl_master_stage_load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
