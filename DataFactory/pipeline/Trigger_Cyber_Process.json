@@ -118,7 +118,7 @@
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
 						"failed",
-						"Pipeline Failed"
+						"@concat(pipeline().Pipeline,' job failed')"
 					],
 					"libraries": [
 						{
