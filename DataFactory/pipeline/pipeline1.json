@@ -1,0 +1,58 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "email_test",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+					"parameters": [
+						"notify",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"success",
+						"Pipeline Succeeded"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"application_short_name": {
+				"type": "string",
+				"defaultValue": "Policy"
+			},
+			"source": {
+				"type": "string",
+				"defaultValue": "e2"
+			},
+			"audit_db": {
+				"type": "string",
+				"defaultValue": "dev_dds_edl_refined"
+			}
+		},
+		"folder": {
+			"name": "E2_CYBER"
+		},
+		"annotations": []
+	}
+}
