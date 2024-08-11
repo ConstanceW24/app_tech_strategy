@@ -1,5 +1,5 @@
 {
-	"name": "adf_pl_e2_clear_tables",
+	"name": "adf_pl_clear_tables",
 	"properties": {
 		"activities": [
 			{
@@ -90,7 +90,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_repair_tables",
+						"referenceName": "adf_pl_repair_tables",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -103,7 +103,7 @@
 			}
 		},
 		"folder": {
-			"name": "E2_CYBER"
+			"name": "APP_SHARED"
 		},
 		"annotations": []
 	}
