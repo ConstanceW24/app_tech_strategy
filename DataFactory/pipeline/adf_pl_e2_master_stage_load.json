@@ -200,36 +200,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_risk_unit_stg_load",
+						"referenceName": "adf_pl_horse_policy_risk_unit_stg_load",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"application_short_name": {
-							"value": "@pipeline().parameters.application_short_name",
-							"type": "Expression"
-						},
-						"source": {
-							"value": "@pipeline().parameters.source",
-							"type": "Expression"
-						},
-						"audit_db": {
-							"value": "@pipeline().parameters.audit_db",
-							"type": "Expression"
-						},
-						"source_db": {
-							"value": "@pipeline().parameters.source_db",
-							"type": "Expression"
-						},
-						"target_db": {
-							"value": "@pipeline().parameters.target_db",
-							"type": "Expression"
-						},
-						"environment": {
-							"value": "@pipeline().parameters.environment",
-							"type": "Expression"
-						}
-					}
+					"waitOnCompletion": true
 				}
 			},
 			{
@@ -253,33 +227,7 @@
 						"referenceName": "adf_pl_e2_policy_coverage_stg_load",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"application_short_name": {
-							"value": "@pipeline().parameters.application_short_name",
-							"type": "Expression"
-						},
-						"source": {
-							"value": "@pipeline().parameters.source",
-							"type": "Expression"
-						},
-						"audit_db": {
-							"value": "@pipeline().parameters.audit_db",
-							"type": "Expression"
-						},
-						"source_db": {
-							"value": "@pipeline().parameters.source_db",
-							"type": "Expression"
-						},
-						"target_db": {
-							"value": "@pipeline().parameters.target_db",
-							"type": "Expression"
-						},
-						"environment": {
-							"value": "@pipeline().parameters.environment",
-							"type": "Expression"
-						}
-					}
+					"waitOnCompletion": true
 				}
 			},
 			{
