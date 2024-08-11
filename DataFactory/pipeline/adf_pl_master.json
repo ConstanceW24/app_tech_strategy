@@ -234,7 +234,25 @@
 						"referenceName": "adf_pl_repair_tables",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"application_short_name": {
+							"value": "@pipeline().parameters.application_short_name",
+							"type": "Expression"
+						},
+						"source": {
+							"value": "@pipeline().parameters.source",
+							"type": "Expression"
+						},
+						"audit_db": {
+							"value": "@pipeline().parameters.audit_db",
+							"type": "Expression"
+						},
+						"target_db": {
+							"value": "@pipeline().parameters.target_db",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
