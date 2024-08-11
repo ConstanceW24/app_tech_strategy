@@ -16,7 +16,33 @@
 						"referenceName": "adf_pl_e2_policy_refined_load",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"application_short_name": {
+							"value": "@pipeline().parameters.application_short_name",
+							"type": "Expression"
+						},
+						"source": {
+							"value": "@pipeline().parameters.source",
+							"type": "Expression"
+						},
+						"audit_db": {
+							"value": "@pipeline().parameters.audit_db",
+							"type": "Expression"
+						},
+						"source_db": {
+							"value": "@pipeline().parameters.source_db",
+							"type": "Expression"
+						},
+						"target_db": {
+							"value": "@pipeline().parameters.target_db",
+							"type": "Expression"
+						},
+						"environment": {
+							"value": "@pipeline().parameters.environment",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -33,7 +59,33 @@
 						"referenceName": "adf_pl_e2_policy_risk_unit_refined_load",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"application_short_name": {
+							"value": "@pipeline().parameters.application_short_name",
+							"type": "Expression"
+						},
+						"source": {
+							"value": "@pipeline().parameters.source",
+							"type": "Expression"
+						},
+						"audit_db": {
+							"value": "@pipeline().parameters.audit_db",
+							"type": "Expression"
+						},
+						"source_db": {
+							"value": "@pipeline().parameters.source_db",
+							"type": "Expression"
+						},
+						"target_db": {
+							"value": "@pipeline().parameters.target_db",
+							"type": "Expression"
+						},
+						"environment": {
+							"value": "@pipeline().parameters.environment",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -50,7 +102,33 @@
 						"referenceName": "adf_pl_e2_policy_lob_refined_load",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"application_short_name": {
+							"value": "@pipeline().parameters.application_short_name",
+							"type": "Expression"
+						},
+						"source": {
+							"value": "@pipeline().parameters.source",
+							"type": "Expression"
+						},
+						"audit_db": {
+							"value": "@pipeline().parameters.audit_db",
+							"type": "Expression"
+						},
+						"source_db": {
+							"value": "@pipeline().parameters.source_db",
+							"type": "Expression"
+						},
+						"target_db": {
+							"value": "@pipeline().parameters.target_db",
+							"type": "Expression"
+						},
+						"environment": {
+							"value": "@pipeline().parameters.environment",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -67,10 +145,56 @@
 						"referenceName": "adf_pl_e2_policy_coverage_refined_load",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"application_short_name": {
+							"value": "@pipeline().parameters.application_short_name",
+							"type": "Expression"
+						},
+						"source": {
+							"value": "@pipeline().parameters.source",
+							"type": "Expression"
+						},
+						"audit_db": {
+							"value": "@pipeline().parameters.audit_db",
+							"type": "Expression"
+						},
+						"source_db": {
+							"value": "@pipeline().parameters.source_db",
+							"type": "Expression"
+						},
+						"target_db": {
+							"value": "@pipeline().parameters.target_db",
+							"type": "Expression"
+						},
+						"environment": {
+							"value": "@pipeline().parameters.environment",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
+		"parameters": {
+			"application_short_name": {
+				"type": "string"
+			},
+			"source": {
+				"type": "string"
+			},
+			"audit_db": {
+				"type": "string"
+			},
+			"source_db": {
+				"type": "string"
+			},
+			"target_db": {
+				"type": "string"
+			},
+			"environment": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "E2_CYBER"
 		},
