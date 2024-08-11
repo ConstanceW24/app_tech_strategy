@@ -152,6 +152,10 @@
 						"target_db": {
 							"value": "@activity('adf_pl_params').output.value[6].param_value",
 							"type": "Expression"
+						},
+						"environment": {
+							"value": "@activity('adf_pl_params').output.value[3].param_value",
+							"type": "Expression"
 						}
 					}
 				}
