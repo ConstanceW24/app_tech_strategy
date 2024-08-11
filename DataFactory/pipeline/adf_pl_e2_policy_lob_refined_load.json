@@ -1,0 +1,158 @@
+{
+	"name": "adf_pl_e2_policy_lob_refined_load",
+	"properties": {
+		"activities": [
+			{
+				"name": "POLICY_LOB Refined load",
+				"description": "policy_lob",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+					"parameters": [
+						"stage_load",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
+						"POLICY_LOB",
+						"refined",
+						"@pipeline().parameters.environment"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "POLICY_LOB_SEGMENT Refined load",
+				"description": "policy_nonpremium_transaction",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [
+					{
+						"activity": "LOB_SEGMENT_ATTRIBUTE Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+					"parameters": [
+						"stage_load",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
+						"POLICY_LOB_SEGMENT",
+						"refined",
+						"@pipeline().parameters.environment"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "LOB_SEGMENT_ATTRIBUTE Refined load",
+				"description": "policy_nonpremium_transaction",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [
+					{
+						"activity": "POLICY_LOB Refined load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+					"parameters": [
+						"stage_load",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
+						"LOB_SEGMENT_ATTRIBUTE",
+						"refined",
+						"@pipeline().parameters.environment"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"application_short_name": {
+				"type": "string"
+			},
+			"source": {
+				"type": "string"
+			},
+			"audit_db": {
+				"type": "string"
+			},
+			"source_db": {
+				"type": "string"
+			},
+			"target_db": {
+				"type": "string"
+			},
+			"environment": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "APP_SHARED"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-16T09:54:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
