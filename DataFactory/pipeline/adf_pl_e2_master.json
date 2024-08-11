@@ -131,7 +131,29 @@
 						"referenceName": "adf_pl_e2_master_stage_load",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"application_short_name": {
+							"value": "@activity('adf_pl_params').output.value[0].param_value",
+							"type": "Expression"
+						},
+						"source": {
+							"value": "@activity('adf_pl_params').output.value[1].param_value",
+							"type": "Expression"
+						},
+						"audit_db": {
+							"value": "@activity('adf_pl_params').output.value[3].param_value",
+							"type": "Expression"
+						},
+						"source_db": {
+							"value": "@activity('adf_pl_params').output.value[5].param_value",
+							"type": "Expression"
+						},
+						"target_db": {
+							"value": "@activity('adf_pl_params').output.value[6].param_value",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{

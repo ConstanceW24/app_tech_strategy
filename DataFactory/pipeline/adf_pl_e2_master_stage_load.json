@@ -26,7 +26,7 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"stage_load",
-						"@activity('adf_pl_params').output.value[0].param_value",
+						"@pipeline().parameters.application_short_name",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
 						"@activity('adf_pl_params').output.value[5].param_value",
@@ -242,7 +242,7 @@
 						"@activity('adf_pl_params').output.value[0].param_value",
 						"@activity('adf_pl_params').output.value[1].param_value",
 						"@activity('adf_pl_params').output.value[2].param_value",
-						null
+						""
 					],
 					"libraries": [
 						{
@@ -256,6 +256,26 @@
 				}
 			}
 		],
+		"parameters": {
+			"application_short_name": {
+				"type": "string"
+			},
+			"source": {
+				"type": "string"
+			},
+			"audit_db": {
+				"type": "string"
+			},
+			"source_db": {
+				"type": "string"
+			},
+			"target_db": {
+				"type": "string"
+			},
+			"environment": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "E2_CYBER"
 		},
