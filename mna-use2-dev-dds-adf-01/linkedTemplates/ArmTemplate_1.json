@@ -730,183 +730,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/adf_pl_repair_tables')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Optimize Stage Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "Vacuum Stage Tables",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"optimize_table",
-								"@pipeline().parameters.application_short_name",
-								"@pipeline().parameters.source",
-								"@pipeline().parameters.audit_db",
-								"@pipeline().parameters.target_db",
-								"stage"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Vacuum Stage Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"vacuum_table",
-								"@pipeline().parameters.application_short_name",
-								"@pipeline().parameters.source",
-								"@pipeline().parameters.audit_db",
-								"@pipeline().parameters.target_db",
-								"stage"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Optimize Refined Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "Vacuum Refined Tables",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"optimize_table",
-								"@pipeline().parameters.application_short_name",
-								"@pipeline().parameters.source",
-								"@pipeline().parameters.audit_db",
-								"@pipeline().parameters.target_db",
-								"refined"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Vacuum Refined Tables",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"vacuum_table",
-								"@pipeline().parameters.application_short_name",
-								"@pipeline().parameters.source",
-								"@pipeline().parameters.audit_db",
-								"@pipeline().parameters.target_db",
-								"refined"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"application_short_name": {
-						"type": "string"
-					},
-					"source": {
-						"type": "string"
-					},
-					"audit_db": {
-						"type": "string"
-					},
-					"target_db": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "APP_SHARED"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1097,6 +920,184 @@
 						}
 					]
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adf_pl_repair_tables')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Optimize Stage Tables",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "Vacuum Stage Tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"optimize_table",
+								"stage",
+								"@pipeline().parameters.application_short_name",
+								"@pipeline().parameters.source",
+								"@pipeline().parameters.audit_db",
+								"@pipeline().parameters.target_db"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Vacuum Stage Tables",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"vacuum_table",
+								"stage",
+								"@pipeline().parameters.application_short_name",
+								"@pipeline().parameters.source",
+								"@pipeline().parameters.audit_db",
+								"@pipeline().parameters.target_db",
+								""
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Optimize Refined Tables",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "Vacuum Refined Tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"optimize_table",
+								"refined",
+								"@pipeline().parameters.application_short_name",
+								"@pipeline().parameters.source",
+								"@pipeline().parameters.audit_db",
+								"@pipeline().parameters.target_db"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Vacuum Refined Tables",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"vacuum_table",
+								"refined",
+								"@pipeline().parameters.application_short_name",
+								"@pipeline().parameters.source",
+								"@pipeline().parameters.audit_db",
+								"@pipeline().parameters.target_db"
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"application_short_name": {
+						"type": "string"
+					},
+					"source": {
+						"type": "string"
+					},
+					"audit_db": {
+						"type": "string"
+					},
+					"target_db": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "APP_SHARED"
+				},
+				"annotations": []
 			},
 			"dependsOn": []
 		},
