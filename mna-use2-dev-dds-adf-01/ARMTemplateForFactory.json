@@ -551,46 +551,6 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "notify_success",
-						"type": "DatabricksSparkPython",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_master",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
-							"parameters": [
-								"notify",
-								"@activity('adf_pl_params').output.value[0].param_value",
-								"@activity('adf_pl_params').output.value[1].param_value",
-								"@activity('adf_pl_params').output.value[2].param_value",
-								"success",
-								"Pipeline Succeeded"
-							],
-							"libraries": [
-								{
-									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
-								}
-							]
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
 						"name": "adf_pl_master",
 						"type": "ExecutePipeline",
 						"dependsOn": [
@@ -666,7 +626,7 @@
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
 								"failed",
-								"Pipeline Failed"
+								"@concat(pipeline().Pipeline,' job failed')"
 							],
 							"libraries": [
 								{
@@ -721,8 +681,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks')]",
 				"[concat(variables('factoryId'), '/pipelines/adf_pl_master')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks')]",
 				"[concat(variables('factoryId'), '/datasets/job_params')]"
 			]
 		},
@@ -3543,9 +3503,9 @@
 						"type": "DatabricksSparkPython",
 						"dependsOn": [
 							{
-								"activity": "Load Initiation",
+								"activity": "notify_failure",
 								"dependencyConditions": [
-									"Failed"
+									"Succeeded"
 								]
 							}
 						],
@@ -3565,6 +3525,46 @@
 								"@pipeline().parameters.source",
 								"@pipeline().parameters.audit_db",
 								""
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "notify_failure",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "Load Initiation",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"notify",
+								"@pipeline().parameters.application_short_name",
+								"@pipeline().parameters.source",
+								"@pipeline().parameters.audit_db",
+								"failed",
+								"@concat('Job Failed due to 0 records available for the date range from source. Clearing all audit entries')"
 							],
 							"libraries": [
 								{
