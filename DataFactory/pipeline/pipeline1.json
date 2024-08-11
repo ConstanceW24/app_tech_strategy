@@ -38,12 +38,10 @@
 		],
 		"parameters": {
 			"application_short_name": {
-				"type": "string",
-				"defaultValue": "Policy"
+				"type": "string"
 			},
 			"source": {
-				"type": "string",
-				"defaultValue": "e2"
+				"type": "string"
 			},
 			"audit_db": {
 				"type": "string",
