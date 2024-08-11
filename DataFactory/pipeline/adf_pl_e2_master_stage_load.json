@@ -27,13 +27,13 @@
 					"parameters": [
 						"stage_load",
 						"@pipeline().parameters.application_short_name",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[5].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
 						"POLICY_VERSION",
 						"stage",
-						"@activity('adf_pl_params').output.value[3].param_value"
+						"@pipeline().parameters.environment"
 					],
 					"libraries": [
 						{
