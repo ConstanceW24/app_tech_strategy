@@ -1,5 +1,5 @@
 {
-	"name": "adf_pl_e2_policy_stg_load",
+	"name": "adf_pl_policy_stg_load",
 	"properties": {
 		"activities": [
 			{
@@ -452,7 +452,7 @@
 			}
 		},
 		"folder": {
-			"name": "E2_CYBER"
+			"name": "APP_SHARED"
 		},
 		"annotations": [],
 		"lastPublishTime": "2024-05-16T09:54:08Z"

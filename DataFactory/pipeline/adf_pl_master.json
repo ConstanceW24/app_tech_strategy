@@ -1,5 +1,5 @@
 {
-	"name": "adf_pl_e2_master",
+	"name": "adf_pl_master",
 	"properties": {
 		"activities": [
 			{
@@ -128,7 +128,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_master_stage_load",
+						"referenceName": "adf_pl_master_stage_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -177,7 +177,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_master_refined_load",
+						"referenceName": "adf_pl_master_refined_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -269,7 +269,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_repair_tables",
+						"referenceName": "adf_pl_repair_tables",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -340,7 +340,7 @@
 			}
 		},
 		"folder": {
-			"name": "E2_CYBER"
+			"name": "APP_SHARED"
 		},
 		"annotations": [],
 		"lastPublishTime": "2024-05-16T09:54:11Z"

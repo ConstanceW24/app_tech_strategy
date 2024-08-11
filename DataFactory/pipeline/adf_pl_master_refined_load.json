@@ -1,5 +1,5 @@
 {
-	"name": "adf_pl_e2_master_refined_load",
+	"name": "adf_pl_master_refined_load",
 	"properties": {
 		"activities": [
 			{
@@ -13,7 +13,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_refined_load",
+						"referenceName": "adf_pl_policy_refined_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -56,7 +56,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_risk_unit_refined_load",
+						"referenceName": "adf_pl_policy_risk_unit_refined_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -99,7 +99,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_lob_refined_load",
+						"referenceName": "adf_pl_policy_lob_refined_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -142,7 +142,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_pl_e2_policy_coverage_refined_load",
+						"referenceName": "adf_pl_policy_coverage_refined_load",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -196,7 +196,7 @@
 			}
 		},
 		"folder": {
-			"name": "E2_CYBER"
+			"name": "APP_SHARED"
 		},
 		"annotations": []
 	}
