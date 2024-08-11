@@ -25,10 +25,10 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"optimize_table",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.target_db",
 						"stage"
 					],
 					"libraries": [
@@ -43,47 +43,9 @@
 				}
 			},
 			{
-				"name": "adf_pl_params",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "job_params",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
 				"name": "Vacuum Stage Tables",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [
-					{
-						"activity": "adf_pl_params",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -96,10 +58,10 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"vacuum_table",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.target_db",
 						"stage"
 					],
 					"libraries": [
@@ -136,10 +98,10 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"optimize_table",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.target_db",
 						"refined"
 					],
 					"libraries": [
@@ -156,14 +118,7 @@
 			{
 				"name": "Vacuum Refined Tables",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [
-					{
-						"activity": "adf_pl_params",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -176,10 +131,10 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"vacuum_table",
-						"@activity('adf_pl_params').output.value[0].param_value",
-						"@activity('adf_pl_params').output.value[1].param_value",
-						"@activity('adf_pl_params').output.value[2].param_value",
-						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.target_db",
 						"refined"
 					],
 					"libraries": [
@@ -195,8 +150,23 @@
 			}
 		],
 		"parameters": {
-			"application_name": {
-				"type": "String"
+			"application_short_name": {
+				"type": "string"
+			},
+			"source": {
+				"type": "string"
+			},
+			"audit_db": {
+				"type": "string"
+			},
+			"source_db": {
+				"type": "string"
+			},
+			"target_db": {
+				"type": "string"
+			},
+			"environment": {
+				"type": "string"
 			}
 		},
 		"folder": {
