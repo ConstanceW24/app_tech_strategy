@@ -1,11 +1,18 @@
 {
-	"name": "pipeline1",
+	"name": "Trigger_Cyber_Process",
 	"properties": {
 		"activities": [
 			{
-				"name": "email_test",
+				"name": "notify_success",
 				"type": "DatabricksSparkPython",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "adf_pl_master",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -18,9 +25,9 @@
 					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
 					"parameters": [
 						"notify",
-						"@pipeline().parameters.application_short_name",
-						"@pipeline().parameters.source",
-						"@pipeline().parameters.audit_db",
+						"@activity('adf_pl_params').output.value[0].param_value",
+						"@activity('adf_pl_params').output.value[1].param_value",
+						"@activity('adf_pl_params').output.value[2].param_value",
 						"success",
 						"Pipeline Succeeded"
 					],
@@ -34,20 +41,128 @@
 					"referenceName": "AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "adf_pl_master",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "adf_pl_params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_master",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"application_short_name": {
+							"value": "@activity('adf_pl_params').output.value[0].param_value",
+							"type": "Expression"
+						},
+						"source": {
+							"value": "@activity('adf_pl_params').output.value[1].param_value",
+							"type": "Expression"
+						},
+						"audit_db": {
+							"value": "@activity('adf_pl_params').output.value[2].param_value",
+							"type": "Expression"
+						},
+						"source_db": {
+							"value": "@activity('adf_pl_params').output.value[5].param_value",
+							"type": "Expression"
+						},
+						"target_db": {
+							"value": "@activity('adf_pl_params').output.value[6].param_value",
+							"type": "Expression"
+						},
+						"environment": {
+							"value": "@activity('adf_pl_params').output.value[3].param_value",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "notify_failure",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [
+					{
+						"activity": "adf_pl_master",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+					"parameters": [
+						"notify",
+						"@activity('adf_pl_params').output.value[0].param_value",
+						"@activity('adf_pl_params').output.value[1].param_value",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"failed",
+						"Pipeline Failed"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "adf_pl_params",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "job_params",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
 			}
 		],
-		"parameters": {
-			"application_short_name": {
-				"type": "string"
-			},
-			"source": {
-				"type": "string"
-			},
-			"audit_db": {
-				"type": "string",
-				"defaultValue": "dev_dds_edl_refined"
-			}
-		},
 		"folder": {
 			"name": "E2_CYBER"
 		},
