@@ -1273,7 +1273,8 @@
 						"type": "string"
 					},
 					"target_db": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": " "
 					},
 					"batch_id": {
 						"type": "string"
