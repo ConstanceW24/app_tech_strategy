@@ -22,7 +22,7 @@
 						"e2",
 						"dev_dds_edl_refined",
 						"dev_dds_edl_refined",
-						"myreport"
+						"myreport.csv"
 					],
 					"libraries": [
 						{
