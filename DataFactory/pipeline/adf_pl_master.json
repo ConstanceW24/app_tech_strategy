@@ -78,7 +78,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "History data load from Magic to raw ",
+						"activity": "History data load from Magic to raw",
 						"dependencyConditions": [
 							"Succeeded"
 						]
