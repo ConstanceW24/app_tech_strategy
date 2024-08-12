@@ -297,6 +297,46 @@
 					"referenceName": "AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "generate_error_report",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [
+					{
+						"activity": "Close_Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+					"parameters": [
+						"report",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.target_db",
+						""
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
