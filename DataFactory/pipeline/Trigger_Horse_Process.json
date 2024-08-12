@@ -1,6 +1,7 @@
 {
 	"name": "Trigger_Horse_Process",
 	"properties": {
+		"description": "This job is to trigger Pipelines in APP_SHARED folder to load Horse raw, stage and refined layer tables.",
 		"activities": [
 			{
 				"name": "adf_pl_master",
