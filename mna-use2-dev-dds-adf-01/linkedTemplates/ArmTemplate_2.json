@@ -685,7 +685,14 @@
 					{
 						"name": "adf_pl_master_stage_load",
 						"type": "ExecutePipeline",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "History data load from Magic to raw",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"secureInput": false
 						},
