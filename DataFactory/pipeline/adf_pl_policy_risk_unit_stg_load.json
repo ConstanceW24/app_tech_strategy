@@ -217,7 +217,7 @@
 			},
 			{
 				"name": "Animal Stage load",
-				"description": "policy_nonpremium_transaction",
+				"description": "ANIMAL",
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
