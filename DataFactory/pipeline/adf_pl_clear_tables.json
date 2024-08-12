@@ -88,8 +88,7 @@
 				"type": "string"
 			},
 			"target_db": {
-				"type": "string",
-				"defaultValue": " "
+				"type": "string"
 			},
 			"batch_id": {
 				"type": "string"
