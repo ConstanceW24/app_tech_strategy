@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "notify_failure",
+				"name": "generate_error_report",
 				"type": "DatabricksSparkPython",
 				"dependsOn": [],
 				"policy": {
