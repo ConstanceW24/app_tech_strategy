@@ -117,7 +117,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "job_params",
+						"referenceName": "E2_HORSE_PARAMS",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
