@@ -214,6 +214,50 @@
 					"referenceName": "AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "Animal Stage load",
+				"description": "policy_nonpremium_transaction",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [
+					{
+						"activity": "POLICY_LOB_RISK_UNIT Stage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+					"parameters": [
+						"stage_load",
+						"@pipeline().parameters.application_short_name",
+						"@pipeline().parameters.source",
+						"@pipeline().parameters.audit_db",
+						"@pipeline().parameters.source_db",
+						"@pipeline().parameters.target_db",
+						"ANIMAL",
+						"stage",
+						"@pipeline().parameters.environment"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
