@@ -90,7 +90,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf_repair_Cyber_tables",
+						"referenceName": "adf_pl_repair_e2_tables",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
