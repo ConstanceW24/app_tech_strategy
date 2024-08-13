@@ -1,0 +1,110 @@
+{
+	"name": "adf_clear_Cyber_tables",
+	"properties": {
+		"activities": [
+			{
+				"name": "adf_pl_params",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "E2_HORSE_PARAMS",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Clear Horse Tables",
+				"type": "DatabricksSparkPython",
+				"dependsOn": [
+					{
+						"activity": "adf_pl_params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+					"parameters": [
+						"clear_batch",
+						"@activity('adf_pl_params').output.value[0].param_value",
+						"@activity('adf_pl_params').output.value[1].param_value",
+						"@activity('adf_pl_params').output.value[2].param_value",
+						"@activity('adf_pl_params').output.value[6].param_value",
+						"@pipeline().parameters.Batch_Id"
+					],
+					"libraries": [
+						{
+							"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "adf_repair_horse_tables",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Clear Horse Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_repair_horse_tables",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"parameters": {
+			"Batch_Id": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "HORSE"
+		},
+		"annotations": []
+	}
+}
