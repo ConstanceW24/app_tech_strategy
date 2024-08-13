@@ -1,0 +1,79 @@
+{
+	"name": "adf_pl_e2_master_refined_load",
+	"properties": {
+		"activities": [
+			{
+				"name": "Policy Refined Load",
+				"description": "Loading the Refined Tables under Policy",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_e2_policy_refined_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Policy Risk Unit Refined Load",
+				"description": "Loading the Refined Tables under Policy_Risk_Unit",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_e2_policy_risk_unit_refined_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Policy LOB Refined Load",
+				"description": "Loading the Refined Tables under Policy_Lob",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_e2_policy_lob_refined_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Policy Coverage Refined Load",
+				"description": "Loading the Refined Tables under POLICY COVERAGE",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "adf_pl_e2_policy_coverage_refined_load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "BKP_E2_CYBER"
+		},
+		"annotations": []
+	}
+}
