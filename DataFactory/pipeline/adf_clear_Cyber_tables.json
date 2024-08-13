@@ -27,14 +27,14 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "E2_HORSE_PARAMS",
+						"referenceName": "job_params",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
 				}
 			},
 			{
-				"name": "Clear Horse Tables",
+				"name": "Clear e2 Tables",
 				"type": "DatabricksSparkPython",
 				"dependsOn": [
 					{
@@ -78,7 +78,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Clear Horse Tables",
+						"activity": "Clear e2 Tables",
 						"dependencyConditions": [
 							"Succeeded"
 						]
