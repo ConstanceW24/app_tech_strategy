@@ -5752,7 +5752,7 @@
 								"@activity('adf_pl_params').output.value[1].param_value",
 								"@activity('adf_pl_params').output.value[2].param_value",
 								"failed",
-								"@concat(activity('adf_pl_params').parameters.application_short_name,' ', activity('adf_pl_params').parameters.audit_db,' Job Failed due to 0 records available for the date range from source.<br> Clearing all audit entries')"
+								"@concat(activity('adf_pl_params').output.value[0].param_value,' ', activity('adf_pl_params').output.value[1].param_value,' Job Failed due to 0 records available for the date range from source.<br> Clearing all audit entries')"
 							],
 							"libraries": [
 								{
