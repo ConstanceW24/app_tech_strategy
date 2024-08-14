@@ -31,7 +31,7 @@
 						"@activity('adf_pl_params').output.value[2].param_value",
 						"@activity('adf_pl_params').output.value[5].param_value",
 						"@activity('adf_pl_params').output.value[6].param_value",
-						"POLICY_VERSION",
+						"RAW_HISTORY_XML",
 						"stage",
 						"@activity('adf_pl_params').output.value[3].param_value"
 					],
