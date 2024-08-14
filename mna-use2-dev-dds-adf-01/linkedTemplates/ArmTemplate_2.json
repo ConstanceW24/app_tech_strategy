@@ -1980,6 +1980,95 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Test_pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "adf_pl_params",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "E2_HORSE_PARAMS",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "generate_error_report",
+						"type": "DatabricksSparkPython",
+						"dependsOn": [
+							{
+								"activity": "adf_pl_params",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pythonFile": "dbfs:/FileStore/main_adf_setup.py",
+							"parameters": [
+								"report",
+								"@activity('adf_pl_params').output.value[0].param_value",
+								"@activity('adf_pl_params').output.value[1].param_value",
+								"@activity('adf_pl_params').output.value[2].param_value",
+								"@activity('adf_pl_params').output.value[6].param_value",
+								""
+							],
+							"libraries": [
+								{
+									"whl": "dbfs:/FileStore/jars/cyberclouddatapipeline/industryclouddatapipeline-0.1.5-py3-none-any.whl"
+								}
+							]
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "HORSE"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/adf_clear_Horse_tables')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2658,7 +2747,7 @@
 								"@activity('adf_pl_params').output.value[2].param_value",
 								"@activity('adf_pl_params').output.value[5].param_value",
 								"@activity('adf_pl_params').output.value[6].param_value",
-								"POLICY_VERSION",
+								"RAW_HISTORY_XML",
 								"stage",
 								"@activity('adf_pl_params').output.value[3].param_value"
 							],
@@ -3679,107 +3768,6 @@
 				},
 				"folder": {
 					"name": "E2_CYBER"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/adf_pl_master')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Trigger_Horse_Process')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "This job is to trigger Pipelines in APP_SHARED folder to load Horse raw, stage and refined layer tables.",
-				"activities": [
-					{
-						"name": "adf_pl_master",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "adf_pl_params",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "adf_pl_master",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"application_short_name": {
-									"value": "@activity('adf_pl_params').output.value[0].param_value",
-									"type": "Expression"
-								},
-								"source": {
-									"value": "@activity('adf_pl_params').output.value[1].param_value",
-									"type": "Expression"
-								},
-								"audit_db": {
-									"value": "@activity('adf_pl_params').output.value[2].param_value",
-									"type": "Expression"
-								},
-								"source_db": {
-									"value": "@activity('adf_pl_params').output.value[5].param_value",
-									"type": "Expression"
-								},
-								"target_db": {
-									"value": "@activity('adf_pl_params').output.value[6].param_value",
-									"type": "Expression"
-								},
-								"environment": {
-									"value": "@activity('adf_pl_params').output.value[3].param_value",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "adf_pl_params",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "E2_HORSE_PARAMS",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "HORSE"
 				},
 				"annotations": []
 			},
