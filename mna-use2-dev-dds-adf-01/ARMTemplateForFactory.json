@@ -7417,7 +7417,7 @@
 								"@pipeline().parameters.source",
 								"@pipeline().parameters.audit_db",
 								"failed",
-								"@concat(pipeline().parameters.application_short_name,' ', pipeline().parameters.audit_db,' Job Failed due to 0 records available for the date range from source.<br> Clearing all audit entries')"
+								"@concat(pipeline().parameters.application_short_name,' ', pipeline().parameters.source,' ', 'Job Failed due to 0 records available for the date range from source.<br> Clearing all audit entries')"
 							],
 							"libraries": [
 								{
