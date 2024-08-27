@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "horse_param.csv",
+				"fileName": "horse_param_dev_dds_sandbox6.csv",
 				"container": "adf-cyber-metadata"
 			},
 			"columnDelimiter": ",",
